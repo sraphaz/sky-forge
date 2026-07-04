@@ -9,7 +9,7 @@
 [CmdletBinding()]
 param(
     [Parameter(Position = 0, Mandatory = $true)]
-    [ValidateSet('intake', 'status', 'approve', 'run', 'validate', 'export', 'elevate', 'benchmark', 'publish', 'sync', 'showcase', 'agents', 'audit', 'choreograph', 'architect', 'link', 'pull-spec')]
+    [ValidateSet('intake', 'status', 'approve', 'run', 'validate', 'export', 'elevate', 'benchmark', 'publish', 'sync', 'showcase', 'agents', 'audit', 'choreograph', 'architect', 'link', 'link-sync', 'pull-spec')]
     [string]$Command,
 
     [Parameter()]
@@ -264,6 +264,12 @@ switch ($Command) {
         if ($Force) { $linkArgs.Force = $true }
         & (Join-Path $PSScriptRoot 'link-workspace.ps1') @linkArgs
         Invoke-AgentAudit $Slug 'repo-scaffolder' 'workspace.link' 'side_effect' 'ok'
+    }
+    'link-sync' {
+        if (-not $Slug) { throw 'link-sync requires -Slug' }
+        . (Join-Path $PSScriptRoot 'resolve-sky-link.ps1')
+        Set-SkyLinkSyncMode -Slug $Slug -SyncMode $SyncMode
+        Invoke-AgentAudit $Slug 'repo-scaffolder' 'workspace.link_sync_mode' 'invoke_skill' 'ok' "mode=$SyncMode"
     }
     'pull-spec' {
         $pullArgs = @{}

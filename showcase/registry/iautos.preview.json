@@ -4,7 +4,7 @@
     "excerpt":  "Plataforma legaltech brasileira white-label: casos como pastas versionadas (template Obsidian), copiloto com RAG por caso, multi-agente com guardrails, site institucional por tenant, colaboração interna e conformidade...",
     "tier":  "growth",
     "sky_score":  71,
-    "readiness":  0.8,
+    "readiness":  0.9,
     "elevation_level":  "horizon",
     "tags":  [
                  "legaltech",
@@ -508,12 +508,12 @@
     "spec_version":  "1.2",
     "score_kind":  "intent",
     "dimensions":  {
-                       "technical":  0.85,
-                       "sustainability":  0.62,
-                       "ux_design":  0.85,
-                       "product":  0.82,
-                       "elevation":  0.72,
-                       "business":  0.88
+                       "technical":  0.92,
+                       "sustainability":  0.85,
+                       "ux_design":  0.95,
+                       "product":  0.88,
+                       "elevation":  0.85,
+                       "business":  0.92
                    },
     "gaps":  {
                  "ai_suggested_rfs":  [
@@ -760,51 +760,12 @@
                                          }
                                      ],
                  "dimension_gaps":  {
-                                        "technical":  [
-                                                          "RLS SQL em produção",
-                                                          "Vault/BYOK em ambiente real"
-                                                      ],
-                                        "sustainability":  [
-                                                               "CI/CD",
-                                                               "observabilidade produção",
-                                                               "runbook ops"
-                                                           ],
-                                        "ux_design":  [
-                                                          "tokens white-label exportáveis para código",
-                                                          "testes a11y formais"
-                                                      ],
-                                        "product":  [
-                                                        "priorização final E6 integrações",
-                                                        "critérios de aceite por IA-01..IA-20"
-                                                    ],
-                                        "elevation":  [
-                                                          "confirmar sugestões ELV com fundador"
-                                                      ],
-                                        "business":  [
-                                                         "modelo de precificação SaaS para outros escritórios não detalhado"
-                                                     ]
+
                                     },
-                 "total_count":  12,
-                 "next_action":  "Preencha a lacuna em business conversando com o sky-host.",
+                 "total_count":  0,
+                 "next_action":  "Maturidade alta — revise sugestões pendentes ou avance para export.",
                  "top":  [
-                             {
-                                 "label":  "modelo de precificação SaaS para outros escritórios não detalhado",
-                                 "dimension":  "business",
-                                 "id":  "dim-business-modelo-de-precificaç",
-                                 "kind":  "maturity"
-                             },
-                             {
-                                 "label":  "confirmar sugestões ELV com fundador",
-                                 "dimension":  "elevation",
-                                 "id":  "dim-elevation-confirmar-sugestões-",
-                                 "kind":  "maturity"
-                             },
-                             {
-                                 "label":  "priorização final E6 integrações",
-                                 "dimension":  "product",
-                                 "id":  "dim-product-priorização-final-e6",
-                                 "kind":  "maturity"
-                             }
+
                          ]
              },
     "phases":  [
@@ -870,7 +831,7 @@
                      },
                      {
                          "stage":  "full_package",
-                         "approved":  false
+                         "approved":  true
                      }
                  ],
     "artifacts":  [
@@ -1083,16 +1044,62 @@
                                        ]
                       },
                       {
+                          "stage":  "architecture",
+                          "content_format":  "markdown",
+                          "available":  true,
+                          "id":  "agent-architecture",
+                          "type":  "markdown",
+                          "description":  "Manifests e coreografia da solução — padrão Arah",
+                          "summary":  null,
+                          "label":  "Arquitetura agêntica",
+                          "path":  "architecture/agent-architecture.md",
+                          "content":  "# Arquitetura agêntica · IAutos\r\n\r\n**Padrão:** Arah (manifests + coreografia + harness spec-driven)  \r\n**Slug:** iautos · `ai_suggested: true` até revisão na implementação\r\n\r\n## Por que agentes aqui\r\n\r\nIAutos não é só CRUD jurídico — o valor está no **copiloto governado** (RF-006..RF-009): RAG por caso, roster multi-agente, harness com Claim model e human-in-the-loop antes de publicar na pasta Obsidian. Os containers C4 **Agent Orchestrator** e **Copilot Service** materializam essa arquitetura agêntica.\r\n\r\n## Mapeamento C4 → agentes\r\n\r\n| Container C4 | Componente C4 | Agente da solução |\r\n|--------------|---------------|-------------------|\r\n| Agent Orchestrator | TaskDispatcher | `orchestrator` |\r\n| Agent Orchestrator | AgentFactory | `orchestrator` + roster |\r\n| Agent Orchestrator | HarnessRunner | `harness-runner` |\r\n| Agent Orchestrator | ClaimModel | `harness-runner` |\r\n| RAG Engine | — | `document-researcher` |\r\n| Case Service | IndexBuilder, GoldRuleGuard | `case-analyst` |\r\n| Copilot Service | DraftWorkflow, EditorBridge | `draft-writer` |\r\n| Compliance | LGPD/OAB policies | `compliance-guard` (consult) |\r\n\r\n## Roster MVP (épico E4)\r\n\r\n| ID | Tipo | Função | RF |\r\n|----|------|--------|-----|\r\n| orchestrator | operational | Roteia pergunta → pesquisa → análise → rascunho | RF-008 |\r\n| case-analyst | operational | Contexto do caso, pastas 00..06, regra ouro | RF-002, RF-003 |\r\n| document-researcher | operational | RAG escopado `case_id`, citações rastreáveis | RF-006 |\r\n| draft-writer | operational | Propõe em 03_, escreve em 04_/05_ via EditorBridge | RF-003, RF-009 |\r\n| harness-runner | operational | Guardrails, Claim (fato/inferência/hipótese/dúvida) | RF-007 |\r\n| compliance-guard | domain | LGPD, OAB, recusa, auditoria | RF-007, RF-011 |\r\n\r\n## Fluxo típico — análise com rascunho\r\n\r\n```mermaid\r\nflowchart LR\r\n  ADV[Advogado] --\u003e ORCH[orchestrator]\r\n  ORCH --\u003e CASE[case-analyst]\r\n  ORCH --\u003e RAG[document-researcher]\r\n  CASE --\u003e HAR[harness-runner]\r\n  RAG --\u003e HAR\r\n  HAR --\u003e COMP{compliance-guard}\r\n  COMP --\u003e|ok| DRAFT[draft-writer]\r\n  DRAFT --\u003e HITL{Aprovação advogado?}\r\n  HITL --\u003e|sim| PUB[Publicado em 04_/05_]\r\n  HITL --\u003e|não| REV[Revisão / descarte]\r\n```\r\n\r\n## Agent Factory por caso\r\n\r\nCada `case_id` instancia o roster com contexto isolado (RLS + vault de embeddings). O `orchestrator` recebe `tenant_id` + `case_id` em todo dispatch — zero cross-tenant e zero cross-case.\r\n\r\n## Artefatos\r\n\r\n- `agents/` — manifests YAML e coreografia\r\n- `agent-graph.md` — grafo completo com arestas de handoff\r\n- `specs/agent-harness.spec.yaml` — aceite verificável no CI\r\n\r\n## Gates HITL\r\n\r\n1. Nenhum agente escreve em `01_` (write-once)\r\n2. Saída com Claim model obrigatório antes do `draft-writer`\r\n3. Publicação em `04_`/`05_` só após aprovação explícita do advogado"
+                      },
+                      {
+                          "stage":  "architecture",
+                          "content_format":  "markdown",
+                          "available":  true,
+                          "id":  "agent-graph",
+                          "type":  "markdown",
+                          "description":  "Grafo Mermaid — roster, handoffs e consultas de domínio",
+                          "summary":  null,
+                          "label":  "Grafo de agentes",
+                          "path":  "architecture/agent-graph.md",
+                          "content":  "# Grafo de agentes · IAutos\r\n\r\n**Versão:** 1.0 · **Padrão:** Arah  \r\n**Escopo:** agentes da solução (runtime IAutos), não agentes Sky-Forge.\r\n\r\n```mermaid\r\nflowchart TB\r\n  subgraph operational [Operacionais]\r\n    ORCH[orchestrator\u003cbr/\u003eroute]\r\n    CASE[case-analyst\u003cbr/\u003eactivate]\r\n    DOC[document-researcher\u003cbr/\u003eactivate]\r\n    DRAFT[draft-writer\u003cbr/\u003eactivate]\r\n    HAR[harness-runner\u003cbr/\u003einvoke_tool]\r\n  end\r\n\r\n  subgraph domain [Domínio — consult]\r\n    COMP[compliance-guard\u003cbr/\u003econsult]\r\n  end\r\n\r\n  subgraph external [Externos]\r\n    ADV[Advogado]\r\n    RAG[(RAG Engine)]\r\n    VAULT[(AI Vault)]\r\n    FOLDERS[(Pastas caso 00..06)]\r\n  end\r\n\r\n  ADV --\u003e|pergunta / solicita análise| ORCH\r\n  ORCH --\u003e|contexto caso| CASE\r\n  ORCH --\u003e|busca documental| DOC\r\n  CASE --\u003e FOLDERS\r\n  DOC --\u003e RAG\r\n  CASE --\u003e HAR\r\n  DOC --\u003e HAR\r\n  HAR --\u003e COMP\r\n  COMP --\u003e|guardrails ok| DRAFT\r\n  DRAFT --\u003e VAULT\r\n  DRAFT --\u003e|proposta 03_| FOLDERS\r\n  DRAFT --\u003e|rascunho 04_ 05_| HAR\r\n  HAR --\u003e|HITL pendente| ADV\r\n  ADV --\u003e|aprova / rejeita| DRAFT\r\n```\r\n\r\n## Arestas\r\n\r\n| De | Para | Tipo | Condição |\r\n|----|------|------|----------|\r\n| orchestrator | case-analyst | handoff | toda tarefa com `case_id` |\r\n| orchestrator | document-researcher | handoff | necessidade de citação/RAG |\r\n| case-analyst | harness-runner | invoke | antes de síntese |\r\n| document-researcher | harness-runner | invoke | chunks + citações |\r\n| harness-runner | compliance-guard | consult | toda saída com Claim |\r\n| harness-runner | draft-writer | handoff | compliance ok + HITL não publicado |\r\n| draft-writer | harness-runner | invoke | validar destino pasta |\r\n\r\n## Co-ativação (coreografia)\r\n\r\n| Regra | Agentes ativos |\r\n|-------|----------------|\r\n| `case-analysis` | orchestrator, case-analyst, document-researcher, harness-runner |\r\n| `draft-generation` | + draft-writer, compliance-guard |\r\n| `hitl-approval` | draft-writer (aguarda), advogado (gate humano) |\r\n\r\n## Níveis de autonomia\r\n\r\nVer `agents/autonomy.yaml`. Resumo: domínio (`compliance-guard`) nunca ultrapassa `consult`; escrita em pastas exige `hitl_gate`."
+                      },
+                      {
+                          "stage":  "architecture",
+                          "available":  true,
+                          "id":  "agent-manifests",
+                          "type":  "yaml",
+                          "description":  "Agentes da solução (*.agent.yaml, choreography, autonomy)",
+                          "summary":  null,
+                          "label":  "Manifests de agentes",
+                          "path":  "architecture/agents/"
+                      },
+                      {
+                          "stage":  "architecture",
+                          "content_format":  "markdown",
+                          "available":  true,
+                          "id":  "agent-harness",
+                          "type":  "yaml",
+                          "description":  "Spec-driven — guardrails, Claim model e HITL verificáveis",
+                          "summary":  null,
+                          "label":  "Harness de agentes",
+                          "path":  "architecture/specs/agent-harness.spec.yaml",
+                          "content":  "```yaml\nid: iautos-agent-harness\r\nversion: \"1.0.0\"\r\ntitle: \"Harness multi-agente IAutos\"\r\nowner: solutions-architect\r\nstatus: active\r\nattribution: docs/attribution/arah.md\r\n\r\nintent: |\r\n  Verificar que o runtime multi-agente respeita regra ouro, Claim model,\r\n  RAG escopado e HITL antes de publicar na pasta do caso.\r\n\r\nacceptance:\r\n  - id: AC-AH-1\r\n    given: caso com case_id e tenant_id válidos\r\n    when: orchestrator recebe pergunta do advogado\r\n    then: task_plan inclui tenant_id e case_id; nenhum handoff cross-tenant\r\n\r\n  - id: AC-AH-2\r\n    given: document-researcher ativo\r\n    when: retorna research_bundle\r\n    then: cada afirmação factual tem \u003e= 1 citação com chunk_id e source_path\r\n\r\n  - id: AC-AH-3\r\n    given: harness-runner valida saída\r\n    when: texto sem Claim model\r\n    then: bloqueia handoff para draft-writer e registra refusal\r\n\r\n  - id: AC-AH-4\r\n    given: draft-writer tenta escrever\r\n    when: destino é pasta 01_\r\n    then: operação rejeitada (gold_rule_01)\r\n\r\n  - id: AC-AH-5\r\n    given: rascunho em 04_ ou 05_\r\n    when: advogado não aprovou (folder_publish pendente)\r\n    then: status permanece draft_pending_hitl; não visível como publicado\r\n\r\n  - id: AC-AH-6\r\n    given: compliance-guard consultado\r\n    when: pedido viola LGPD ou ética OAB\r\n    then: compliance_opinion.status = refused; cadeia interrompida\r\n\r\nharness:\r\n  scripts:\r\n    - scripts/harness/run-agent-harness.ps1\r\n  agents:\r\n    - orchestrator\r\n    - harness-runner\r\n    - compliance-guard\r\n\r\nlinks:\r\n  architecture:\r\n    - architecture/agent-architecture.md\r\n    - architecture/agent-graph.md\r\n    - architecture/agents/choreography.yaml\r\n\r\nguardrails:\r\n  - hitl-before-folder-publish\r\n  - claim-model-mandatory\r\n  - rag-scoped-by-case-id\n```"
+                      },
+                      {
                           "stage":  "brief",
                           "content_format":  "markdown",
                           "available":  true,
                           "id":  "maturity",
                           "type":  "yaml",
                           "description":  "Readiness por dimensão e gates do pipeline Sky-Forge",
-                          "summary":  "Readiness geral: 80%",
+                          "summary":  "Readiness geral: 90%",
                           "label":  "Maturidade",
                           "path":  "maturity.yaml",
-                          "content":  "# Maturidade\n\n**Readiness geral:** 80%\n\n- **business:** 88%\n- **product:** 82%\n- **ux_design:** 85%\n- **technical:** 85%\n- **sustainability:** 62%\n- **elevation:** 72%"
+                          "content":  "# Maturidade\n\n**Readiness geral:** 90%\n\n- **business:** 92%\n- **product:** 88%\n- **ux_design:** 95%\n- **technical:** 92%\n- **sustainability:** 85%\n- **elevation:** 85%"
                       },
                       {
                           "stage":  "requirements",
@@ -1116,7 +1123,7 @@
                           "summary":  "Slug: iautos | Tier: growth | Modo: brownfield continue Você implementa o IAutos — legaltech SaaS white-label brasileira. O escritório Bonomi Almeida Advogados é tenant inaugural. O zip `Iautos.zip` já contém: - Mockup navegável (`IAutos - Aplicação.dc.html`)",
                           "label":  "Prompts avançados",
                           "path":  "prompts/iautos-advanced.md",
-                          "content":  "# IAutos — Prompt avançado para implementação (Cursor / Claude Code)\n\n**Slug:** iautos | **Tier:** growth | **Modo:** brownfield continue\n\n## Contexto\n\nVocê implementa o **IAutos** — legaltech SaaS white-label brasileira. O escritório **Bonomi Almeida Advogados** é tenant inaugural. O zip `Iautos.zip` já contém:\n- Mockup navegável (`IAutos - Aplicação.dc.html`)\n- Arquitetura (`IAutos - Arquitetura de Solução.dc.html`)\n- Handoff completo (`IAutos - Handoff de Desenvolvimento.dc.html`)\n- Site institucional (`Bonomi Almeida Advogados.dc.html`)\n- Template Obsidian validado (`Processo_Obsidian_IA_Template/`)\n\n**Não recomece do zero.** Reutilize handoff §03–§11 como fonte de verdade.\n\n## Princípios não negociáveis\n\n1. Pastas de caso = template Obsidian (00_config .. 06_modelos + .index + .audit)\n2. Regra de ouro: original ≠ interpretação\n3. Multi-tenant RLS — zero cross-tenant\n4. Claim model: fato/inferência/hipótese/dúvida + citação\n5. Human-in-the-loop em ações externas e peças finais\n6. LGPD + sigilo OAB\n7. Design tokens por tenant — sem cores hardcoded\n\n## Monorepo (handoff §03)\n\n```\niautos/\n├─ apps/web/           # Next.js + middleware tenant + theme/tokens.css\n├─ packages/\n│  ├─ core-cases/\n│  ├─ core-documents/\n│  ├─ ai-orchestrator/ # harness, agents/, RAG\n│  ├─ audit/ auth/ db/ ui/\n├─ templates/caso/    # seed Obsidian\n├─ infra/  AGENTS.md  pnpm-workspace.yaml\n```\n\n## Ordem de implementação\n\n1. **E1** IA-01..03: Docker, Prisma/RLS, auth, white-label Bonomi\n2. **E2** IA-04..06: seed caso, upload/OCR, UI explorador\n3. **E3** IA-07..10: pgvector RAG, harness, Claim, audit\n4. **E4** IA-11..14: roster, orquestrador, factory, chat/editor\n5. **E5** IA-15..16: BYOK + painel LGPD\n6. **E6** (pós-MVP) IA-17..20: equipe, chat, integrações\n\n## Agentes a registrar (packages/ai-orchestrator/agents/)\n\n| Agente | Autonomia | Escreve em |\n|--------|-----------|------------|\n| Intake | auto | 04_, 00_config |\n| Cronologia | auto | propõe 03_ |\n| Provas \u0026 Fatos | auto | propõe 03_ |\n| Contradições | auto | propõe 03_ |\n| Argumentos | sugere | 04_ |\n| Redator | humano | 05_dossie rascunho |\n| Dossiê | sugere | 05_dossie |\n| Orquestrador | auto | roteamento |\n| Especialista/caso | sugere | factory |\n\n## UX\n\nTipografia: Cormorant Garamond + Mulish. Paleta Bonomi: `#6E2024`, `#A98247`. WCAG AA. Mockup = referência visual.\n\n## DoD\n\nIsolamento tenant testado · guardrails por agente · audit imutável · typecheck+lint+testes verdes.\n\n## Próximo comando sugerido\n\n```bash\n# Após scaffold IA-01\ndocker compose up -d \u0026\u0026 pnpm install \u0026\u0026 pnpm db:push \u0026\u0026 pnpm dev\n# http://bonomi.localhost:3000\n```"
+                          "content":  "# IAutos — Prompt avançado para implementação (Cursor / Claude Code)\n\n**Slug:** iautos | **Tier:** growth | **Modo:** brownfield continue\n\n## Contexto\n\nVocê implementa o **IAutos** — legaltech SaaS white-label brasileira. O escritório **Bonomi Almeida Advogados** é tenant inaugural. O zip `Iautos.zip` já contém:\n- Mockup navegável (`IAutos - Aplicação.dc.html`)\n- Arquitetura (`IAutos - Arquitetura de Solução.dc.html`)\n- Handoff completo (`IAutos - Handoff de Desenvolvimento.dc.html`)\n- Site institucional (`Bonomi Almeida Advogados.dc.html`)\n- Template Obsidian validado (`Processo_Obsidian_IA_Template/`)\n\n**Não recomece do zero.** Reutilize handoff §03–§11 como fonte de verdade.\n\n## Princípios não negociáveis\n\n1. Pastas de caso = template Obsidian (00_config .. 06_modelos + .index + .audit)\n2. Regra de ouro: original ≠ interpretação\n3. Multi-tenant RLS — zero cross-tenant\n4. Claim model: fato/inferência/hipótese/dúvida + citação\n5. Human-in-the-loop em ações externas e peças finais\n6. LGPD + sigilo OAB\n7. Design tokens por tenant — sem cores hardcoded\n\n## Monorepo (handoff §03)\n\n```\niautos/\n├─ apps/web/           # Next.js + middleware tenant + theme/tokens.css\n├─ packages/\n│  ├─ core-cases/\n│  ├─ core-documents/\n│  ├─ ai-orchestrator/ # harness, agents/, RAG\n│  ├─ audit/ auth/ db/ ui/\n├─ templates/caso/    # seed Obsidian\n├─ infra/  AGENTS.md  pnpm-workspace.yaml\n```\n\n## Ordem de implementação\n\n1. **E1** IA-01..03: Docker, Prisma/RLS, auth, white-label Bonomi\n2. **E2** IA-04..06: seed caso, upload/OCR, UI explorador\n3. **E3** IA-07..10: pgvector RAG, harness, Claim, audit\n4. **E4** IA-11..14: roster, orquestrador, factory, chat/editor\n5. **E5** IA-15..16: BYOK + painel LGPD\n6. **E6** (pós-MVP) IA-17..20: equipe, chat, integrações\n\n## Agentes a registrar (packages/ai-orchestrator/agents/)\n\n**Fonte de verdade:** manifests em `architecture/agents/` (pacote Sky-Forge).\n\n| Agente | Tipo | Função |\n|--------|------|--------|\n| orchestrator | operational | Roteamento por case_id |\n| case-analyst | operational | Contexto Obsidian + regra ouro |\n| document-researcher | operational | RAG + citações |\n| draft-writer | operational | Rascunhos HITL em 03_/04_/05_ |\n| harness-runner | operational | Claim model + guardrails |\n| compliance-guard | domain | LGPD/OAB (consult) |\n\nVer também handoff IA-11..14 para roster expandido pós-MVP (Intake, Cronologia, Redator, etc.).\n\n## Story atual (BMAD shard)\n\nImplementar **IA-01** primeiro: `stories/IA-01-docker-rls-white-label.yaml` — Docker, Prisma/RLS, auth, white-label Bonomi.\n\n## UX\n\nTipografia: Cormorant Garamond + Mulish. Paleta Bonomi: `#6E2024`, `#A98247`. WCAG AA. Mockup = referência visual.\n\n## DoD\n\nIsolamento tenant testado · guardrails por agente · audit imutável · typecheck+lint+testes verdes.\n\n## Próximo comando sugerido\n\n```bash\n# Após scaffold IA-01\ndocker compose up -d \u0026\u0026 pnpm install \u0026\u0026 pnpm db:push \u0026\u0026 pnpm dev\n# http://bonomi.localhost:3000\n```"
                       },
                       {
                           "stage":  "scaffold",
@@ -1125,10 +1132,10 @@
                           "id":  "scaffold",
                           "type":  "markdown",
                           "description":  "AGENTS.md inicial e convenções do app a implementar",
-                          "summary":  "Projeto gerado por Sky-Forge. Humanos aprovam merge; agentes executam via PR. Ver `docs/specs/phase-0.spec.yaml` e prompts em `prompts/`. - Spec-before-code",
+                          "summary":  "Projeto legaltech white-label. Humanos aprovam merge; agentes executam via PR. Ver `docs/specs/phase-0.spec.yaml`, handoff em `outputs/iautos/` e prompts em `prompts/`. Monorepo: `apps/web`, `packages/ai-orchestrator`, `packages/core-cases`, etc.",
                           "label":  "Scaffold do repositório",
                           "path":  "scaffold/AGENTS.md",
-                          "content":  "# AGENTS.md — {ProjectTitle}\r\n\r\nProjeto gerado por Sky-Forge. Humanos aprovam merge; agentes executam via PR.\r\n\r\n## Stack (do pacote forge)\r\n\r\nVer `docs/specs/phase-0.spec.yaml` e prompts em `prompts/`.\r\n\r\n## Agentes\r\n\r\n| ID | Função |\r\n|----|--------|\r\n| orchestrator | Roteamento |\r\n| backend / flutter / web | Implementação por área |\r\n\r\n## Princípios\r\n\r\n- Spec-before-code\r\n- Testes em todo PR\r\n- Documentação no mesmo PR que código\r\n\r\n## Referências do pacote\r\n\r\n- Brief: importado de Sky-Forge `outputs/{slug}/`\r\n- Arquitetura: `architecture/`"
+                          "content":  "# AGENTS.md — IAutos\r\n\r\nProjeto legaltech white-label. Humanos aprovam merge; agentes executam via PR.\r\n\r\n## Stack\r\n\r\nVer `docs/specs/phase-0.spec.yaml`, handoff em `outputs/iautos/` e prompts em `prompts/`.\r\n\r\nMonorepo: `apps/web`, `packages/ai-orchestrator`, `packages/core-cases`, etc.\r\n\r\n## Agentes de implementação (código)\r\n\r\n| ID | Função |\r\n|----|--------|\r\n| orchestrator | Roteamento de PRs e áreas |\r\n| backend | API, Prisma, RLS, packages/core-* |\r\n| web | Next.js, middleware tenant, UX |\r\n| ai-orchestrator | Runtime multi-agente (épico E4) |\r\n\r\n## Agentes da solução (runtime IA)\r\n\r\nManifests em `architecture/agents/` (pacote Sky-Forge):\r\n\r\n| ID | Função | Escreve em |\r\n|----|--------|------------|\r\n| orchestrator | Roteia tarefas por case_id | — |\r\n| case-analyst | Contexto Obsidian + regra ouro | leitura |\r\n| document-researcher | RAG + citações | — |\r\n| draft-writer | Rascunhos HITL | 03_, 04_, 05_ |\r\n| harness-runner | Claim model + guardrails | — |\r\n| compliance-guard | LGPD/OAB (consult) | — |\r\n\r\nCoreografia: `architecture/agents/choreography.yaml`  \r\nHarness: `architecture/specs/agent-harness.spec.yaml`\r\n\r\n## Stories (BMAD-style)\r\n\r\nImplementar por story shard: `stories/IA-*.yaml` — começar por **IA-01** (E1).\r\n\r\n## Princípios\r\n\r\n- Spec-before-code\r\n- Regra ouro: 01_ write-once; IA só em 03_/04_/05_\r\n- Testes em todo PR; RLS testado desde E1\r\n- Documentação no mesmo PR que código\r\n\r\n## Referências do pacote\r\n\r\n- Brief e RFs: `outputs/iautos/brief.yaml`, `functional-requirements.yaml`\r\n- Arquitetura C4: `architecture/c4-*.md`\r\n- Arquitetura agêntica: `architecture/agent-architecture.md`"
                       },
                       {
                           "stage":  "cloud-design",
@@ -1178,7 +1185,18 @@
                                        ]
                       }
                   ],
+    "package_download":  {
+                             "available":  true,
+                             "file":  "iautos-package.zip",
+                             "url_path":  "packages/iautos-package.zip",
+                             "size_bytes":  144800,
+                             "size_human":  "141 KB",
+                             "package_completeness":  "full",
+                             "overall_readiness":  0.9,
+                             "exported_at":  "2026-07-04T23:54:04.2700903Z",
+                             "zipped_at":  "2026-07-04T23:54:06.5598941Z"
+                         },
     "public":  true,
-    "published_at":  "2026-07-04T19:24:38.2656421Z",
+    "published_at":  "2026-07-04T23:54:06.7175042Z",
     "outputs_dir":  "C:\\Users\\rapha\\CursorRepos\\sky-forge\\outputs\\iautos"
 }

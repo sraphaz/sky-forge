@@ -71,6 +71,29 @@ function Resolve-SkyForgeRoot {
     return (Resolve-Path (Join-Path $base $ForgeRoot) -ErrorAction Stop).Path
 }
 
+function Set-SkyLinkSyncMode {
+    param(
+        [string]$Slug,
+        [ValidateSet('manual', 'after_export')]
+        [string]$SyncMode
+    )
+    . (Join-Path $PSScriptRoot 'get-sky-config.ps1')
+    $sessionDir = Join-Path (Get-SkyRepoRoot) ".sky\sessions\$Slug"
+    $gitFile = Join-Path $sessionDir 'git.yaml'
+    if (-not (Test-Path $gitFile)) { throw "git.yaml ausente — rode sky link primeiro." }
+    $raw = Get-Content $gitFile -Raw
+    $raw = $raw -replace '(?m)^sync_mode:\s*.+$', "sync_mode: $SyncMode"
+    Set-Content $gitFile -Value $raw -Encoding UTF8
+
+    $ctx = Get-SkyLinkContext -Slug $Slug
+    if ($ctx.LinkFile -and (Test-Path $ctx.LinkFile)) {
+        $linkRaw = Get-Content $ctx.LinkFile -Raw
+        $linkRaw = $linkRaw -replace '(?m)^sync_mode:\s*.+$', "sync_mode: $SyncMode"
+        Set-Content $ctx.LinkFile -Value $linkRaw -Encoding UTF8
+    }
+    Write-Host "sync_mode atualizado: $SyncMode ($Slug ↔ $($ctx.WorkspacePath))" -ForegroundColor Green
+}
+
 function Get-SkyLinkContext {
     param(
         [string]$StartPath = (Get-Location).Path,

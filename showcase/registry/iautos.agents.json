@@ -1,18 +1,18 @@
 ﻿{
     "slug":  "iautos",
-    "published_at":  "2026-07-04T19:18:59.9437529Z",
-    "journey_phase":  "showcase",
+    "published_at":  "2026-07-04T23:54:08.6266936Z",
+    "journey_phase":  "implement",
     "metrics":  {
                     "last_agent":  "orchestrator",
                     "last_action":  "choreography.resolve",
                     "last_outcome":  "ok",
-                    "total_events":  164
+                    "total_events":  305
                 },
     "choreography":  {
                          "matched_rules":  [
                                                "intake-sessions"
                                            ],
-                         "readiness":  0.8,
+                         "readiness":  0.9,
                          "operational":  [
                                              {
                                                  "id":  "sky-host",
@@ -63,7 +63,151 @@
                                     ],
                          "gates_required":  [
                                                 "brief"
-                                            ]
+                                            ],
+                         "co_activation":  [
+                                               {
+                                                   "primary":  "intake-conductor",
+                                                   "consult":  [
+                                                                   "sky-elevator",
+                                                                   "ux-design-specialist",
+                                                                   "cost-tier-advisor"
+                                                               ],
+                                                   "on_phase":  [
+                                                                    "elevate",
+                                                                    "shape"
+                                                                ],
+                                                   "party":  "elevation-party",
+                                                   "route_after":  null
+                                               },
+                                               {
+                                                   "primary":  "delivery-steward",
+                                                   "consult":  [
+                                                                   "security-compliance",
+                                                                   "test-architect"
+                                                               ],
+                                                   "on_phase":  "deliver",
+                                                   "party":  "deliver-party",
+                                                   "route_after":  null
+                                               },
+                                               {
+                                                   "primary":  "showcase-curator",
+                                                   "consult":  [
+
+                                                               ],
+                                                   "on_phase":  "showcase",
+                                                   "party":  null,
+                                                   "route_after":  "sky-host"
+                                               },
+                                               {
+                                                   "primary":  "solutions-architect",
+                                                   "consult":  [
+                                                                   "c4-modeler",
+                                                                   "journey-sequence-modeler",
+                                                                   "clean-craft-advisor",
+                                                                   "test-architect",
+                                                                   "stack-curator",
+                                                                   "security-compliance"
+                                                               ],
+                                                   "on_phase":  [
+                                                                    "specify",
+                                                                    "elevate"
+                                                                ],
+                                                   "party":  "architecture-party",
+                                                   "route_after":  null
+                                               },
+                                               {
+                                                   "primary":  "c4-modeler",
+                                                   "consult":  [
+                                                                   "clean-craft-advisor",
+                                                                   "stack-curator"
+                                                               ],
+                                                   "on_phase":  "specify",
+                                                   "party":  null,
+                                                   "route_after":  null
+                                               },
+                                               {
+                                                   "primary":  "repo-scaffolder",
+                                                   "consult":  [
+                                                                   "test-architect",
+                                                                   "security-compliance"
+                                                               ],
+                                                   "on_phase":  "implement",
+                                                   "party":  "implement-party",
+                                                   "route_after":  null
+                                               }
+                                           ],
+                         "party_mode":  {
+                                            "policy":  "Reúne consultas paralelas de domínio. O host apresenta síntese — nunca export + publish no mesmo turno. Ativado por fase UX (journey.yaml current_phase). sessions: - id: elevation-party label: Elevação colaborativa host: sky-host primary: intake-conductor consult: [sky-elevator, ux-design-specialist, cost-tier-advisor, market-benchmark] on_phase: [shape, elevate] - id: architecture-party label: Especificação arquitetural host: sky-host primary: solutions-architect consult: [c4-modeler, journey-sequence-modeler, clean-craft-advisor, test-architect, stack-curator, security-compliance] on_phase: [specify] - id: deliver-party label: Entrega do pacote host: sky-host primary: delivery-steward consult: [security-compliance, test-architect, showcase-curator] on_phase: [deliver] - id: implement-party label: Implementação guiada host: sky-host primary: repo-scaffolder consult: [test-architect, security-compliance, prompt-assembler] on_phase: [implement]",
+                                            "sessions":  [
+                                                             {
+                                                                 "id":  "elevation-party",
+                                                                 "label":  "Elevação colaborativa",
+                                                                 "host":  "sky-host",
+                                                                 "primary":  "intake-conductor",
+                                                                 "consult":  [
+                                                                                 "sky-elevator",
+                                                                                 "ux-design-specialist",
+                                                                                 "cost-tier-advisor",
+                                                                                 "market-benchmark"
+                                                                             ],
+                                                                 "on_phase":  [
+                                                                                  "shape",
+                                                                                  "elevate"
+                                                                              ]
+                                                             },
+                                                             {
+                                                                 "id":  "architecture-party",
+                                                                 "label":  "Especificação arquitetural",
+                                                                 "host":  "sky-host",
+                                                                 "primary":  "solutions-architect",
+                                                                 "consult":  [
+                                                                                 "c4-modeler",
+                                                                                 "journey-sequence-modeler",
+                                                                                 "clean-craft-advisor",
+                                                                                 "test-architect",
+                                                                                 "stack-curator",
+                                                                                 "security-compliance"
+                                                                             ],
+                                                                 "on_phase":  "specify"
+                                                             },
+                                                             {
+                                                                 "id":  "deliver-party",
+                                                                 "label":  "Entrega do pacote",
+                                                                 "host":  "sky-host",
+                                                                 "primary":  "delivery-steward",
+                                                                 "consult":  [
+                                                                                 "security-compliance",
+                                                                                 "test-architect",
+                                                                                 "showcase-curator"
+                                                                             ],
+                                                                 "on_phase":  "deliver"
+                                                             },
+                                                             {
+                                                                 "id":  "implement-party",
+                                                                 "label":  "Implementação guiada",
+                                                                 "host":  "sky-host",
+                                                                 "primary":  "repo-scaffolder",
+                                                                 "consult":  [
+                                                                                 "test-architect",
+                                                                                 "security-compliance",
+                                                                                 "prompt-assembler"
+                                                                             ],
+                                                                 "on_phase":  "implement"
+                                                             }
+                                                         ],
+                                            "active":  {
+                                                           "id":  "implement-party",
+                                                           "label":  "Implementação guiada",
+                                                           "host":  "sky-host",
+                                                           "primary":  "repo-scaffolder",
+                                                           "consult":  [
+                                                                           "test-architect",
+                                                                           "security-compliance",
+                                                                           "prompt-assembler"
+                                                                       ],
+                                                           "on_phase":  "implement"
+                                                       }
+                                        }
                      },
     "gates":  [
                   {
@@ -122,124 +266,7 @@
                         ],
     "events":  [
                    {
-                       "ts":  "2026-07-04T18:39:56.6502419Z",
-                       "agent_id":  "orchestrator",
-                       "action":  "choreography.resolve",
-                       "outcome":  "ok",
-                       "autonomy_level":  "route",
-                       "human_gate":  null,
-                       "details":  "{\"matched_rules\":[\"intake-sessions\"],\"files\":[\".sky/sessions/iautos\"]}"
-                   },
-                   {
-                       "ts":  "2026-07-04T18:55:30.7696834Z",
-                       "agent_id":  "sky-host",
-                       "action":  "gap.decide",
-                       "outcome":  "ok",
-                       "autonomy_level":  "activate",
-                       "human_gate":  null,
-                       "details":  "RF-014 confirm via showcase local"
-                   },
-                   {
-                       "ts":  "2026-07-04T18:55:31.6210308Z",
-                       "agent_id":  "orchestrator",
-                       "action":  "choreography.resolve",
-                       "outcome":  "ok",
-                       "autonomy_level":  "route",
-                       "human_gate":  null,
-                       "details":  "{\"matched_rules\":[\"intake-sessions\"],\"files\":[\".sky/sessions/iautos\"]}"
-                   },
-                   {
-                       "ts":  "2026-07-04T18:55:33.4363313Z",
-                       "agent_id":  "sky-host",
-                       "action":  "gap.decide",
-                       "outcome":  "ok",
-                       "autonomy_level":  "activate",
-                       "human_gate":  null,
-                       "details":  "RF-015 confirm via showcase local"
-                   },
-                   {
-                       "ts":  "2026-07-04T18:55:34.2318660Z",
-                       "agent_id":  "orchestrator",
-                       "action":  "choreography.resolve",
-                       "outcome":  "ok",
-                       "autonomy_level":  "route",
-                       "human_gate":  null,
-                       "details":  "{\"matched_rules\":[\"intake-sessions\"],\"files\":[\".sky/sessions/iautos\"]}"
-                   },
-                   {
-                       "ts":  "2026-07-04T18:55:35.4271002Z",
-                       "agent_id":  "sky-host",
-                       "action":  "gap.decide",
-                       "outcome":  "ok",
-                       "autonomy_level":  "activate",
-                       "human_gate":  null,
-                       "details":  "RF-016 confirm via showcase local"
-                   },
-                   {
-                       "ts":  "2026-07-04T18:55:36.2392665Z",
-                       "agent_id":  "orchestrator",
-                       "action":  "choreography.resolve",
-                       "outcome":  "ok",
-                       "autonomy_level":  "route",
-                       "human_gate":  null,
-                       "details":  "{\"matched_rules\":[\"intake-sessions\"],\"files\":[\".sky/sessions/iautos\"]}"
-                   },
-                   {
-                       "ts":  "2026-07-04T18:55:39.0041492Z",
-                       "agent_id":  "sky-host",
-                       "action":  "gap.decide",
-                       "outcome":  "ok",
-                       "autonomy_level":  "activate",
-                       "human_gate":  null,
-                       "details":  "RF-017 confirm via showcase local"
-                   },
-                   {
-                       "ts":  "2026-07-04T18:55:39.8113743Z",
-                       "agent_id":  "orchestrator",
-                       "action":  "choreography.resolve",
-                       "outcome":  "ok",
-                       "autonomy_level":  "route",
-                       "human_gate":  null,
-                       "details":  "{\"matched_rules\":[\"intake-sessions\"],\"files\":[\".sky/sessions/iautos\"]}"
-                   },
-                   {
-                       "ts":  "2026-07-04T18:55:41.3915174Z",
-                       "agent_id":  "sky-host",
-                       "action":  "gap.decide",
-                       "outcome":  "ok",
-                       "autonomy_level":  "activate",
-                       "human_gate":  null,
-                       "details":  "RF-018 confirm via showcase local"
-                   },
-                   {
-                       "ts":  "2026-07-04T18:55:42.2274429Z",
-                       "agent_id":  "orchestrator",
-                       "action":  "choreography.resolve",
-                       "outcome":  "ok",
-                       "autonomy_level":  "route",
-                       "human_gate":  null,
-                       "details":  "{\"matched_rules\":[\"intake-sessions\"],\"files\":[\".sky/sessions/iautos\"]}"
-                   },
-                   {
-                       "ts":  "2026-07-04T18:55:43.9153773Z",
-                       "agent_id":  "sky-host",
-                       "action":  "gap.decide",
-                       "outcome":  "ok",
-                       "autonomy_level":  "activate",
-                       "human_gate":  null,
-                       "details":  "RF-019 confirm via showcase local"
-                   },
-                   {
-                       "ts":  "2026-07-04T18:55:44.7344740Z",
-                       "agent_id":  "orchestrator",
-                       "action":  "choreography.resolve",
-                       "outcome":  "ok",
-                       "autonomy_level":  "route",
-                       "human_gate":  null,
-                       "details":  "{\"matched_rules\":[\"intake-sessions\"],\"files\":[\".sky/sessions/iautos\"]}"
-                   },
-                   {
-                       "ts":  "2026-07-04T18:57:29.6300657Z",
+                       "ts":  "2026-07-04T23:00:00.0772641Z",
                        "agent_id":  "orchestrator",
                        "action":  "session.read",
                        "outcome":  "ok",
@@ -248,7 +275,7 @@
                        "details":  "hook_stop"
                    },
                    {
-                       "ts":  "2026-07-04T18:57:29.7358654Z",
+                       "ts":  "2026-07-04T23:00:00.2478662Z",
                        "agent_id":  "orchestrator",
                        "action":  "choreography.resolve",
                        "outcome":  "ok",
@@ -257,7 +284,7 @@
                        "details":  "{\"matched_rules\":[],\"files\":[\".sky/sessions/iautos\"]}"
                    },
                    {
-                       "ts":  "2026-07-04T19:00:59.4169076Z",
+                       "ts":  "2026-07-04T23:05:54.3324164Z",
                        "agent_id":  "orchestrator",
                        "action":  "choreography.resolve",
                        "outcome":  "ok",
@@ -266,7 +293,7 @@
                        "details":  "{\"matched_rules\":[\"intake-sessions\"],\"files\":[\".sky/sessions/iautos\"]}"
                    },
                    {
-                       "ts":  "2026-07-04T19:01:23.8455735Z",
+                       "ts":  "2026-07-04T23:05:55.3180997Z",
                        "agent_id":  "orchestrator",
                        "action":  "choreography.resolve",
                        "outcome":  "ok",
@@ -275,88 +302,7 @@
                        "details":  "{\"matched_rules\":[\"intake-sessions\"],\"files\":[\".sky/sessions/iautos\"]}"
                    },
                    {
-                       "ts":  "2026-07-04T19:01:47.9312927Z",
-                       "agent_id":  "orchestrator",
-                       "action":  "choreography.resolve",
-                       "outcome":  "ok",
-                       "autonomy_level":  "route",
-                       "human_gate":  null,
-                       "details":  "{\"matched_rules\":[\"intake-sessions\"],\"files\":[\".sky/sessions/iautos\"]}"
-                   },
-                   {
-                       "ts":  "2026-07-04T19:03:25.6853300Z",
-                       "agent_id":  "sky-host",
-                       "action":  "gap.decide",
-                       "outcome":  "ok",
-                       "autonomy_level":  "activate",
-                       "human_gate":  null,
-                       "details":  "dim-business-1 answer (ai_suggested) via showcase local"
-                   },
-                   {
-                       "ts":  "2026-07-04T19:03:26.5577085Z",
-                       "agent_id":  "orchestrator",
-                       "action":  "choreography.resolve",
-                       "outcome":  "ok",
-                       "autonomy_level":  "route",
-                       "human_gate":  null,
-                       "details":  "{\"matched_rules\":[\"intake-sessions\"],\"files\":[\".sky/sessions/iautos\"]}"
-                   },
-                   {
-                       "ts":  "2026-07-04T19:12:25.0204419Z",
-                       "agent_id":  "sky-host",
-                       "action":  "gap.decide",
-                       "outcome":  "ok",
-                       "autonomy_level":  "activate",
-                       "human_gate":  null,
-                       "details":  "dim-ux_design-1 answer via showcase local"
-                   },
-                   {
-                       "ts":  "2026-07-04T19:12:25.8584401Z",
-                       "agent_id":  "orchestrator",
-                       "action":  "choreography.resolve",
-                       "outcome":  "ok",
-                       "autonomy_level":  "route",
-                       "human_gate":  null,
-                       "details":  "{\"matched_rules\":[\"intake-sessions\"],\"files\":[\".sky/sessions/iautos\"]}"
-                   },
-                   {
-                       "ts":  "2026-07-04T19:12:36.6791574Z",
-                       "agent_id":  "sky-host",
-                       "action":  "gap.decide",
-                       "outcome":  "ok",
-                       "autonomy_level":  "activate",
-                       "human_gate":  null,
-                       "details":  "dim-business-1 answer via showcase local"
-                   },
-                   {
-                       "ts":  "2026-07-04T19:12:37.4847542Z",
-                       "agent_id":  "orchestrator",
-                       "action":  "choreography.resolve",
-                       "outcome":  "ok",
-                       "autonomy_level":  "route",
-                       "human_gate":  null,
-                       "details":  "{\"matched_rules\":[\"intake-sessions\"],\"files\":[\".sky/sessions/iautos\"]}"
-                   },
-                   {
-                       "ts":  "2026-07-04T19:12:59.0449154Z",
-                       "agent_id":  "sky-host",
-                       "action":  "gap.decide",
-                       "outcome":  "ok",
-                       "autonomy_level":  "activate",
-                       "human_gate":  null,
-                       "details":  "dim-technical-1 answer via showcase local"
-                   },
-                   {
-                       "ts":  "2026-07-04T19:12:59.8704912Z",
-                       "agent_id":  "orchestrator",
-                       "action":  "choreography.resolve",
-                       "outcome":  "ok",
-                       "autonomy_level":  "route",
-                       "human_gate":  null,
-                       "details":  "{\"matched_rules\":[\"intake-sessions\"],\"files\":[\".sky/sessions/iautos\"]}"
-                   },
-                   {
-                       "ts":  "2026-07-04T19:14:30.3976243Z",
+                       "ts":  "2026-07-04T23:06:59.6078558Z",
                        "agent_id":  "orchestrator",
                        "action":  "session.read",
                        "outcome":  "ok",
@@ -365,7 +311,7 @@
                        "details":  "hook_stop"
                    },
                    {
-                       "ts":  "2026-07-04T19:14:30.5188095Z",
+                       "ts":  "2026-07-04T23:06:59.7504116Z",
                        "agent_id":  "orchestrator",
                        "action":  "choreography.resolve",
                        "outcome":  "ok",
@@ -374,7 +320,25 @@
                        "details":  "{\"matched_rules\":[],\"files\":[\".sky/sessions/iautos\"]}"
                    },
                    {
-                       "ts":  "2026-07-04T19:15:30.1012760Z",
+                       "ts":  "2026-07-04T23:10:09.8283131Z",
+                       "agent_id":  "orchestrator",
+                       "action":  "choreography.resolve",
+                       "outcome":  "ok",
+                       "autonomy_level":  "route",
+                       "human_gate":  null,
+                       "details":  "{\"matched_rules\":[\"intake-sessions\"],\"files\":[\".sky/sessions/iautos\"]}"
+                   },
+                   {
+                       "ts":  "2026-07-04T23:10:11.4999789Z",
+                       "agent_id":  "orchestrator",
+                       "action":  "choreography.resolve",
+                       "outcome":  "ok",
+                       "autonomy_level":  "route",
+                       "human_gate":  null,
+                       "details":  "{\"matched_rules\":[\"intake-sessions\"],\"files\":[\".sky/sessions/iautos\"]}"
+                   },
+                   {
+                       "ts":  "2026-07-04T23:12:59.1554328Z",
                        "agent_id":  "orchestrator",
                        "action":  "session.read",
                        "outcome":  "ok",
@@ -383,13 +347,193 @@
                        "details":  "hook_stop"
                    },
                    {
-                       "ts":  "2026-07-04T19:15:30.2566493Z",
+                       "ts":  "2026-07-04T23:12:59.3314558Z",
                        "agent_id":  "orchestrator",
                        "action":  "choreography.resolve",
                        "outcome":  "ok",
                        "autonomy_level":  "route",
                        "human_gate":  null,
                        "details":  "{\"matched_rules\":[],\"files\":[\".sky/sessions/iautos\"]}"
+                   },
+                   {
+                       "ts":  "2026-07-04T23:34:44.9686542Z",
+                       "agent_id":  "orchestrator",
+                       "action":  "choreography.resolve",
+                       "outcome":  "ok",
+                       "autonomy_level":  "route",
+                       "human_gate":  null,
+                       "details":  "{\"matched_rules\":[\"intake-sessions\"],\"files\":[\".sky/sessions/iautos\"]}"
+                   },
+                   {
+                       "ts":  "2026-07-04T23:34:46.4679389Z",
+                       "agent_id":  "orchestrator",
+                       "action":  "choreography.resolve",
+                       "outcome":  "ok",
+                       "autonomy_level":  "route",
+                       "human_gate":  null,
+                       "details":  "{\"matched_rules\":[\"intake-sessions\"],\"files\":[\".sky/sessions/iautos\"]}"
+                   },
+                   {
+                       "ts":  "2026-07-04T23:35:58.7432331Z",
+                       "agent_id":  "orchestrator",
+                       "action":  "session.read",
+                       "outcome":  "ok",
+                       "autonomy_level":  "observe",
+                       "human_gate":  null,
+                       "details":  "hook_stop"
+                   },
+                   {
+                       "ts":  "2026-07-04T23:35:58.8952293Z",
+                       "agent_id":  "orchestrator",
+                       "action":  "choreography.resolve",
+                       "outcome":  "ok",
+                       "autonomy_level":  "route",
+                       "human_gate":  null,
+                       "details":  "{\"matched_rules\":[],\"files\":[\".sky/sessions/iautos\"]}"
+                   },
+                   {
+                       "ts":  "2026-07-04T23:45:38.7116556Z",
+                       "agent_id":  "orchestrator",
+                       "action":  "choreography.resolve",
+                       "outcome":  "ok",
+                       "autonomy_level":  "route",
+                       "human_gate":  null,
+                       "details":  "{\"matched_rules\":[\"intake-sessions\"],\"files\":[\".sky/sessions/iautos\"]}"
+                   },
+                   {
+                       "ts":  "2026-07-04T23:45:42.2185281Z",
+                       "agent_id":  "orchestrator",
+                       "action":  "choreography.resolve",
+                       "outcome":  "ok",
+                       "autonomy_level":  "route",
+                       "human_gate":  null,
+                       "details":  "{\"matched_rules\":[\"intake-sessions\"],\"files\":[\".sky/sessions/iautos\"]}"
+                   },
+                   {
+                       "ts":  "2026-07-04T23:46:23.4284926Z",
+                       "agent_id":  "orchestrator",
+                       "action":  "session.read",
+                       "outcome":  "ok",
+                       "autonomy_level":  "observe",
+                       "human_gate":  null,
+                       "details":  "hook_stop"
+                   },
+                   {
+                       "ts":  "2026-07-04T23:46:23.6765339Z",
+                       "agent_id":  "orchestrator",
+                       "action":  "choreography.resolve",
+                       "outcome":  "ok",
+                       "autonomy_level":  "route",
+                       "human_gate":  null,
+                       "details":  "{\"matched_rules\":[],\"files\":[\".sky/sessions/iautos\"]}"
+                   },
+                   {
+                       "ts":  "2026-07-04T23:47:17.0601860Z",
+                       "agent_id":  "orchestrator",
+                       "action":  "session.read",
+                       "outcome":  "ok",
+                       "autonomy_level":  "observe",
+                       "human_gate":  null,
+                       "details":  "hook_stop"
+                   },
+                   {
+                       "ts":  "2026-07-04T23:47:17.1933166Z",
+                       "agent_id":  "orchestrator",
+                       "action":  "choreography.resolve",
+                       "outcome":  "ok",
+                       "autonomy_level":  "route",
+                       "human_gate":  null,
+                       "details":  "{\"matched_rules\":[],\"files\":[\".sky/sessions/iautos\"]}"
+                   },
+                   {
+                       "ts":  "2026-07-04T23:50:22.4954662Z",
+                       "agent_id":  "orchestrator",
+                       "action":  "choreography.resolve",
+                       "outcome":  "ok",
+                       "autonomy_level":  "route",
+                       "human_gate":  null,
+                       "details":  "{\"matched_rules\":[\"intake-sessions\"],\"files\":[\".sky/sessions/iautos\"]}"
+                   },
+                   {
+                       "ts":  "2026-07-04T23:50:26.1888802Z",
+                       "agent_id":  "orchestrator",
+                       "action":  "choreography.resolve",
+                       "outcome":  "ok",
+                       "autonomy_level":  "route",
+                       "human_gate":  null,
+                       "details":  "{\"matched_rules\":[\"intake-sessions\"],\"files\":[\".sky/sessions/iautos\"]}"
+                   },
+                   {
+                       "ts":  "2026-07-04T23:50:33.7151990Z",
+                       "agent_id":  "repo-scaffolder",
+                       "action":  "workspace.link",
+                       "outcome":  "ok",
+                       "autonomy_level":  "side_effect",
+                       "human_gate":  null,
+                       "details":  ""
+                   },
+                   {
+                       "ts":  "2026-07-04T23:52:22.4356981Z",
+                       "agent_id":  "orchestrator",
+                       "action":  "session.read",
+                       "outcome":  "ok",
+                       "autonomy_level":  "observe",
+                       "human_gate":  null,
+                       "details":  "hook_stop"
+                   },
+                   {
+                       "ts":  "2026-07-04T23:52:22.7559320Z",
+                       "agent_id":  "orchestrator",
+                       "action":  "choreography.resolve",
+                       "outcome":  "ok",
+                       "autonomy_level":  "route",
+                       "human_gate":  null,
+                       "details":  "{\"matched_rules\":[],\"files\":[\".sky/sessions/iautos\"]}"
+                   },
+                   {
+                       "ts":  "2026-07-04T23:52:24.0861280Z",
+                       "agent_id":  "orchestrator",
+                       "action":  "session.read",
+                       "outcome":  "ok",
+                       "autonomy_level":  "observe",
+                       "human_gate":  null,
+                       "details":  "hook_stop"
+                   },
+                   {
+                       "ts":  "2026-07-04T23:52:24.2710001Z",
+                       "agent_id":  "orchestrator",
+                       "action":  "choreography.resolve",
+                       "outcome":  "ok",
+                       "autonomy_level":  "route",
+                       "human_gate":  null,
+                       "details":  "{\"matched_rules\":[],\"files\":[\".sky/sessions/iautos\"]}"
+                   },
+                   {
+                       "ts":  "2026-07-04T23:53:19.9121211Z",
+                       "agent_id":  "orchestrator",
+                       "action":  "session.read",
+                       "outcome":  "ok",
+                       "autonomy_level":  "observe",
+                       "human_gate":  null,
+                       "details":  "hook_stop"
+                   },
+                   {
+                       "ts":  "2026-07-04T23:53:20.1207638Z",
+                       "agent_id":  "orchestrator",
+                       "action":  "choreography.resolve",
+                       "outcome":  "ok",
+                       "autonomy_level":  "route",
+                       "human_gate":  null,
+                       "details":  "{\"matched_rules\":[],\"files\":[\".sky/sessions/iautos\"]}"
+                   },
+                   {
+                       "ts":  "2026-07-04T23:54:04.8617667Z",
+                       "agent_id":  "orchestrator",
+                       "action":  "choreography.resolve",
+                       "outcome":  "ok",
+                       "autonomy_level":  "route",
+                       "human_gate":  null,
+                       "details":  "{\"matched_rules\":[\"intake-sessions\"],\"files\":[\".sky/sessions/iautos\"]}"
                    }
                ],
     "event_counts":  {

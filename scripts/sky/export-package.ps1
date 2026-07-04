@@ -106,3 +106,5 @@ next_step_alt: ./scripts/sky/sky.ps1 publish -Slug $Slug -Public
 Set-Content (Join-Path $OutputDir 'PACKAGE_MANIFEST.yaml') -Value $manifest -Encoding UTF8
 
 Write-Host "Exportado: $OutputDir" -ForegroundColor Green
+
+& (Join-Path $PSScriptRoot 'sync-linked-workspace.ps1') -Slug $Slug

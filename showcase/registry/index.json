@@ -7,7 +7,7 @@
                          "excerpt":  "Plataforma legaltech brasileira white-label: casos como pastas versionadas (template Obsidian), copiloto com RAG por caso, multi-agente com guardrails, site institucional por tenant, colaboração interna e conformidade...",
                          "tier":  "growth",
                          "sky_score":  71,
-                         "readiness":  0.8,
+                         "readiness":  0.9,
                          "elevation_level":  "horizon",
                          "tags":  [
                                       "legaltech",
@@ -17,7 +17,18 @@
                                   ],
                          "preview_file":  "iautos.preview.json",
                          "public":  true,
-                         "gap_count":  12,
+                         "gap_count":  0,
+                         "package_download":  {
+                                                  "available":  true,
+                                                  "file":  "iautos-package.zip",
+                                                  "url_path":  "packages/iautos-package.zip",
+                                                  "size_bytes":  144800,
+                                                  "size_human":  "141 KB",
+                                                  "package_completeness":  "full",
+                                                  "overall_readiness":  0.9,
+                                                  "exported_at":  "2026-07-04T23:54:04.2700903Z",
+                                                  "zipped_at":  "2026-07-04T23:54:06.5598941Z"
+                                              },
                          "agents_file":  "iautos.agents.json"
                      }
                  ]

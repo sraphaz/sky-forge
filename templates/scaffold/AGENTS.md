@@ -45,3 +45,6 @@ Repositório **ligado** ao Sky-Forge após `sky link`:
 ```
 
 Intake, export completo e publish rodam no repo Sky-Forge (`.sky/sessions/{slug}/`).
+
+Modos de sync: `manual` (default) ou `after_export` (pull-spec automático após export).
+Alterar: `./scripts/sky/sky.ps1 link-sync -Slug <slug> -SyncMode after_export` (no forge).

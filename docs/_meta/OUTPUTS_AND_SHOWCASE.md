@@ -129,6 +129,14 @@ cd C:\repos\iautos
 
 Export completo, intake e `publish -Public` permanecem no Sky-Forge (gates de autonomia e privacidade).
 
+### Sync automático (`after_export`)
+
+```powershell
+./scripts/sky/sky.ps1 link-sync -Slug iautos -SyncMode after_export
+```
+
+Após cada `export`, o hook `sync-linked-workspace.ps1` roda `pull-spec` no app ligado.
+
 ### Fluxo recomendado pós-export
 
 ```
