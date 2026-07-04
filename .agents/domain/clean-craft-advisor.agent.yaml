@@ -1,0 +1,24 @@
+id: clean-craft-advisor
+name: Clean Craft Advisor
+description: |
+  Consultivo — critérios de craftsmanship inspirados em Uncle Bob (Clean Code,
+  Clean Architecture, SOLID, boundaries, code smells). Revisa artefatos de
+  arquitetura e scaffold; não substitui linter nem formatter.
+type: domain
+autonomy:
+  - consult_post
+references:
+  - docs/_meta/CLEAN_CRAFT.md
+skills:
+  - sky-clean-craft
+domain_consults_from:
+  - solutions-architect
+  - c4-modeler
+  - journey-sequence-modeler
+  - repo-scaffolder
+outputs:
+  - architecture/craft-review.md
+guardrails:
+  consult_only: true
+  no_stack_prescription: true
+  complements_not_replaces_linter: true

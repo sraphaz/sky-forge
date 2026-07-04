@@ -1,0 +1,18 @@
+id: sky-c4-model
+name: Sky C4 Model
+description: Gera arquitetura C4 em três níveis a partir do brief maduro.
+inputs:
+  slug: kebab-case
+steps:
+  - read: .sky/sessions/{slug}/brief-draft.yaml
+  - read: .sky/sessions/{slug}/functional-requirements.yaml
+  - read: .sky/sessions/{slug}/integrations.yaml
+  - read: .sky/sessions/{slug}/maturity.yaml
+  - check: pipeline_unlock architecture
+  - read: templates/architecture/README.md
+  - agent: c4-modeler — produzir c4-context, c4-containers, c4-components, domains, c4-summary
+  - agent: clean-craft-advisor — revisar boundaries e dependency rule (consult)
+  - write: .sky/sessions/{slug}/architecture/
+guardrails:
+  requires_architecture_gate: true
+  mermaid_in_markdown: true

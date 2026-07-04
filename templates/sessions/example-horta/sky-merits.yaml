@@ -1,6 +1,8 @@
 version: "1.0"
+spec_version: "1.1"
 slug: example-horta
 sky_score: 52
+score_kind: intent
 elevation_level: rise
 
 policies:
@@ -15,31 +17,51 @@ weights:
   CWB: 0.20
   UXD: 0.15
 
+# Caso-benchmark de calibração (SKY_INDICES_METHOD.md §6) — scores esperados.
+# Mudança de espec que altere estes valores exige justificativa em RFC.
 indices:
   SPI:
     score: 55
+    confidence: medium
+    band: 10
     rationale: |
       Horta comunitária fortalece autonomia alimentar local e troca no bairro.
     evidence:
-      - brief motivação comunitária
+      - type: intake
+        ref: "Criador descreve motivação comunitária e autonomia alimentar do bairro"
+      - type: artifact
+        ref: "brief-draft.yaml → motivation: troca de mudas e alimentos no território"
   HCE:
     score: 50
+    confidence: low
+    band: 14
     rationale: |
       Calendário de plantio pode educar práticas regenerativas se copy for didático.
     evidence: []
   GAP:
     score: 45
+    confidence: medium
+    band: 11
     rationale: |
       Conexão moderada com CH-BIODIVERSITY e CH-LOCAL-ECONOMY.
     evidence:
-      - challenge_id CH-BIODIVERSITY
+      - type: artifact
+        ref: "sky-merits.yaml → humanity_connections com CH-BIODIVERSITY e CH-LOCAL-ECONOMY"
+      - type: intake
+        ref: "Criador confirma mapa de hortas como feature central, não narrativa"
   CWB:
     score: 58
+    confidence: low
+    band: 13
     rationale: |
       Coesão de vizinhança e cuidado coletivo alinhados ao produto.
-    evidence: []
+    evidence:
+      - type: intake
+        ref: "Criador nomeia o bairro como grupo beneficiado e vínculo existente"
   UXD:
     score: 40
+    confidence: low
+    band: 12
     rationale: |
       ux-spec ainda não produzido; alvo WCAG AA e baixa excitação.
     evidence: []
@@ -54,6 +76,7 @@ elevation_suggestions:
     impact_indices: [HCE, CWB]
     ai_suggested: true
     user_confirmed: null
+    evidenced: false
     scope: post_mvp
   - id: ELV-002
     title: Modo offline leve para consulta do mapa
@@ -63,6 +86,7 @@ elevation_suggestions:
     impact_indices: [SPI, GAP]
     ai_suggested: true
     user_confirmed: null
+    evidenced: false
     scope: optional
 
 humanity_connections:
@@ -86,3 +110,6 @@ ux_design:
   accessibility_target: WCAG 2.1 AA
   excitation_level: low
   design_tokens_required: true
+
+cycles: []
+impact_checkpoints: []

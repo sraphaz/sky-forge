@@ -30,7 +30,7 @@ $maturityPath = Join-Path $SessionDir 'maturity.yaml'
 if (Test-Path $maturityPath) {
     $content = Get-Content $maturityPath -Raw
     if ($content -match "pipeline_unlock:\s*") {
-        $content = $content -replace "($Stage:\s*\r?\n\s*requires:[^\r\n]+\r?\n\s*)approved: false", "`${1}approved: true"
+        $content = $content -replace "(${Stage}:\s*\r?\n\s*requires:[^\r\n]+\r?\n\s*)approved: false", '${1}approved: true'
         # fallback simples para stages conhecidos
         switch ($Stage) {
             'brief' { $content = $content -replace '(market_research:\s*\r?\n\s*requires:[^\r\n]+\r?\n\s*)approved: false', '${1}approved: true' }

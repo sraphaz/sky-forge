@@ -79,6 +79,9 @@ Status: ✅ implementado · 🔨 parcial · 🗺️ roadmap · 📖 já existia
 - **Próximo ciclo — confiança**: 02, 04, 11, 12, 13 ✅ · 09 📖 · 18, 20, 21, 23 🔨/✅
 - **Horizonte — verdade**: 03 (medição real), 06 (RFCs em prática), 07, 10, 14 (medição), 15, 17 ✅
 
+Todos os itens 🗺️ estão consolidados, com critérios de aceite e bloqueios declarados,
+em [ROADMAP.md](ROADMAP.md).
+
 ## Guardrails respeitados
 
 Nenhum achado conflita com os guardrails do AGENTS.md. Dois pontos de atenção:

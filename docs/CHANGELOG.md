@@ -1,5 +1,13 @@
 # Changelog — Sky-Forge
 
+## [1.3.0] — 2026-07-04
+
+### Roadmap consolidado, export para IA e trilha de evidências
+
+- **Roadmap público** — [ROADMAP.md](_meta/ROADMAP.md): itens 🗺️ da auditoria + fases B–D da spec de UX em três horizontes (agora / próximo / horizonte), cada um com origem e critério de aceite; referenciado nas páginas `/metodo/` e `/sobre/` do showcase
+- **Export para IA com escopos** — `sky.ps1 export -Slug x -ForAI -Scope essential|spec|full` ([export-for-ai.ps1](../scripts/sky/export-for-ai.ps1)): gera `SKY_AI_CONTEXT.md` sanitizado (paths absolutos → `<repo>`/`<outputs>`/`<home>`; `.dc.html` proprietários viram referência) em `{outputs}/{slug}/ai-export/`, pronto para colar em Cursor/Claude/ChatGPT
+- **Trilha de evidência nos templates** — `demo-sky`, benchmark `example-horta` e `new-session.ps1` agora nascem com `spec_version`, `score_kind`, `weights`, evidência tipada, `confidence`/`band` e `evidenced: false` nas sugestões de elevação; confiança `low` com 0 evidências → faixa provável, nunca número exato
+
 ## [1.2.0] — 2026-07-04
 
 ### Do discurso ao método (auditoria "Sky Forge High Premium", 23 achados)

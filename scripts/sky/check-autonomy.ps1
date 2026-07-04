@@ -28,6 +28,21 @@ $resolution = & $choreo -Slug $Slug -AgentId $AgentId -Action $Action -CheckAuto
 $allowed = $resolution.autonomy_check.allowed
 $gates = @($resolution.gates_required)
 
+$actionGates = @{
+    'export.package' = @('package')
+    'publish.preview' = @()
+    'publish.public' = @('public_showcase', 'package')
+    'skill.invoke' = @('brief')
+}
+$allGates = [System.Collections.Generic.List[string]]::new()
+foreach ($g in $gates) { if ($allGates -notcontains $g) { $allGates.Add($g) } }
+if ($actionGates.ContainsKey($Action)) {
+    foreach ($g in $actionGates[$Action]) {
+        if ($allGates -notcontains $g) { $allGates.Add($g) }
+    }
+}
+$gates = @($allGates)
+
 # Verificar approvals.yaml (stages:)
 $approvalsPath = Join-Path $RepoRoot ".sky\sessions\$Slug\approvals.yaml"
 $gateStatus = @{}
@@ -43,16 +58,8 @@ if (Test-Path $approvalsPath) {
 $needsGate = $false
 $blockingGates = @()
 
-# package / public_showcase gates
-$actionGates = @{
-    'export.package' = @('package')
-    'publish.preview' = @()
-    'publish.public' = @('public_showcase', 'package')
-    'skill.invoke' = @('brief')
-}
 if ($actionGates.ContainsKey($Action)) {
     foreach ($g in $actionGates[$Action]) {
-        if (-not $gates.Contains($g)) { $gates += $g }
         if (-not $gateStatus.ContainsKey($g) -or -not $gateStatus[$g]) {
             $needsGate = $true
             if ($blockingGates -notcontains $g) { $blockingGates += $g }

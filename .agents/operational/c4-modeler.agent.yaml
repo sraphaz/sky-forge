@@ -1,0 +1,36 @@
+id: c4-modeler
+name: C4 Modeler
+description: |
+  Produz diagramas C4 em três níveis (contexto, containers, componentes),
+  domínios bounded context e resumo sanitizado para showcase.
+triggers:
+  - manual
+  - maturity_gate
+scope:
+  paths:
+    - .sky/sessions/**/architecture/**
+    - outputs/**/architecture/**
+    - templates/architecture/**
+  may_code: true
+skills:
+  - sky-c4-model
+  - sky-plan
+domain_consults:
+  - stack-curator
+  - security-compliance
+  - clean-craft-advisor
+handoff_to:
+  - solutions-architect
+  - journey-sequence-modeler
+  - delivery-steward
+outputs:
+  - architecture/c4-context.md
+  - architecture/c4-containers.md
+  - architecture/c4-components.md
+  - architecture/c4-summary.md
+  - architecture/domains.md
+  - architecture/adrs/
+guardrails:
+  mermaid_preferred: true
+  adr_required_for_structural_decisions: true
+  no_proprietary_cloud_design_in_markdown: true

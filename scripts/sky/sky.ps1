@@ -16,7 +16,7 @@ param(
     [string]$Slug,
 
     [Parameter()]
-    [ValidateSet('brief', 'research', 'architecture', 'elevation', 'package')]
+    [ValidateSet('brief', 'research', 'architecture', 'elevation', 'package', 'public_showcase')]
     [string]$Stage,
 
     [Parameter()]
@@ -28,6 +28,13 @@ param(
 
     [Parameter()]
     [switch]$Public,
+
+    [Parameter()]
+    [switch]$ForAI,
+
+    [Parameter()]
+    [ValidateSet('essential', 'spec', 'full')]
+    [string]$Scope = 'essential',
 
     [Parameter()]
     [string]$Intent,
@@ -102,10 +109,16 @@ switch ($Command) {
     }
     'export' {
         if (-not $Slug) { throw 'export requires -Slug' }
+        if ($ForAI) {
+            # Contexto sanitizado para IA — nao passa pelo gate de pacote completo
+            & (Join-Path $PSScriptRoot 'export-for-ai.ps1') -Slug $Slug -Scope $Scope
+            Invoke-AgentAudit $Slug 'delivery-steward' 'export.ai_context' 'invoke_skill' 'ok' "scope=$Scope"
+            break
+        }
         $check = Join-Path $PSScriptRoot 'check-autonomy.ps1'
         if (Test-Path $check) {
             & $check -Slug $Slug -AgentId 'delivery-steward' -Action 'export.package' -ErrorAction SilentlyContinue
-            if ($LASTEXITCODE -ne 0 -and -not $Force) {
+            if ($LASTEXITCODE -eq 1 -and -not $Force) {
                 Write-Host "Export bloqueado — aprove gate package ou use -Force com consciencia." -ForegroundColor Yellow
                 Invoke-AgentAudit $Slug 'delivery-steward' 'export.package' 'side_effect' 'blocked' 'gate package'
                 throw 'autonomy gate package'
@@ -126,7 +139,7 @@ switch ($Command) {
         $check = Join-Path $PSScriptRoot 'check-autonomy.ps1'
         if (Test-Path $check) {
             & $check -Slug $Slug -AgentId 'showcase-curator' -Action $action -ErrorAction SilentlyContinue
-            if ($LASTEXITCODE -ne 0 -and $Public) {
+            if ($LASTEXITCODE -eq 1 -and $Public) {
                 Invoke-AgentAudit $Slug 'showcase-curator' $action 'public' 'blocked'
                 throw 'autonomy gate public_showcase'
             }

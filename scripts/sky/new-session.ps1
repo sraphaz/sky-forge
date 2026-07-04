@@ -77,21 +77,53 @@ constraints: {}
         if ($f -eq 'sky-merits.yaml') {
             $content = @"
 version: "1.0"
+spec_version: "1.1"
 slug: $Slug
 sky_score: 0
+score_kind: intent
 elevation_level: ground
 policies:
   open_to_elevation: true
   open_to_humanity_connections: true
   open_to_ux_dignity_review: true
+weights:
+  SPI: 0.25
+  HCE: 0.20
+  GAP: 0.20
+  CWB: 0.20
+  UXD: 0.15
+# Confianca low + 0 evidencias = exibir faixa provavel, nunca numero exato
+# (SKY_INDICES_METHOD.md secao 3). Scores sobem apenas com evidencia tipada.
 indices:
-  SPI: { score: 0, rationale: "" }
-  HCE: { score: 0, rationale: "" }
-  GAP: { score: 0, rationale: "" }
-  CWB: { score: 0, rationale: "" }
-  UXD: { score: 0, rationale: "" }
+  SPI:
+    score: 0
+    confidence: low
+    rationale: ""
+    evidence: []
+  HCE:
+    score: 0
+    confidence: low
+    rationale: ""
+    evidence: []
+  GAP:
+    score: 0
+    confidence: low
+    rationale: ""
+    evidence: []
+  CWB:
+    score: 0
+    confidence: low
+    rationale: ""
+    evidence: []
+  UXD:
+    score: 0
+    confidence: low
+    rationale: ""
+    evidence: []
 elevation_suggestions: []
 humanity_connections: []
+cycles: []
+impact_checkpoints: []
 "@
         }
         if ($f -eq 'ux-spec.yaml') {

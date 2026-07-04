@@ -88,6 +88,7 @@ Chegada (sky-host) → intake-conductor (conversa)
 ./scripts/sky/sky.ps1 approve -Slug <slug> -Stage brief|elevation|architecture|package
 ./scripts/sky/sky.ps1 validate -Slug <slug>
 ./scripts/sky/sky.ps1 export -Slug <slug>
+./scripts/sky/sky.ps1 export -Slug <slug> -ForAI -Scope essential|spec|full
 ./scripts/sky/sky.ps1 publish -Slug <slug> -Public
 ./scripts/sky/sky.ps1 showcase
 ./scripts/sky/sky.ps1 agents -Slug <slug>

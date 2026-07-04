@@ -4,7 +4,7 @@
     "excerpt":  "Plataforma legaltech brasileira white-label: casos como pastas versionadas (template Obsidian), copiloto com RAG por caso, multi-agente com guardrails, site institucional por tenant, colaboração interna e conformidade...",
     "tier":  "growth",
     "sky_score":  71,
-    "readiness":  0.78,
+    "readiness":  0.8,
     "elevation_level":  "horizon",
     "tags":  [
                  "legaltech",
@@ -313,7 +313,7 @@
     "spec_version":  "1.1",
     "score_kind":  "intent",
     "dimensions":  {
-                       "technical":  0.8,
+                       "technical":  0.85,
                        "sustainability":  0.62,
                        "ux_design":  0.85,
                        "product":  0.82,
@@ -453,7 +453,7 @@
                           "id":  "maturity",
                           "type":  "yaml",
                           "description":  "Readiness por dimensão e gates do pipeline Sky-Forge",
-                          "summary":  "Readiness geral: 78%",
+                          "summary":  "Readiness geral: 80%",
                           "label":  "Maturidade",
                           "path":  "maturity.yaml"
                       },
@@ -536,6 +536,6 @@
                       }
                   ],
     "public":  true,
-    "published_at":  "2026-07-04T17:03:59.8121204Z",
+    "published_at":  "2026-07-04T17:14:16.5365172Z",
     "outputs_dir":  "C:\\Users\\rapha\\CursorRepos\\sky-forge\\outputs\\iautos"
 }

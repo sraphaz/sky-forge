@@ -123,10 +123,12 @@ import { withBase } from "../lib/paths";
     <section class="panel">
       <h3>Exportar para IA</h3>
       <p>
-        Escolha escopo (essencial, especificação ou completo), revise sanitização e gere
-        <code>SKY_AI_CONTEXT.md</code> ou bundle zip para Cursor, Claude ou CI.
+        Escolha escopo (essencial, especificação ou completo) e gere um
+        <code>SKY_AI_CONTEXT.md</code> sanitizado — sem paths absolutos nem protótipos
+        proprietários — para colar em Cursor, Claude ou CI.
         Export e publish nunca no mesmo passo.
       </p>
+      <pre class="code-block"><code>./scripts/sky/sky.ps1 export -Slug meu-projeto -ForAI -Scope essential</code></pre>
     </section>
 
     <section class="panel">
@@ -144,6 +146,7 @@ import { withBase } from "../lib/paths";
         <li><code>docs/_meta/SKY_APP_UX.md</code> — spec de UX do produto</li>
         <li><code>docs/_meta/USER_JOURNEY.md</code> — jornada e fases</li>
         <li><code>docs/_meta/OUTPUTS_AND_SHOWCASE.md</code> — outputs e showcase</li>
+        <li><code>docs/_meta/ROADMAP.md</code> — roadmap por horizonte, com critérios de aceite</li>
       </ul>
     </section>
 

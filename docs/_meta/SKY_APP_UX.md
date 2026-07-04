@@ -255,7 +255,9 @@ flowchart LR
 | cloud-design refs | — | ref | ✓ |
 | prompts assembled | — | — | ✓ |
 
-Comando CLI existente: `export`; extensão futura: `sky export -Slug x -ForAI -Scope essential`.
+Comando CLI: `sky export -Slug x -ForAI -Scope essential|spec|full` gera
+`SKY_AI_CONTEXT.md` sanitizado em `{outputs}/{slug}/ai-export/`; o wizard visual
+sobre esse CLI é a fase C ([ROADMAP.md](ROADMAP.md)).
 
 ---
 

@@ -1,0 +1,14 @@
+id: sky-clean-craft
+name: Sky Clean Craft
+description: Revisão consultiva de craftsmanship (Uncle Bob) em arquitetura e scaffold.
+inputs:
+  slug: kebab-case
+  target: optional — architecture | scaffold | code
+steps:
+  - read: docs/_meta/CLEAN_CRAFT.md
+  - read: .sky/sessions/{slug}/architecture/c4-containers.md
+  - read: .sky/sessions/{slug}/architecture/c4-components.md
+  - agent: clean-craft-advisor — craft-review.md com SOLID, boundaries, smells
+guardrails:
+  consult_only: true
+  no_linter_override: true

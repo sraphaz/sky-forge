@@ -1,0 +1,34 @@
+id: journey-sequence-modeler
+name: Journey Sequence Modeler
+description: |
+  Modela jornadas principais como diagramas de sequência Mermaid e
+  fluxograma de contexto do sistema (visão end-to-end).
+triggers:
+  - manual
+  - maturity_gate
+scope:
+  paths:
+    - .sky/sessions/**/architecture/sequences/**
+    - .sky/sessions/**/architecture/context-flow.md
+    - outputs/**/architecture/sequences/**
+    - outputs/**/architecture/context-flow.md
+    - templates/architecture/**
+  may_code: true
+skills:
+  - sky-journey-sequences
+  - sky-plan
+domain_consults:
+  - ux-product
+  - ux-design-specialist
+  - clean-craft-advisor
+handoff_to:
+  - c4-modeler
+  - solutions-architect
+  - showcase-curator
+outputs:
+  - architecture/context-flow.md
+  - architecture/sequences/
+guardrails:
+  one_sequence_per_primary_journey: true
+  human_in_the_loop_visible: true
+  cite_requirement_ids: true
