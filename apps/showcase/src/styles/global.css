@@ -2811,6 +2811,61 @@ a:hover {
   font-weight: 600;
 }
 
+.gap-suggestions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  width: 100%;
+  max-width: 44rem;
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.gap-suggestions-label {
+  font-size: max(var(--font-size-min), 0.78rem);
+  font-weight: 600;
+  color: var(--color-status-info-text);
+  padding: 0;
+  margin-bottom: 0.15rem;
+}
+
+.gap-suggestion-chip {
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  padding: 0.55rem 0.8rem;
+  border: 1px dashed var(--sf-line);
+  border-radius: 8px;
+  background: var(--color-status-info-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  line-height: 1.5;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.gap-suggestion-chip:hover {
+  border-color: var(--color-sky-accent);
+}
+
+.gap-suggestion-chip:focus-visible {
+  outline: 2px solid var(--color-sky-accent);
+  outline-offset: 1px;
+}
+
+.gap-suggestion-chip.is-selected {
+  border-style: solid;
+  border-color: var(--color-sky-accent);
+  background: var(--color-status-muted-bg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gap-suggestion-chip {
+    transition: none;
+  }
+}
+
 .gap-toast {
   position: fixed;
   bottom: 1.25rem;

@@ -88,17 +88,37 @@ function wireRfCards(): void {
   });
 }
 
+function wireSuggestionChips(form: HTMLFormElement, textarea: HTMLTextAreaElement | null): void {
+  const chips = form.querySelectorAll<HTMLButtonElement>("[data-suggestion]");
+  chips.forEach((chip) => {
+    chip.addEventListener("click", () => {
+      if (!textarea) return;
+      const text = chip.textContent?.trim() ?? "";
+      textarea.value = text;
+      form.dataset.suggestionUsed = text;
+      chips.forEach((c) => {
+        c.setAttribute("aria-pressed", c === chip ? "true" : "false");
+        c.classList.toggle("is-selected", c === chip);
+      });
+      textarea.focus();
+    });
+  });
+}
+
 function wireAnswerForms(): void {
   document.querySelectorAll<HTMLFormElement>("form[data-gap-answer]").forEach((form) => {
+    const textarea = form.querySelector<HTMLTextAreaElement>("textarea");
+    wireSuggestionChips(form, textarea);
     form.addEventListener("submit", (event) => {
       event.preventDefault();
-      const textarea = form.querySelector<HTMLTextAreaElement>("textarea");
       const note = textarea?.value.trim() ?? "";
       if (!note) {
         textarea?.focus();
-        toast("Escreva a resposta antes de enviar.", "error");
+        toast("Escreva a resposta ou escolha uma sugestão antes de enviar.", "error");
         return;
       }
+      // Auditoria distingue sugestão da IA usada tal e qual de texto do criador
+      const answerSource = note === form.dataset.suggestionUsed ? "ai_suggested" : "user_text";
       void decide(
         form,
         {
@@ -107,6 +127,7 @@ function wireAnswerForms(): void {
           dimension: form.dataset.dimension,
           decision: "answer",
           note,
+          answer_source: answerSource,
         },
         "answer",
       );

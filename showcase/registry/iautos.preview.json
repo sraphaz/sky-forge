@@ -167,7 +167,7 @@
                                                 "id":  "RF-014",
                                                 "ai_suggested":  true,
                                                 "title":  "Controle de prazos processuais com alertas",
-                                                "user_confirmed":  null,
+                                                "user_confirmed":  true,
                                                 "description":  "Agenda jurídica com prazos por caso e alertas (e-mail/app) — presente em todo o segmento",
                                                 "priority":  "should",
                                                 "mvp":  false,
@@ -177,7 +177,7 @@
                                                 "id":  "RF-015",
                                                 "ai_suggested":  true,
                                                 "title":  "Captura automática de intimações e andamentos processuais",
-                                                "user_confirmed":  null,
+                                                "user_confirmed":  true,
                                                 "description":  "Robôs/integração tribunais (PJe, e-SAJ, TJs, STJ) alimentando a pasta do caso",
                                                 "priority":  "should",
                                                 "mvp":  false,
@@ -187,7 +187,7 @@
                                                 "id":  "RF-016",
                                                 "ai_suggested":  true,
                                                 "title":  "Financeiro de honorários e timesheet",
-                                                "user_confirmed":  null,
+                                                "user_confirmed":  true,
                                                 "description":  "Honorários, parcelas, despesas por caso e registro de horas por atendimento",
                                                 "priority":  "could",
                                                 "mvp":  false,
@@ -197,7 +197,7 @@
                                                 "id":  "RF-017",
                                                 "ai_suggested":  true,
                                                 "title":  "Portal do cliente com atualizações automáticas",
-                                                "user_confirmed":  null,
+                                                "user_confirmed":  true,
                                                 "description":  "Área do cliente final com status do caso e notificações — aproveita o white-label por tenant",
                                                 "priority":  "could",
                                                 "mvp":  false,
@@ -207,7 +207,7 @@
                                                 "id":  "RF-018",
                                                 "ai_suggested":  true,
                                                 "title":  "Assinatura eletrônica de documentos",
-                                                "user_confirmed":  null,
+                                                "user_confirmed":  true,
                                                 "description":  "Assinatura de procurações/contratos integrada ao fluxo de documentos do caso",
                                                 "priority":  "could",
                                                 "mvp":  false,
@@ -217,7 +217,7 @@
                                                 "id":  "RF-019",
                                                 "ai_suggested":  true,
                                                 "title":  "CRM jurídico — prospecção e atendimentos pré-caso",
-                                                "user_confirmed":  null,
+                                                "user_confirmed":  true,
                                                 "description":  "Registro de atendimento antes de virar caso, convertível sem perda de histórico",
                                                 "priority":  "could",
                                                 "mvp":  false,
@@ -516,27 +516,136 @@
                        "business":  0.88
                    },
     "gaps":  {
-                 "next_action":  "Preencha a lacuna em business conversando com o sky-host.",
-                 "top":  [
-                             {
-                                 "label":  "modelo de precificação SaaS para outros escritórios não detalhado",
-                                 "dimension":  "business",
-                                 "id":  "dim-business-modelo-de-precificaç",
-                                 "kind":  "maturity"
-                             },
-                             {
-                                 "label":  "confirmar sugestões ELV com fundador",
-                                 "dimension":  "elevation",
-                                 "id":  "dim-elevation-confirmar-sugestões-",
-                                 "kind":  "maturity"
-                             },
-                             {
-                                 "label":  "priorização final E6 integrações",
-                                 "dimension":  "product",
-                                 "id":  "dim-product-priorização-final-e6",
-                                 "kind":  "maturity"
-                             }
-                         ],
+                 "ai_suggested_rfs":  [
+                                          {
+                                              "status":  "accepted",
+                                              "title":  "Controle de prazos processuais com alertas",
+                                              "description":  "Agenda jurídica com prazos por caso e alertas (e-mail/app) — presente em todo o segmento",
+                                              "id":  "RF-014"
+                                          },
+                                          {
+                                              "status":  "accepted",
+                                              "title":  "Captura automática de intimações e andamentos processuais",
+                                              "description":  "Robôs/integração tribunais (PJe, e-SAJ, TJs, STJ) alimentando a pasta do caso",
+                                              "id":  "RF-015"
+                                          },
+                                          {
+                                              "status":  "accepted",
+                                              "title":  "Financeiro de honorários e timesheet",
+                                              "description":  "Honorários, parcelas, despesas por caso e registro de horas por atendimento",
+                                              "id":  "RF-016"
+                                          },
+                                          {
+                                              "status":  "accepted",
+                                              "title":  "Portal do cliente com atualizações automáticas",
+                                              "description":  "Área do cliente final com status do caso e notificações — aproveita o white-label por tenant",
+                                              "id":  "RF-017"
+                                          },
+                                          {
+                                              "status":  "accepted",
+                                              "title":  "Assinatura eletrônica de documentos",
+                                              "description":  "Assinatura de procurações/contratos integrada ao fluxo de documentos do caso",
+                                              "id":  "RF-018"
+                                          },
+                                          {
+                                              "status":  "accepted",
+                                              "title":  "CRM jurídico — prospecção e atendimentos pré-caso",
+                                              "description":  "Registro de atendimento antes de virar caso, convertível sem perda de histórico",
+                                              "id":  "RF-019"
+                                          }
+                                      ],
+                 "gap_suggestions":  [
+                                         {
+                                             "answers":  [
+                                                             "Assinatura mensal por tenant em 3 faixas (Solo, Escritório, Avançado) por nº de advogados e casos ativos; IA gerenciada inclusa com franquia de tokens e BYOK sem custo adicional.",
+                                                             "Preço por advogado ativo/mês (padrão do segmento — Astrea, ADVBOX) + setup white-label único à parte; Bonomi Almeida como tenant fundador com condição especial vitalícia.",
+                                                             "MVP com early adopters em preço fixo promocional por escritório; revisitar a precificação após 6 meses com custos reais de IA medidos por tenant."
+                                                         ],
+                                             "dimension":  "business",
+                                             "gap":  "modelo de precificação SaaS para outros escritórios não detalhado"
+                                         },
+                                         {
+                                             "answers":  [
+                                                             "E6 fase 1: conector de e-mail (Resend) e Google Calendar — destravam prazos e comunicação; WhatsApp Business e gov.br ficam para fase 2 conforme demanda dos tenants.",
+                                                             "Priorizar o chat interno de equipe antes dos conectores externos — colaboração é dor imediata do escritório de referência; Integration Hub genérico vem depois.",
+                                                             "Congelar E6 até validar E1–E5 com o tenant Bonomi e decidir a prioridade com dados de uso reais do MVP."
+                                                         ],
+                                             "dimension":  "product",
+                                             "gap":  "priorização final E6 integrações"
+                                         },
+                                         {
+                                             "answers":  [
+                                                             "Derivar critérios Given/When/Then de cada IA-xx do handoff no functional-requirements.yaml, validados pelo fundador por épico antes da implementação.",
+                                                             "Aceite mínimo por RF: fluxo feliz coberto por Playwright + regra ouro (original separado de interpretação) verificada; detalhamento fino por sprint."
+                                                         ],
+                                             "dimension":  "product",
+                                             "gap":  "critérios de aceite por IA-01..IA-20"
+                                         },
+                                         {
+                                             "answers":  [
+                                                             "Gerar theme/tokens.css por tenant a partir do ux-spec (primary, accent, background, tipografia) com fallback neutro e validação automática de contraste AA no CI.",
+                                                             "Adotar o formato W3C Design Tokens (JSON) como fonte única, com build exportando CSS variables e tema Tailwind por tenant."
+                                                         ],
+                                             "dimension":  "ux_design",
+                                             "gap":  "tokens white-label exportáveis para código"
+                                         },
+                                         {
+                                             "answers":  [
+                                                             "Integrar axe-core ao Playwright nos fluxos críticos (login, caso, editor, aprovação de rascunho) com gate no CI — violação AA bloqueia merge.",
+                                                             "Auditoria manual com NVDA/VoiceOver por release nas telas-chave + checklist WCAG 2.1 AA documentado no Definition of Done."
+                                                         ],
+                                             "dimension":  "ux_design",
+                                             "gap":  "testes a11y formais"
+                                         },
+                                         {
+                                             "answers":  [
+                                                             "Policies RLS por tenant_id em todas as tabelas, com teste automatizado de isolamento no CI (NFR-001) incluindo caso negativo cross-tenant antes do go-live.",
+                                                             "RLS no Postgres + defesa em profundidade: escopo de tenant também no middleware da API; revisão de policies obrigatória em cada migração."
+                                                         ],
+                                             "dimension":  "technical",
+                                             "gap":  "RLS SQL em produção"
+                                         },
+                                         {
+                                             "answers":  [
+                                                             "Vault (ou OpenBao) em produção para chaves BYOK por tenant, com rotação e auditoria de acesso; segredos nunca em variáveis de ambiente do app.",
+                                                             "Fase 1 só com IA gerenciada (no-training) em produção; BYOK habilitado por tenant após homologação do Vault em staging com teste de revogação de chave."
+                                                         ],
+                                             "dimension":  "technical",
+                                             "gap":  "Vault/BYOK em ambiente real"
+                                         },
+                                         {
+                                             "answers":  [
+                                                             "GitHub Actions: lint + typecheck + Vitest + Playwright em cada PR; deploy automático em staging e produção com aprovação manual (gate humano).",
+                                                             "Pipeline com migrações de banco versionadas e o teste de isolamento RLS como etapa obrigatória antes de qualquer deploy."
+                                                         ],
+                                             "dimension":  "sustainability",
+                                             "gap":  "CI/CD"
+                                         },
+                                         {
+                                             "answers":  [
+                                                             "Sentry para erros + OpenTelemetry nas rotas críticas (RAG, upload, editor), com dashboard de latência p95 do retriever (meta NFR-005 \u003c 3s).",
+                                                             "Logs estruturados por tenant com correlation id + alerta de custo de IA por tenant (aviso a 80% do orçamento mensal)."
+                                                         ],
+                                             "dimension":  "sustainability",
+                                             "gap":  "observabilidade produção"
+                                         },
+                                         {
+                                             "answers":  [
+                                                             "Runbook mínimo: backup/restore por tenant testado, rotação de chaves, resposta a incidente LGPD (comunicação em 72h) e rollback de deploy.",
+                                                             "Documentar onboarding/offboarding de tenant (tema, domínio, storage, IA) como checklist executável em scripts/."
+                                                         ],
+                                             "dimension":  "sustainability",
+                                             "gap":  "runbook ops"
+                                         },
+                                         {
+                                             "answers":  [
+                                                             "Sessão de 30 min com o fundador para revisar as sugestões de elevação (acesso à justiça, educação jurídica do cliente final) marcando cada uma como aceita/recusada.",
+                                                             "Aceitar como pós-MVP a conexão com acesso à justiça (pro bono facilitado pelo portal do cliente) e documentar as demais como exploratórias."
+                                                         ],
+                                             "dimension":  "elevation",
+                                             "gap":  "confirmar sugestões ELV com fundador"
+                                         }
+                                     ],
                  "dimension_gaps":  {
                                         "technical":  [
                                                           "RLS SQL em produção",
@@ -562,45 +671,28 @@
                                                          "modelo de precificação SaaS para outros escritórios não detalhado"
                                                      ]
                                     },
-                 "total_count":  18,
-                 "ai_suggested_rfs":  [
-                                          {
-                                              "status":  "pending",
-                                              "title":  "Controle de prazos processuais com alertas",
-                                              "description":  "Agenda jurídica com prazos por caso e alertas (e-mail/app) — presente em todo o segmento",
-                                              "id":  "RF-014"
-                                          },
-                                          {
-                                              "status":  "pending",
-                                              "title":  "Captura automática de intimações e andamentos processuais",
-                                              "description":  "Robôs/integração tribunais (PJe, e-SAJ, TJs, STJ) alimentando a pasta do caso",
-                                              "id":  "RF-015"
-                                          },
-                                          {
-                                              "status":  "pending",
-                                              "title":  "Financeiro de honorários e timesheet",
-                                              "description":  "Honorários, parcelas, despesas por caso e registro de horas por atendimento",
-                                              "id":  "RF-016"
-                                          },
-                                          {
-                                              "status":  "pending",
-                                              "title":  "Portal do cliente com atualizações automáticas",
-                                              "description":  "Área do cliente final com status do caso e notificações — aproveita o white-label por tenant",
-                                              "id":  "RF-017"
-                                          },
-                                          {
-                                              "status":  "pending",
-                                              "title":  "Assinatura eletrônica de documentos",
-                                              "description":  "Assinatura de procurações/contratos integrada ao fluxo de documentos do caso",
-                                              "id":  "RF-018"
-                                          },
-                                          {
-                                              "status":  "pending",
-                                              "title":  "CRM jurídico — prospecção e atendimentos pré-caso",
-                                              "description":  "Registro de atendimento antes de virar caso, convertível sem perda de histórico",
-                                              "id":  "RF-019"
-                                          }
-                                      ]
+                 "total_count":  12,
+                 "next_action":  "Preencha a lacuna em business conversando com o sky-host.",
+                 "top":  [
+                             {
+                                 "label":  "modelo de precificação SaaS para outros escritórios não detalhado",
+                                 "dimension":  "business",
+                                 "id":  "dim-business-modelo-de-precificaç",
+                                 "kind":  "maturity"
+                             },
+                             {
+                                 "label":  "confirmar sugestões ELV com fundador",
+                                 "dimension":  "elevation",
+                                 "id":  "dim-elevation-confirmar-sugestões-",
+                                 "kind":  "maturity"
+                             },
+                             {
+                                 "label":  "priorização final E6 integrações",
+                                 "dimension":  "product",
+                                 "id":  "dim-product-priorização-final-e6",
+                                 "kind":  "maturity"
+                             }
+                         ]
              },
     "phases":  [
                    {
@@ -974,6 +1066,6 @@
                       }
                   ],
     "public":  true,
-    "published_at":  "2026-07-04T18:39:56.4106718Z",
+    "published_at":  "2026-07-04T19:03:26.3690078Z",
     "outputs_dir":  "C:\\Users\\rapha\\CursorRepos\\sky-forge\\outputs\\iautos"
 }

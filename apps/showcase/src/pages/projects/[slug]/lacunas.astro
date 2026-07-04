@@ -33,6 +33,13 @@ const gaps = extractGaps(project);
 const allGaps = project.gaps?.top ?? gaps.top;
 const dimGaps = project.gaps?.dimension_gaps ?? project.dimension_gaps ?? {};
 const journeyPhase = agents?.journey_phase;
+
+const gapSuggestions = project.gaps?.gap_suggestions ?? [];
+function suggestionsFor(dimension: string, gap: string): string[] {
+  return (
+    gapSuggestions.find((s) => s.dimension === dimension && s.gap === gap)?.answers ?? []
+  );
+}
 ---
 
 <BaseLayout
@@ -107,6 +114,23 @@ const journeyPhase = agents?.journey_phase;
                     data-dimension={dim}
                     hidden
                   >
+                    {suggestionsFor(dim, g).length > 0 && (
+                      <fieldset class="gap-suggestions">
+                        <legend class="gap-suggestions-label">
+                          Sugestões da IA — toque para preencher, edite à vontade
+                        </legend>
+                        {suggestionsFor(dim, g).map((answer) => (
+                          <button
+                            type="button"
+                            class="gap-suggestion-chip"
+                            data-suggestion
+                            aria-pressed="false"
+                          >
+                            {answer}
+                          </button>
+                        ))}
+                      </fieldset>
+                    )}
                     <label class="gap-answer-label" for={`answer-${dim}-${i + 1}`}>
                       Sua resposta
                     </label>

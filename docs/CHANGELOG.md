@@ -1,5 +1,15 @@
 # Changelog — Sky-Forge
 
+## [1.6.0] — 2026-07-04
+
+### Sugestões de IA de um clique nas lacunas (showcase local)
+
+- **Respostas plausíveis por lacuna** — cada lacuna de dimensão em `/projects/{slug}/lacunas/` agora oferece 2–3 sugestões geradas pela IA a partir do contexto da sessão (brief, RFs, NFRs, ux-spec, benchmark); um toque preenche a textarea (editável) — o criador ainda decide e envia
+- **Fonte regenerável** — `.sky/sessions/{slug}/gaps-suggestions.yaml` (`ai_suggested: true`, espelhado no pacote exportado); `publish-preview.ps1` publica como `gaps.gap_suggestions` no preview sanitizado; próximos intakes podem regenerar o arquivo
+- **Auditoria da origem** — resposta enviada tal e qual a sugestão grava `answer_source: ai_suggested` em `decisions-inbox.yaml` (e no evento `gap.decide`); texto editado ou próprio grava `answer_source: user_text`
+- **A11y** — chips são botões reais com `aria-pressed`, foco visível, contraste AA e `prefers-reduced-motion`; rótulo explícito "Sugestões da IA"
+- **iautos** — 11 lacunas com 24 sugestões autoradas do contexto real da sessão
+
 ## [1.5.0] — 2026-07-04
 
 ### Decisão interativa de lacunas no showcase local

@@ -137,6 +137,7 @@ function appendToDecisionsInbox(sessionDir, slug, entry) {
   if (entry.dimension) lines.push(`    dimension: ${entry.dimension}`);
   if (entry.label) lines.push(`    label: ${yamlQuote(entry.label)}`);
   if (entry.note) lines.push(`    note: ${yamlQuote(entry.note)}`);
+  if (entry.answer_source) lines.push(`    answer_source: ${entry.answer_source}`);
   lines.push(`    source: showcase-local`);
 
   if (!fs.existsSync(inboxPath)) {
@@ -162,7 +163,7 @@ async function runPowerShell(scriptPath, args) {
   );
 }
 
-async function recordAudit(slug, itemId, decision, dryRun) {
+async function recordAudit(slug, itemId, decision, dryRun, extra = "") {
   const script = path.join(SCRIPTS_DIR, "record-agent-event.ps1");
   if (!fs.existsSync(script)) return false;
   try {
@@ -172,7 +173,7 @@ async function recordAudit(slug, itemId, decision, dryRun) {
       "-Action", "gap.decide",
       "-Outcome", "ok",
       "-AutonomyLevel", "activate",
-      "-Details", `${itemId} ${decision} via showcase local${dryRun ? " (dry_run)" : ""}`,
+      "-Details", `${itemId} ${decision}${extra} via showcase local${dryRun ? " (dry_run)" : ""}`,
     ]);
     return true;
   } catch {
@@ -203,6 +204,8 @@ async function handleDecide(req, res) {
   const itemId = String(payload.item_id ?? "");
   const decision = String(payload.decision ?? "");
   const note = typeof payload.note === "string" ? payload.note.slice(0, 4000).trim() : "";
+  // Origem da resposta: sugestão da IA usada tal e qual ou texto do criador
+  const answerSource = payload.answer_source === "ai_suggested" ? "ai_suggested" : "user_text";
   const label = typeof payload.label === "string" ? payload.label.slice(0, 300).trim() : "";
   const dimension = typeof payload.dimension === "string" ? payload.dimension.slice(0, 40).trim() : "";
   const dryRun = payload.dry_run === true;
@@ -264,11 +267,13 @@ async function handleDecide(req, res) {
       dimension,
       label,
       note,
+      answer_source: decision === "answer" ? answerSource : "",
     });
     changes.decisions_inbox = true;
   }
 
-  const audited = dryRun ? false : await recordAudit(slug, itemId, decision, dryRun);
+  const auditExtra = decision === "answer" ? ` (${answerSource})` : "";
+  const audited = dryRun ? false : await recordAudit(slug, itemId, decision, dryRun, auditExtra);
   const previewRefreshed = dryRun ? false : await refreshPreview(slug);
 
   return sendJson(res, 200, {

@@ -95,6 +95,11 @@ export type ProjectGapsPreview = {
     description?: string;
     status?: "pending" | "accepted" | "rejected";
   }[];
+  gap_suggestions?: {
+    dimension: string;
+    gap: string;
+    answers: string[];
+  }[];
 };
 
 export type RequirementEpic = {

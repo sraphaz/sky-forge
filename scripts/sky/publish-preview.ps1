@@ -182,6 +182,26 @@ function Build-GapsSummary([hashtable]$DimensionGaps, [array]$FunctionalReqs, [a
     }
 }
 
+function Read-GapSuggestions([string]$Content) {
+    # gaps-suggestions.yaml — respostas plausíveis geradas pela IA por lacuna
+    # (ai_suggested até o criador usar; ver SKY_APP_UX.md, modo interativo local)
+    if (-not $Content) { return @() }
+    $items = @()
+    foreach ($m in [regex]::Matches($Content, '(?m)^  - dimension:\s*(\S+)\s*\r?\n\s+gap:\s*([^\r\n]+)\r?\n\s+answers:\s*\r?\n((?:^[ \t]{4,}- [^\r\n]+\r?\n?)+)')) {
+        $answers = @([regex]::Matches($m.Groups[3].Value, '(?m)^\s+- (.+)$') | ForEach-Object {
+            $_.Groups[1].Value.Trim().Trim('"').Trim("'")
+        })
+        if ($answers.Count -gt 0) {
+            $items += @{
+                dimension = $m.Groups[1].Value
+                gap = $m.Groups[2].Value.Trim().Trim('"').Trim("'")
+                answers = @($answers)
+            }
+        }
+    }
+    return @($items)
+}
+
 function Read-Indices([string]$Merits) {
     $idx = @{}
     foreach ($i in @('SPI', 'HCE', 'GAP', 'CWB', 'UXD', 'MPI')) {
@@ -912,6 +932,9 @@ $pipelineList = Read-Pipeline $maturity
 $pipelinePending = @($pipelineList | Where-Object { -not $_.approved })
 $readinessNum = if ($readiness) { [double]$readiness } else { 0 }
 $gapsSummary = Build-GapsSummary $dimensionGaps @($functionalReqs) @($pipelinePending) $readinessNum
+$gapSuggestionsRaw = Resolve-SkyDataFile $Slug 'gaps-suggestions.yaml' 'gaps-suggestions.yaml'
+$gapSuggestions = @(Read-GapSuggestions $gapSuggestionsRaw)
+if ($gapSuggestions.Count -gt 0) { $gapsSummary['gap_suggestions'] = $gapSuggestions }
 
 $artifactContext = @{
     slug = $Slug
