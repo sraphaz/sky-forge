@@ -1,0 +1,29 @@
+---
+description: Repositório ligado ao Sky-Forge — spec e CLI delegados
+globs:
+alwaysApply: true
+---
+
+Este repositório está **ligado** ao Sky-Forge via `.sky/link.yaml`.
+
+## Antes de implementar
+
+1. Ler `spec/` (sincronizado do pacote forge) — stories, arquitetura, brief
+2. Seguir [AGENTS.md](../../AGENTS.md) do app
+3. Spec-before-code — story shard ativa em `spec/stories/`
+
+## Comandos Sky (deste repo)
+
+```powershell
+./scripts/sky.ps1 status          # maturidade da sessão
+./scripts/sky.ps1 pull-spec       # atualizar spec/ após export no forge
+./scripts/sky.ps1 export -ForAI -Scope spec   # contexto sanitizado para IA
+./scripts/sky.ps1 audit           # trilha de agentes
+```
+
+Export completo, intake e publish rodam **no repo Sky-Forge** (gates de autonomia).
+
+## Referências
+
+- Pacote: `spec/` (somente leitura; fonte de verdade no forge)
+- Sessão: `.sky/sessions/{slug}/` no repositório Sky-Forge

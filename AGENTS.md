@@ -23,6 +23,7 @@ Manual de operação. Sky-Forge **eleva** propostas: especifica software e conec
 Chegada (sky-host) → intake-conductor (conversa)
     → sky-elevator + ux-design-specialist (elevação & UX)
     → market-scout / solutions-architect + c4-modeler + journey-sequence-modeler
+    → arquitetura agêntica da solução (sky-agent-architecture, padrão Arah)
     → clean-craft-advisor (consult)
     → delivery-steward (export → pasta externa)
     → showcase-curator (preview visual, opt-in)
@@ -64,6 +65,7 @@ Chegada (sky-host) → intake-conductor (conversa)
 | `ux-product` | Personas, jornadas, site institucional |
 | `stack-curator` | Stack e integrações |
 | `security-compliance` | LGPD, auth — Enterprise |
+| `test-architect` | **Estratégia de testes (TEA)** — risk-based, a11y, gates CI |
 | `clean-craft-advisor` | **Craft Uncle Bob** — SOLID, boundaries (consultivo) |
 
 ## Skills
@@ -77,6 +79,8 @@ Chegada (sky-host) → intake-conductor (conversa)
 | `sky-c4-model` | C4 três níveis + domínios |
 | `sky-journey-sequences` | Sequências + context-flow |
 | `sky-clean-craft` | Revisão craftsmanship (Uncle Bob) |
+| `sky-test-architecture` | Estratégia de testes TEA (consult) |
+| `sky-plan` | Pipeline batch com step-files on-demand |
 | `sky-validate` | Valida pacote |
 | `sky-export` | Empacota + Cloud Design |
 | `sky-deliver` | Entrega guiada (delivery-steward) |
@@ -98,6 +102,8 @@ Chegada (sky-host) → intake-conductor (conversa)
 ./scripts/sky/sky.ps1 validate -Slug <slug>
 ./scripts/sky/sky.ps1 export -Slug <slug>
 ./scripts/sky/sky.ps1 export -Slug <slug> -ForAI -Scope essential|spec|full
+./scripts/sky/sky.ps1 link -Slug <slug> -WorkspacePath <app-repo> [-PullSpec]
+./scripts/sky/sky.ps1 pull-spec -Slug <slug>
 ./scripts/sky/sky.ps1 publish -Slug <slug> -Public
 ./scripts/sky/sky.ps1 showcase
 ./scripts/sky/sky.ps1 agents -Slug <slug>

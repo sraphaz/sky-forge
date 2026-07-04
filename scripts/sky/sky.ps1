@@ -9,8 +9,18 @@
 [CmdletBinding()]
 param(
     [Parameter(Position = 0, Mandatory = $true)]
-    [ValidateSet('intake', 'status', 'approve', 'run', 'validate', 'export', 'elevate', 'benchmark', 'publish', 'showcase', 'agents', 'audit', 'choreograph', 'architect')]
+    [ValidateSet('intake', 'status', 'approve', 'run', 'validate', 'export', 'elevate', 'benchmark', 'publish', 'sync', 'showcase', 'agents', 'audit', 'choreograph', 'architect', 'link', 'pull-spec')]
     [string]$Command,
+
+    [Parameter()]
+    [string]$WorkspacePath,
+
+    [Parameter()]
+    [ValidateSet('manual', 'after_export')]
+    [string]$SyncMode = 'manual',
+
+    [Parameter()]
+    [switch]$PullSpec,
 
     [Parameter()]
     [string]$Slug,
@@ -171,6 +181,14 @@ switch ($Command) {
         & (Join-Path $PSScriptRoot 'publish-preview.ps1') @pubArgs
         Invoke-AgentAudit $Slug 'showcase-curator' $action $(if ($Public) { 'public' } else { 'invoke_skill' }) 'ok'
     }
+    'sync' {
+        if (-not $Slug) { throw 'sync requires -Slug' }
+        $syncArgs = @{ Slug = $Slug }
+        if ($Public) { $syncArgs.Public = $true }
+        if ($Force) { $syncArgs.SkipExport = $false }
+        & (Join-Path $PSScriptRoot 'sync-showcase.ps1') @syncArgs
+        Invoke-AgentAudit $Slug 'showcase-curator' 'showcase.sync' 'side_effect' 'ok'
+    }
     'showcase' {
         . (Join-Path $PSScriptRoot 'get-sky-config.ps1')
         $cfg = Read-SkyConfigFile
@@ -178,7 +196,22 @@ switch ($Command) {
         if (-not (Test-Path (Join-Path $showcaseDir 'package.json'))) {
             throw "Showcase nao encontrado em apps/showcase"
         }
-        Write-Host "Iniciando showcase em http://localhost:$($cfg.showcasePort)" -ForegroundColor Cyan
+        $port = $cfg.showcasePort
+        Write-Host "Liberando porta $port (servidor antigo do showcase)..." -ForegroundColor Yellow
+        try {
+            Get-NetTCPConnection -LocalPort $port -State Listen -ErrorAction Stop |
+                Select-Object -ExpandProperty OwningProcess -Unique |
+                ForEach-Object {
+                    if ($_ -gt 0) {
+                        Write-Host "  Encerrando PID $_" -ForegroundColor DarkYellow
+                        Stop-Process -Id $_ -Force -ErrorAction SilentlyContinue
+                    }
+                }
+            Start-Sleep -Milliseconds 400
+        } catch {
+            Write-Host "  Porta $port livre ou netstat indisponivel." -ForegroundColor DarkGray
+        }
+        Write-Host "Iniciando showcase em http://localhost:$port/sky-forge" -ForegroundColor Cyan
         Write-Host "Modo interativo local: em /projects/{slug}/lacunas/ voce pode aceitar/recusar" -ForegroundColor Cyan
         Write-Host "sugestoes e responder lacunas direto no site (grava em .sky/sessions/ + auditoria)." -ForegroundColor Cyan
         Push-Location $showcaseDir
@@ -187,7 +220,7 @@ switch ($Command) {
                 Write-Host "pnpm install..." -ForegroundColor Yellow
                 pnpm install
             }
-            pnpm dev --port $cfg.showcasePort
+            pnpm dev --port $port
         } finally {
             Pop-Location
         }
@@ -219,5 +252,27 @@ switch ($Command) {
         $acArgs = @{ Slug = $Slug }
         if ($Force) { $acArgs.Force = $true }
         & (Join-Path $PSScriptRoot 'architecture-cycle.ps1') @acArgs
+    }
+    'link' {
+        if (-not $Slug) { throw 'link requires -Slug' }
+        $linkArgs = @{
+            Slug = $Slug
+            SyncMode = $SyncMode
+        }
+        if ($WorkspacePath) { $linkArgs.WorkspacePath = $WorkspacePath }
+        if ($PullSpec) { $linkArgs.PullSpec = $true }
+        if ($Force) { $linkArgs.Force = $true }
+        & (Join-Path $PSScriptRoot 'link-workspace.ps1') @linkArgs
+        Invoke-AgentAudit $Slug 'repo-scaffolder' 'workspace.link' 'side_effect' 'ok'
+    }
+    'pull-spec' {
+        $pullArgs = @{}
+        if ($Slug) { $pullArgs.Slug = $Slug }
+        if ($WorkspacePath) { $pullArgs.WorkspacePath = $WorkspacePath }
+        if ($Force) { $pullArgs.Force = $true }
+        & (Join-Path $PSScriptRoot 'pull-spec.ps1') @pullArgs
+        if ($Slug) {
+            Invoke-AgentAudit $Slug 'repo-scaffolder' 'workspace.pull_spec' 'invoke_skill' 'ok'
+        }
     }
 }

@@ -100,6 +100,43 @@ intake → export (pasta externa) → publish -Public (opcional) → showcase
 - Pipeline desbloqueado
 - Lista de artefatos (sem conteúdo sensível)
 
+## Repositório da aplicação (sky link)
+
+Depois do export, ligue o repo onde o código será escrito:
+
+```powershell
+# No Sky-Forge (ou a partir do app com caminho absoluto)
+./scripts/sky/sky.ps1 link -Slug iautos -WorkspacePath C:\repos\iautos -PullSpec
+```
+
+Isso cria:
+
+| Onde | Arquivo | Função |
+|------|---------|--------|
+| App | `.sky/link.yaml` | Aponta para o forge + slug |
+| App | `scripts/sky.ps1` | Wrapper CLI (status, pull-spec, export-for-ai) |
+| App | `spec/` | Spec sincronizada (stories, architecture, brief) |
+| Sessão | `.sky/sessions/{slug}/git.yaml` | `workspace_path` do app |
+
+### Comandos no repo da aplicação
+
+```powershell
+cd C:\repos\iautos
+./scripts/sky.ps1 status
+./scripts/sky.ps1 pull-spec          # após re-export no forge
+./scripts/sky.ps1 export -ForAI -Scope spec
+```
+
+Export completo, intake e `publish -Public` permanecem no Sky-Forge (gates de autonomia e privacidade).
+
+### Fluxo recomendado pós-export
+
+```
+export (forge) → link + pull-spec (app) → implementar (app) → pull-spec (sync)
+```
+
+Horizonte: `npx sky` multiplataforma (roadmap A-08) substituirá o wrapper PowerShell.
+
 ## Cloud Design e licença
 
 Arquivos `.dc.html` da extensão proprietária permanecem no pacote externo. O showcase open source **não redistribui** esses templates — apenas indica que existem. Para preview visual rico, hospede screenshots ou HTML estático em URL externa (campo futuro `viewer_urls` no preview).

@@ -47,7 +47,7 @@ const { slug, browserMode = true } = Astro.props;
             Disponível na <a href={withBase("/sobre/#repositorio-git")}>instalação local</a>.
           </p>
         ) : (
-          <span class="chip">git.yaml — fase C do roadmap</span>
+          <code class="cta-code">./scripts/sky/sky.ps1 link -Slug {slug} -WorkspacePath &lt;app-repo&gt; -PullSpec</code>
         )}
       </div>
     </li>
