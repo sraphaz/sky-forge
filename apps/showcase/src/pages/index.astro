@@ -8,11 +8,12 @@ const { projects } = loadIndex();
 const visible = projects.filter((p) => p.public !== false);
 ---
 
-<BaseLayout title="Hub de projetos" description="Seus projetos elevados — visão clara de cada aplicativo, passo a passo">
+<BaseLayout title="Projetos" description="Seus projetos elevados — visão clara de cada aplicativo, passo a passo">
   <header class="site-header">
     <div class="container">
       <span class="badge">Open source · MIT</span>
-      <h1>Hub de projetos</h1>
+      <h1>Sky-Forge</h1>
+      <p class="hero-lead">Seus projetos elevados — visão clara de cada aplicativo, passo a passo.</p>
       <p>
         Registre ideias localmente e acompanhe o que cada intake produziu. Cada card é a
         <strong>visão de um aplicativo</strong> — problema, requisitos, arquitetura e prontidão.
@@ -22,6 +23,7 @@ const visible = projects.filter((p) => p.public !== false);
       <nav class="hub-nav" aria-label="Navegação principal">
         <a href={withBase("/")} class="hub-nav-link hub-nav-active">Projetos</a>
         <a href={withBase("/agentes/")} class="hub-nav-link">Agentes</a>
+        <a href={withBase("/metodo/")} class="hub-nav-link">Método</a>
         <a href={withBase("/sobre/")} class="hub-nav-link">Sobre</a>
       </nav>
     </div>
@@ -30,7 +32,7 @@ const visible = projects.filter((p) => p.public !== false);
   <main class="container">
     {visible.length === 0 ? (
       <div class="empty-state panel">
-        <p>Nenhum projeto no hub ainda.</p>
+        <p>Nenhum projeto publicado ainda.</p>
         <p>
           Comece com intake local; publique um preview quando quiser compartilhar:
         </p>

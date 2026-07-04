@@ -17,12 +17,18 @@ const agentSnapshots = await Promise.all(
 <BaseLayout title="Como foi produzido" description="Trilha Sky-Forge por projeto">
   <header class="site-header">
     <div class="container">
-      <a class="back-link" href={withBase("/")} style="color: var(--color-sky-glow);">← Galeria de projetos</a>
+      <a class="back-link" href={withBase("/")} style="color: var(--color-sky-glow);">← Sky-Forge</a>
       <span class="badge">Sky-Forge · meta</span>
       <h1>Como foi produzido</h1>
       <p>
         Auditoria e coreografia dos agentes que geraram cada output — separado da visão do aplicativo.
       </p>
+      <nav class="hub-nav" aria-label="Navegação principal">
+        <a href={withBase("/")} class="hub-nav-link">Projetos</a>
+        <a href={withBase("/agentes/")} class="hub-nav-link hub-nav-active">Agentes</a>
+        <a href={withBase("/metodo/")} class="hub-nav-link">Método</a>
+        <a href={withBase("/sobre/")} class="hub-nav-link">Sobre</a>
+      </nav>
     </div>
   </header>
 

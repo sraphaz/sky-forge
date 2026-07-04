@@ -2,7 +2,9 @@
 
 **Elevar o que está sendo proposto** — camada de funil de inteligência entre sua intenção e a produção de software (Cloud Design, Cursor, repos operáveis por agentes).
 
-Sky-Forge transforma uma ideia em linguagem natural num **pacote de maturidade** completo: negócio → produto → **UX digna** → técnico → sustentação → **elevação e prosperidade humana** — com intake conversacional, **Índices SKY** proprietários e export Cloud Design.
+Sky-Forge transforma uma ideia em linguagem natural num **pacote de maturidade** completo: negócio → produto → **UX digna** → técnico → sustentação → **elevação e prosperidade humana** — com intake conversacional, **Índices SKY abertos e versionados** e export Cloud Design.
+
+A régua é aberta: rubricas, evidências e governança em [SKY_INDICES_METHOD.md](docs/_meta/SKY_INDICES_METHOD.md) (espec CC BY-SA); qualquer terceiro reproduz um score com o harness. O que se comercializa é a execução — agentes completos, export Cloud Design, white-label.
 
 ---
 
@@ -27,7 +29,7 @@ Além de especificar aplicativos, o Sky-Forge **conecta a solução da pessoa** 
 
 No Cursor: converse com **sky-host** (regra `sky-host.mdc`) ou **intake-conductor** (`sky-intake.mdc`).
 
-Documentação: [AGENTS.md](AGENTS.md) · [SKY_MERIT_INDICES.md](docs/_meta/SKY_MERIT_INDICES.md)
+Documentação: [AGENTS.md](AGENTS.md) · [SKY_MERIT_INDICES.md](docs/_meta/SKY_MERIT_INDICES.md) · [SKY_INDICES_METHOD.md](docs/_meta/SKY_INDICES_METHOD.md)
 
 ## Estrutura
 

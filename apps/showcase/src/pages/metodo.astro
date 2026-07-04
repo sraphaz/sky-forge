@@ -1,0 +1,357 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { withBase } from "../lib/paths";
+
+const SPEC_VERSION = "1.1";
+
+const weights = [
+  { sigla: "SPI", nome: "Prosperidade", en: "Sky Prosperity Impact", peso: "0.25", porque: "Prosperidade material é a promessa central da marca — recebe o maior peso." },
+  { sigla: "HCE", nome: "Consciência", en: "Human Consciousness Expansion", peso: "0.20", porque: "Lente de reflexão, aprendizado e agência — sem manipulação." },
+  { sigla: "GAP", nome: "Alinhamento planetário", en: "Global Alignment Potential", peso: "0.20", porque: "Conexão com desafios do catálogo neutro + frugalidade operacional." },
+  { sigla: "CWB", nome: "Bem-estar coletivo", en: "Collective Wellbeing", peso: "0.20", porque: "Cooperação, cuidado e coesão — sem hierarquia entre as três lentes coletivas." },
+  { sigla: "UXD", nome: "Dignidade UX", en: "UX Dignity Score", peso: "0.15", porque: "Condição de dignidade, não de impacto — o índice mais auditável e o piso de qualidade." },
+];
+
+type Band = { faixa: string; texto: string; contra?: string };
+const rubricas: { sigla: string; nome: string; bands: Band[] }[] = [
+  {
+    sigla: "SPI",
+    nome: "Prosperidade",
+    bands: [
+      { faixa: "0–19", texto: "Sem mecanismo identificável de prosperidade material; valor concentrado no operador." },
+      { faixa: "20–39", texto: "Benefício material plausível mas não desenhado — efeito colateral, não feature.", contra: "\u201CGera empregos indiretos\u201D sem mecanismo no produto." },
+      { faixa: "40–59", texto: "Pelo menos uma feature confirmada cujo objetivo declarado é renda, acesso ou autonomia de um grupo definido.", contra: "Feature em backlog sem confirmação do criador." },
+      { faixa: "60–79", texto: "Mecanismo de prosperidade no fluxo principal, população-alvo nomeada no brief e métrica de acompanhamento definida.", contra: "\u201CNúmero de usuários\u201D não mede prosperidade." },
+      { faixa: "80–100", texto: "Prosperidade é eixo co-criador: o modelo de negócio distribui valor e existe checkpoint de impacto previsto vs. observado.", contra: "Doação de % do lucro — filantropia não é desenho." },
+    ],
+  },
+  {
+    sigla: "HCE",
+    nome: "Consciência",
+    bands: [
+      { faixa: "0–19", texto: "Padrões de captura de atenção; opacidade sobre uso de IA e dados." },
+      { faixa: "20–39", texto: "Neutro: não manipula, mas nada amplia reflexão, aprendizado ou conexão significativa.", contra: "\u201CConteúdo educativo\u201D genérico em blog anexo." },
+      { faixa: "40–59", texto: "Pelo menos um mecanismo confirmado de reflexão ou educação no uso do produto — não em material paralelo." },
+      { faixa: "60–79", texto: "Separação explícita fato/inferência quando há IA; o usuário entende o que o sistema faz e por quê.", contra: "Disclaimer em letra pequena." },
+      { faixa: "80–100", texto: "O produto amplia agência: o usuário sai mais capaz e mais consciente do que entrou; sem métricas de vício.", contra: "Gamificação de streaks — engajamento não é consciência." },
+    ],
+  },
+  {
+    sigla: "GAP",
+    nome: "Alinhamento planetário",
+    bands: [
+      { faixa: "0–19", texto: "Sem relação com o catálogo de desafios, ou relação negativa." },
+      { faixa: "20–39", texto: "Conexão narrativa com um desafio do catálogo, sem feature associada.", contra: "Citação de ODS no pitch." },
+      { faixa: "40–59", texto: "Conexão de humanidade com feature real ligada a desafio do catálogo, confirmada pelo criador.", contra: "Conexão sugerida pela IA e nunca confirmada." },
+      { faixa: "60–79", texto: "Duas ou mais conexões confirmadas + frugalidade operacional considerada: dados mínimos, funciona em rede lenta e aparelho modesto." },
+      { faixa: "80–100", texto: "Desafio planetário é requisito de produto com critério de aceite; pegada operacional medida (tokens por sessão, minimização de dados).", contra: "Compensação de carbono comprada." },
+    ],
+  },
+  {
+    sigla: "CWB",
+    nome: "Bem-estar coletivo",
+    bands: [
+      { faixa: "0–19", texto: "Dinâmicas de competição predatória, polarização ou isolamento." },
+      { faixa: "20–39", texto: "Individual: resolve bem para uma pessoa, sem dimensão coletiva.", contra: "\u201CComunidade\u201D = seção de comentários." },
+      { faixa: "40–59", texto: "Pelo menos um mecanismo confirmado de cooperação, cuidado ou coesão entre usuários.", contra: "Leaderboard — ranking não é coesão." },
+      { faixa: "60–79", texto: "Grupo ou território beneficiado nomeado; o produto fortalece vínculo existente em vez de substituí-lo pela mediação da plataforma." },
+      { faixa: "80–100", texto: "Bem-estar coletivo tem métrica própria acompanhada e caminho de saída digno: dados portáveis, sem lock-in social." },
+    ],
+  },
+  {
+    sigla: "UXD",
+    nome: "Dignidade UX",
+    bands: [
+      { faixa: "0–19", texto: "Dark patterns presentes; contraste abaixo de AA em fluxo principal." },
+      { faixa: "20–39", texto: "Sem dark patterns, mas com cores hardcoded, sem mobile ou excitação alta (urgência artificial)." },
+      { faixa: "40–59", texto: "Tokens de design definidos; mobile-first declarado; alvo WCAG AA registrado na spec de UX." },
+      { faixa: "60–79", texto: "Verificado: contraste AA nos fluxos principais, reduced-motion respeitado, foco visível de teclado, estados de vazio/carregando/erro especificados." },
+      { faixa: "80–100", texto: "Auditoria de acessibilidade executada (ferramenta + manual); baixa excitação comprovada; tipografia mínima ≥ 11.5px." },
+    ],
+  },
+];
+
+const evidencias = [
+  { tipo: "intake", desc: "Trecho da conversa em que o criador confirma", peso: "médio" },
+  { tipo: "artifact", desc: "Campo em brief, requisito ou spec com confirmação do usuário", peso: "alto" },
+  { tipo: "external", desc: "Documento, pesquisa ou dado de mercado citado", peso: "médio" },
+  { tipo: "verified", desc: "Medição pós-lançamento (checkpoint 90/180 dias)", peso: "máximo" },
+];
+
+const confiancas = [
+  { nivel: "Alta", criterio: "4+ evidências, sendo 2+ de artefato", exibicao: "Score exato com banda — \u201CSPI 81 ±9\u201D" },
+  { nivel: "Média", criterio: "2–3 evidências", exibicao: "Score com banda alargada" },
+  { nivel: "Baixa", criterio: "0–1 evidência", exibicao: "Faixa provável (ex.: \u201C40–59\u201D) — nunca número exato" },
+];
+---
+
+<BaseLayout
+  title="Método dos índices SKY"
+  description="Rubricas abertas 0–100, evidência, confiança e governança — a régua que qualquer pessoa pode auditar"
+>
+  <header class="site-header">
+    <div class="container">
+      <a class="back-link" href={withBase("/")} style="color: var(--color-sky-glow);">← Sky-Forge</a>
+      <span class="badge">Espec SKY v{SPEC_VERSION} · CC BY-SA</span>
+      <h1>Método dos índices SKY</h1>
+      <p class="hero-lead">
+        A régua é aberta: o que separa um 60 de um 80, que evidências valem e como a espec evolui.
+        Score sem rubrica é opinião com casas decimais.
+      </p>
+      <nav class="hub-nav" aria-label="Navegação principal">
+        <a href={withBase("/")} class="hub-nav-link">Projetos</a>
+        <a href={withBase("/agentes/")} class="hub-nav-link">Agentes</a>
+        <a href={withBase("/metodo/")} class="hub-nav-link hub-nav-active">Método</a>
+        <a href={withBase("/sobre/")} class="hub-nav-link">Sobre</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="panel">
+      <h3>Score composto</h3>
+      <p class="formula"><code>SKY_SCORE = 0.25×SPI + 0.20×HCE + 0.20×GAP + 0.20×CWB + 0.15×UXD</code></p>
+      <p class="panel-hint">
+        Nome em português primeiro; o nome em inglês fica na espec para citação internacional.
+        Todo dossiê publicado carimba a versão da espec e os pesos usados.
+      </p>
+      <ul class="weight-list">
+        {weights.map((w) => (
+          <li class="weight-item">
+            <span class="weight-sigla">{w.sigla}</span>
+            <span class="weight-peso">{w.peso}</span>
+            <div>
+              <strong>{w.nome}</strong>
+              <span class="weight-en">{w.en}</span>
+              <p class="weight-porque">{w.porque}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <section class="panel">
+      <h3>Rubricas ancoradas (0–100)</h3>
+      <p class="panel-hint">
+        Cinco faixas por índice. Um score só sobe de faixa quando todos os descritores da
+        faixa anterior estão atendidos com evidência. Os contra-exemplos mostram o que não basta.
+      </p>
+      {rubricas.map((r) => (
+        <details class="rubric-details">
+          <summary>
+            <span class="weight-sigla">{r.sigla}</span>
+            <strong>{r.nome}</strong>
+          </summary>
+          <ol class="rubric-bands">
+            {r.bands.map((b) => (
+              <li class="rubric-band">
+                <span class="rubric-range">{b.faixa}</span>
+                <div>
+                  <p class="rubric-text">{b.texto}</p>
+                  {b.contra && <p class="rubric-contra">Não basta: {b.contra}</p>}
+                </div>
+              </li>
+            ))}
+          </ol>
+        </details>
+      ))}
+    </section>
+
+    <section class="panel">
+      <h3>Evidência e confiança</h3>
+      <p class="panel-hint">
+        Um índice honesto diz de onde veio e quanto ainda não sabe. Todo score carrega
+        evidências vinculadas e uma banda de confiança.
+      </p>
+      <div class="two-col">
+        <div>
+          <h4 class="subheading">Tipos de evidência</h4>
+          <ul class="req-list">
+            {evidencias.map((e) => (
+              <li class="req-item">
+                <span class="req-id">{e.tipo}</span>
+                <span class="req-title">{e.desc}</span>
+                <span class="chip">{e.peso}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div>
+          <h4 class="subheading">Bandas de confiança</h4>
+          <ul class="req-list">
+            {confiancas.map((c) => (
+              <li class="req-item">
+                <span class="req-id">{c.nivel}</span>
+                <span class="req-title">{c.criterio}<br /><em>{c.exibicao}</em></span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+      <p class="panel-hint" style="margin-top: 1rem;">
+        Scores medidos antes do lançamento são <strong>de intenção</strong>. Só checkpoints de
+        impacto (90/180 dias, previsto vs. observado) os tornam <strong>verificados</strong> —
+        e o showcase distingue os dois.
+      </p>
+    </section>
+
+    <section class="panel">
+      <h3>Elevação sem atalho de pontos</h3>
+      <p>
+        Aceitar uma sugestão de elevação não credita pontos. A trilha é
+        <code>ai_suggested → user_confirmed → evidenced</code>: confirmar cria um requisito
+        rastreado; o índice só sobe quando a evidência aparece no artefato. Cada decisão
+        (confirmada, só documentada, recusada) fica registrada no ledger da sessão — a
+        permissão é evidência, não rodapé.
+      </p>
+    </section>
+
+    <section class="panel">
+      <h3>Governança da espec</h3>
+      <ul class="plain-list">
+        <li><strong>Versionamento</strong> — cada dossiê carimba a versão da espec contra a qual foi medido.</li>
+        <li><strong>RFC público</strong> — alterar rubrica, peso ou fórmula exige proposta com racional; nunca edição silenciosa.</li>
+        <li><strong>Benchmarks</strong> — sessões de calibração mantêm scores esperados; mudanças que os alterem exigem justificativa.</li>
+        <li><strong>Reprodutibilidade</strong> — o harness de verificação é open source: qualquer terceiro reproduz um score.</li>
+      </ul>
+      <p class="panel-hint" style="margin-top: 0.75rem;">
+        A fronteira: a <strong>régua</strong> (espec, rubricas, harness) é aberta;
+        a <strong>execução</strong> (agentes completos, export Cloud Design, white-label) é o que se comercializa.
+      </p>
+    </section>
+
+    <section class="panel">
+      <h3>Espiral, não esteira</h3>
+      <p>
+        O funil não termina no export: cada ciclo abre o seguinte com re-intake sobre o que
+        mudou na realidade. Sessões mantêm linha do tempo de ciclos com delta de score
+        ("SKY 58 → 72") e checkpoints de impacto pós-lançamento realimentam as rubricas.
+      </p>
+    </section>
+
+    <section class="panel">
+      <h3>Fonte completa</h3>
+      <ul class="plain-list">
+        <li><code>docs/_meta/SKY_INDICES_METHOD.md</code> — espec completa (CC BY-SA)</li>
+        <li><code>docs/schemas/sky-merits.schema.yaml</code> — schema com evidência e confiança</li>
+        <li><code>docs/_meta/EVOLUTION_AUDIT.md</code> — os 23 achados que originaram a v1.1</li>
+      </ul>
+    </section>
+  </main>
+</BaseLayout>
+
+<style>
+  .formula {
+    background: var(--color-sky-deep);
+    color: var(--color-sky-glow);
+    padding: 0.85rem 1.1rem;
+    border-radius: var(--radius);
+    font-size: 0.88rem;
+    overflow-x: auto;
+    margin: 0 0 0.75rem;
+  }
+
+  .formula code {
+    font-family: ui-monospace, monospace;
+  }
+
+  .weight-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .weight-item {
+    display: flex;
+    gap: 0.85rem;
+    align-items: baseline;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .weight-item:last-child {
+    border-bottom: none;
+  }
+
+  .weight-sigla {
+    font-family: ui-monospace, monospace;
+    font-weight: 700;
+    color: var(--color-sky-accent);
+    min-width: 3rem;
+  }
+
+  .weight-peso {
+    font-family: ui-monospace, monospace;
+    font-size: 0.82rem;
+    color: var(--color-text-muted);
+    min-width: 2.6rem;
+  }
+
+  .weight-en {
+    display: block;
+    font-size: 0.78rem;
+    color: var(--color-text-muted);
+  }
+
+  .weight-porque {
+    margin: 0.25rem 0 0;
+    font-size: 0.88rem;
+    color: var(--color-text-muted);
+  }
+
+  .rubric-details {
+    border-bottom: 1px solid var(--color-border);
+    padding: 0.5rem 0;
+  }
+
+  .rubric-details:last-of-type {
+    border-bottom: none;
+  }
+
+  .rubric-details summary {
+    cursor: pointer;
+    display: flex;
+    gap: 0.75rem;
+    align-items: baseline;
+    padding: 0.4rem 0;
+    font-size: 1rem;
+  }
+
+  .rubric-details summary:hover strong {
+    color: var(--color-sky-mid);
+  }
+
+  .rubric-bands {
+    list-style: none;
+    padding: 0.25rem 0 0.5rem;
+    margin: 0;
+  }
+
+  .rubric-band {
+    display: flex;
+    gap: 0.85rem;
+    padding: 0.55rem 0;
+    border-top: 1px dashed var(--color-border);
+  }
+
+  .rubric-range {
+    font-family: ui-monospace, monospace;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--color-sky-mid);
+    min-width: 4rem;
+    flex-shrink: 0;
+  }
+
+  .rubric-text {
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+
+  .rubric-contra {
+    margin: 0.3rem 0 0;
+    font-size: 0.82rem;
+    color: var(--color-warning);
+  }
+</style>

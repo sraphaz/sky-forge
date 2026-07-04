@@ -1,0 +1,114 @@
+---
+import { stageLabel, type PackageArtifact } from "../lib/registry";
+
+interface Props {
+  artifacts: PackageArtifact[];
+  compact?: boolean;
+}
+
+const { artifacts, compact = false } = Astro.props;
+
+const available = artifacts.filter((a) => a.available !== false);
+const stages = [...new Set(available.map((a) => a.stage))];
+const stageOrder = ["brief", "requirements", "architecture", "prompts", "scaffold", "cloud-design"];
+const sortedStages = stageOrder.filter((s) => stages.includes(s));
+
+const typeIcons: Record<string, string> = {
+  yaml: "YAML",
+  markdown: "MD",
+  "cloud-design": "CD",
+};
+---
+
+{available.length === 0 ? (
+  <div class="empty-state empty-state-compact">
+    <p>Nenhum artefato publicado ainda.</p>
+    <p class="panel-hint">Exporte o pacote e rode <code>sky publish -Slug …</code>.</p>
+  </div>
+) : (
+  <div class={`artifact-explorer ${compact ? "artifact-explorer-compact" : ""}`}>
+    {!compact && sortedStages.length > 1 && (
+      <nav class="artifact-stage-nav" aria-label="Filtrar por etapa">
+        <button type="button" class="stage-filter stage-filter-active" data-stage="all">
+          Todos ({available.length})
+        </button>
+        {sortedStages.map((stage) => {
+          const count = available.filter((a) => a.stage === stage).length;
+          return (
+            <button type="button" class="stage-filter" data-stage={stage}>
+              {stageLabel(stage)} ({count})
+            </button>
+          );
+        })}
+      </nav>
+    )}
+
+    <div class="artifact-grid">
+      {available.map((artifact) => (
+        <article
+          class="artifact-card"
+          data-stage={artifact.stage}
+          id={`artifact-${artifact.id}`}
+        >
+          <div class="artifact-card-top">
+            <span class="artifact-type" aria-hidden="true">
+              {typeIcons[artifact.type] ?? artifact.type.slice(0, 3).toUpperCase()}
+            </span>
+            <span class="artifact-stage-chip">{stageLabel(artifact.stage)}</span>
+          </div>
+          <h3 class="artifact-card-title">{artifact.label}</h3>
+          {artifact.description && (
+            <p class="artifact-card-desc">{artifact.description}</p>
+          )}
+          {artifact.summary && (
+            <blockquote class="artifact-snippet">{artifact.summary}</blockquote>
+          )}
+          <footer class="artifact-card-footer">
+            <code class="artifact-path">{artifact.path}</code>
+          </footer>
+
+          {artifact.children && artifact.children.length > 0 && (
+            <details class="artifact-children">
+              <summary>
+                {artifact.children.length} protótipo{artifact.children.length !== 1 ? "s" : ""} visual
+                {artifact.children.length !== 1 ? "is" : ""} (resumo sanitizado)
+              </summary>
+              <ul class="cloud-design-list">
+                {artifact.children.map((child) => (
+                  <li class="cloud-design-item">
+                    <strong>{child.label}</strong>
+                    {child.filename && (
+                      <span class="panel-hint cloud-design-file">{child.filename}</span>
+                    )}
+                  </li>
+                ))}
+              </ul>
+              <p class="privacy-note">
+                Conteúdo proprietário não incluído no showcase — apenas metadados.
+              </p>
+            </details>
+          )}
+        </article>
+      ))}
+    </div>
+  </div>
+)}
+
+<script>
+  document.querySelectorAll(".artifact-stage-nav").forEach((nav) => {
+    nav.querySelectorAll(".stage-filter").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const stage = btn.getAttribute("data-stage");
+        nav.querySelectorAll(".stage-filter").forEach((b) =>
+          b.classList.toggle("stage-filter-active", b === btn),
+        );
+        const grid = nav.parentElement?.querySelector(".artifact-grid");
+        grid?.querySelectorAll(".artifact-card").forEach((card) => {
+          const cardStage = card.getAttribute("data-stage");
+          const show = stage === "all" || cardStage === stage;
+          card.classList.toggle("artifact-card-hidden", !show);
+        });
+      });
+    });
+  });
+</script>

@@ -67,9 +67,36 @@ export type ProjectVision = {
 export type FunctionalRequirement = {
   id: string;
   title: string;
+  description?: string;
   epic?: string;
   priority?: string;
   mvp?: boolean;
+};
+
+export type RequirementEpic = {
+  id: string;
+  title: string;
+  status?: string;
+};
+
+export type CloudDesignEntry = {
+  id: string;
+  filename?: string;
+  label: string;
+  type?: string;
+  available?: boolean;
+};
+
+export type PackageArtifact = {
+  id: string;
+  label: string;
+  type: string;
+  stage: string;
+  path: string;
+  description?: string;
+  summary?: string;
+  available?: boolean;
+  children?: CloudDesignEntry[];
 };
 
 export type NonFunctionalRequirement = {
@@ -91,6 +118,7 @@ export type ProjectPreview = ProjectIndexEntry & {
   requirements?: {
     functional?: FunctionalRequirement[];
     non_functional?: NonFunctionalRequirement[];
+    epics?: RequirementEpic[];
   };
   architecture?: {
     integrations?: IntegrationChoice[];
@@ -100,10 +128,13 @@ export type ProjectPreview = ProjectIndexEntry & {
     };
   };
   indices?: Record<string, number>;
+  indices_meta?: Record<string, { evidence_count?: number; confidence?: string }>;
+  spec_version?: string;
+  score_kind?: string;
   dimensions?: Record<string, number>;
   phases?: { id: string; title: string; status: string }[];
   pipeline?: { stage: string; approved: boolean }[];
-  artifacts?: { label: string; type: string; path: string }[];
+  artifacts?: PackageArtifact[];
   published_at?: string;
   outputs_dir?: string;
 };
@@ -143,15 +174,26 @@ export function dimensionLabel(key: string): string {
 }
 
 const indexLabels: Record<string, string> = {
-  SPI: "Prosperidade inclusiva",
-  HCE: "Consciência humana",
+  SPI: "Prosperidade",
+  HCE: "Consciência",
   GAP: "Alinhamento planetário",
   CWB: "Bem-estar coletivo",
-  UXD: "UX digna",
+  UXD: "Dignidade UX",
 };
 
 export function indexLabel(key: string): string {
   return indexLabels[key] ?? key;
+}
+
+const confidenceLabels: Record<string, string> = {
+  low: "confiança baixa",
+  medium: "confiança média",
+  high: "confiança alta",
+};
+
+export function confidenceLabel(key: string | undefined): string | null {
+  if (!key) return null;
+  return confidenceLabels[key] ?? key;
 }
 
 const phaseStatusClass: Record<string, string> = {
@@ -178,6 +220,81 @@ const pipelineLabels: Record<string, string> = {
 
 export function pipelineLabel(stage: string): string {
   return pipelineLabels[stage] ?? stage.replace(/_/g, " ");
+}
+
+const stageLabels: Record<string, string> = {
+  brief: "Brief & maturidade",
+  requirements: "Requisitos & roadmap",
+  architecture: "Arquitetura & UX",
+  prompts: "Prompts",
+  scaffold: "Scaffold",
+  "cloud-design": "Cloud Design",
+};
+
+export function stageLabel(stage: string): string {
+  return stageLabels[stage] ?? stage.replace(/-/g, " ");
+}
+
+const priorityLabels: Record<string, string> = {
+  must: "Obrigatório",
+  should: "Desejável",
+  could: "Opcional",
+  wont: "Fora do escopo",
+};
+
+export function priorityLabel(priority: string | undefined): string {
+  if (!priority) return "—";
+  return priorityLabels[priority] ?? priority;
+}
+
+export function priorityClass(priority: string | undefined): string {
+  if (priority === "must") return "priority-must";
+  if (priority === "should") return "priority-should";
+  return "priority-other";
+}
+
+export function epicTitle(
+  epicId: string | undefined,
+  epics: RequirementEpic[] | undefined,
+): string {
+  if (!epicId || epicId === "Geral") return "Transversal";
+  const epic = epics?.find((e) => e.id === epicId);
+  return epic ? `${epic.id} — ${epic.title}` : epicId;
+}
+
+export function groupRequirementsByEpic(
+  reqs: FunctionalRequirement[],
+  epics?: RequirementEpic[],
+): { epicId: string; title: string; status?: string; reqs: FunctionalRequirement[] }[] {
+  const epicMap = new Map((epics ?? []).map((e) => [e.id, e]));
+  const groups = new Map<string, FunctionalRequirement[]>();
+
+  for (const r of reqs) {
+    const key = r.epic ?? "Geral";
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key)!.push(r);
+  }
+
+  const ordered = (epics ?? [])
+    .filter((e) => groups.has(e.id))
+    .map((e) => ({
+      epicId: e.id,
+      title: e.title,
+      status: e.status,
+      reqs: groups.get(e.id)!,
+    }));
+
+  const extras = [...groups.entries()]
+    .filter(([id]) => !epicMap.has(id))
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([epicId, epicReqs]) => ({
+      epicId,
+      title: epicId === "Geral" ? "Transversal" : epicId,
+      status: undefined as string | undefined,
+      reqs: epicReqs,
+    }));
+
+  return [...ordered, ...extras];
 }
 
 const agentsModules = import.meta.glob("../../../../showcase/registry/*.agents.json", {

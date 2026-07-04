@@ -1,0 +1,67 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import ProjectSectionNav from "../../../components/ProjectSectionNav.astro";
+import ArtifactExplorer from "../../../components/ArtifactExplorer.astro";
+import { loadIndex, loadPreview, loadAgentsView } from "../../../lib/registry";
+import { withBase } from "../../../lib/paths";
+
+export async function getStaticPaths() {
+  const { projects } = loadIndex();
+  return projects
+    .filter((p) => p.public !== false)
+    .map((p) => ({ params: { slug: p.slug } }));
+}
+
+const { slug } = Astro.params;
+const project = await loadPreview(slug!);
+const agents = await loadAgentsView(slug!);
+
+if (!project) {
+  return Astro.redirect(withBase("/"));
+}
+
+const artifacts = project.artifacts ?? [];
+const availableCount = artifacts.filter((a) => a.available !== false).length;
+---
+
+<BaseLayout
+  title={`${project.title} — Artefatos`}
+  description={`Pacote gerado pelo Sky-Forge: ${availableCount} artefatos disponíveis para ${project.title}.`}
+>
+  <header class="site-header project-hero project-hero-compact">
+    <div class="container">
+      <a class="back-link" href={withBase(`/projects/${slug}/`)} style="color: var(--color-sky-glow);">
+        ← Voltar ao projeto
+      </a>
+      <div class="meta-row">
+        <span class="badge">Pacote Sky-Forge</span>
+        <span class="chip chip-light">{availableCount} artefatos</span>
+      </div>
+      <h1>Artefatos gerados</h1>
+      <p class="hero-lead">
+        Navegue pelo pacote exportado — resumos sanitizados para preview público.
+        Arquivos proprietários (Cloud Design) aparecem apenas como metadados.
+      </p>
+    </div>
+  </header>
+
+  <div class="container">
+    <ProjectSectionNav slug={slug!} hasProcess={agents != null} activeSection="artefatos" />
+  </div>
+
+  <main class="container project-sections">
+    <section class="panel project-section">
+      <h2 class="section-title">Explorador de artefatos</h2>
+      <p class="panel-hint">
+        Cada cartão representa um arquivo ou pasta do pacote em
+        {project.outputs_dir ? (
+          <> <code>{project.outputs_dir}</code></>
+        ) : (
+          " outputs/"
+        )}.
+        Clique em Cloud Design para ver a lista de protótipos sem expor HTML proprietário.
+      </p>
+      <ArtifactExplorer artifacts={artifacts} />
+    </section>
+  </main>
+</BaseLayout>

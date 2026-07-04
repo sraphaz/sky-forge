@@ -3,10 +3,14 @@
 **Versão**: 1.0 | **Data**: 2026-07-04  
 **Marca**: Sky-Forge — elevar o que está sendo proposto
 
-Os **Índices SKY** são métricas proprietárias que medem como uma aplicação pode
-contribuir para a **prosperidade humana no planeta**, além do valor de negócio
-imediato. Não são greenwashing automático: são sugestões conscientes, opcionais
-e sempre submetidas à aprovação do criador (`user_confirmed`).
+Os **Índices SKY** são métricas **abertas e versionadas** que medem como uma
+aplicação pode contribuir para a **prosperidade humana no planeta**, além do valor
+de negócio imediato. Não são greenwashing automático: são sugestões conscientes,
+opcionais e sempre submetidas à aprovação do criador (`user_confirmed`).
+
+A régua completa — rubricas 0–100, tipos de evidência, bandas de confiança e
+governança por RFC — está em [SKY_INDICES_METHOD.md](SKY_INDICES_METHOD.md)
+(espec SKY v1.1, CC BY-SA). Score sem rubrica é opinião com casas decimais.
 
 ---
 
@@ -42,7 +46,16 @@ digna, acessível e de baixa excitação manipulativa.
 SKY_SCORE = 0.25×SPI + 0.20×HCE + 0.20×GAP + 0.20×CWB + 0.15×UXD
 ```
 
-Pesos ajustáveis por sessão em `sky-merits.yaml` → `weights`.
+Pesos ajustáveis por sessão em `sky-merits.yaml` → `weights` — mas todo dossiê
+publicado carimba `spec_version` e os pesos usados.
+
+### Evidência e confiança
+
+Todo score carrega evidências vinculadas e banda de confiança
+("SPI 81 ±9 · 6 evidências"). Com confiança `low`, exibir **faixa provável**
+em vez de número exato. Scores pré-lançamento são **de intenção**
+(`score_kind: intent`); só checkpoints de impacto os tornam **verificados**.
+Detalhes: [SKY_INDICES_METHOD.md](SKY_INDICES_METHOD.md) §3.
 
 ---
 
@@ -73,6 +86,7 @@ Campos principais:
 ## Guardrails
 
 - Sugestões de elevação **nunca** viram RF `must` sem confirmação.
+- Aceitar sugestão **não credita pontos**: trilha `ai_suggested → user_confirmed → evidenced` — o índice só sobe quando a evidência existe no artefato.
 - Respeitar `policies.open_to_elevation: false` — só documentar, não insistir.
 - GAP usa catálogo neutro (`challenges-catalog.yaml`), não agenda partidária.
 - UXD segue: mobile-first, WCAG AA, baixa excitação, tokens (sem cores hardcoded).

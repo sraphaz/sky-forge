@@ -5,11 +5,12 @@ interface Props {
   slug: string;
   hasProduction?: boolean;
   hasProcess?: boolean;
+  activeSection?: "overview" | "artefatos" | "agentes";
 }
 
-const { slug, hasProduction = true, hasProcess = true } = Astro.props;
+const { slug, hasProduction = true, hasProcess = true, activeSection = "overview" } = Astro.props;
 
-const sections = [
+const anchorSections = [
   { id: "visao", label: "Visão" },
   { id: "funcionalidades", label: "Funcionalidades" },
   { id: "requisitos", label: "Requisitos" },
@@ -21,12 +22,25 @@ const sections = [
 ---
 
 <nav class="section-nav" aria-label="Seções do projeto">
-  {sections.map((s) => (
-    <a href={`#${s.id}`} class="section-nav-link">{s.label}</a>
-  ))}
+  {activeSection === "overview" ? (
+    anchorSections.map((s) => (
+      <a href={`#${s.id}`} class="section-nav-link">{s.label}</a>
+    ))
+  ) : (
+    <a href={withBase(`/projects/${slug}/`)} class="section-nav-link">Visão geral</a>
+  )}
+  <a
+    href={withBase(`/projects/${slug}/artefatos/`)}
+    class={`section-nav-link ${activeSection === "artefatos" ? "section-nav-active" : ""}`}
+  >
+    Artefatos
+  </a>
   {hasProcess && (
-    <a href={withBase(`/projects/${slug}/agentes/`)} class="section-nav-link section-nav-meta">
-      Trilha completa →
+    <a
+      href={withBase(`/projects/${slug}/agentes/`)}
+      class={`section-nav-link section-nav-meta ${activeSection === "agentes" ? "section-nav-active" : ""}`}
+    >
+      Trilha de agentes →
     </a>
   )}
 </nav>

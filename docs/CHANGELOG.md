@@ -1,5 +1,17 @@
 # Changelog — Sky-Forge
 
+## [1.2.0] — 2026-07-04
+
+### Do discurso ao método (auditoria "Sky Forge High Premium", 23 achados)
+
+- **Espec SKY v1.1 aberta** — [SKY_INDICES_METHOD.md](_meta/SKY_INDICES_METHOD.md): rubricas ancoradas 0–100 por índice, tipos de evidência, bandas de confiança, governança por RFC (CC BY-SA)
+- Índices SKY passam a ser descritos como **abertos e versionados** (a extensão Cloud Design segue proprietária — régua aberta, execução comercial)
+- Schema `sky-merits`: `spec_version`, `score_kind` (intent/verified), `confidence`, `band`, evidência tipada, trilha `evidenced`/`requirement_id`, `cycles` (espiral) e `impact_checkpoints` (90/180 dias)
+- Rubrica dupla da dimensão sustentação (negócio + operação) e frugalidade regenerativa dentro do GAP
+- Showcase: página `/metodo/` com as rubricas; índices com nome PT, evidências e link para o método; tokens `--color-on-accent`, movimento nomeado e `prefers-reduced-motion`
+- `publish-preview.ps1` carimba `spec_version` e contagem de evidências por índice
+- Rastreabilidade completa dos achados: [EVOLUTION_AUDIT.md](_meta/EVOLUTION_AUDIT.md)
+
 ## [1.1.0] — 2026-07-04
 
 ### Rebrand & Elevação

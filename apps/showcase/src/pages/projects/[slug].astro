@@ -1,6 +1,8 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import ProjectSectionNav from "../../components/ProjectSectionNav.astro";
+import RequirementEpic from "../../components/RequirementEpic.astro";
+import ArtifactExplorer from "../../components/ArtifactExplorer.astro";
 import {
   loadIndex,
   loadPreview,
@@ -10,7 +12,7 @@ import {
   indexLabel,
   phaseClass,
   pipelineLabel,
-  type FunctionalRequirement,
+  groupRequirementsByEpic,
 } from "../../lib/registry";
 import { withBase } from "../../lib/paths";
 
@@ -31,27 +33,19 @@ if (!project) {
 
 const vision = project.vision;
 const functional = project.requirements?.functional ?? [];
+const epics = project.requirements?.epics ?? project.phases ?? [];
 const nfrs = project.requirements?.non_functional ?? [];
 const integrations = project.architecture?.integrations ?? [];
 const ux = project.architecture?.ux;
-
-function groupByEpic(reqs: FunctionalRequirement[]) {
-  const groups: Record<string, FunctionalRequirement[]> = {};
-  for (const r of reqs) {
-    const epic = r.epic ?? "Geral";
-    if (!groups[epic]) groups[epic] = [];
-    groups[epic].push(r);
-  }
-  return Object.entries(groups).sort(([a], [b]) => a.localeCompare(b));
-}
-
-const epicGroups = groupByEpic(functional);
+const artifacts = project.artifacts ?? [];
+const epicGroups = groupRequirementsByEpic(functional, epics);
+const artifactCount = artifacts.filter((a) => a.available !== false).length;
 ---
 
 <BaseLayout title={project.title} description={project.excerpt}>
   <header class="site-header project-hero">
     <div class="container">
-      <a class="back-link" href={withBase("/")} style="color: var(--color-sky-glow);">← Galeria de projetos</a>
+      <a class="back-link" href={withBase("/")} style="color: var(--color-sky-glow);">← Sky-Forge</a>
       <div class="meta-row">
         {project.tier && <span class="badge">{project.tier}</span>}
         {project.tags?.slice(0, 4).map((tag) => <span class="chip chip-light">{tag}</span>)}
@@ -109,35 +103,62 @@ const epicGroups = groupByEpic(functional);
 
     {functional.length > 0 && (
       <section id="funcionalidades" class="panel project-section">
-        <h2 class="section-title">Funcionalidades</h2>
-        <p class="panel-hint">Requisitos funcionais agrupados por épico — o que o app propõe entregar.</p>
-        {epicGroups.map(([epic, reqs]) => (
-          <div class="epic-group">
-            <h3 class="epic-heading">Épico {epic}</h3>
-            <ul class="req-list">
-              {reqs.map((r) => (
-                <li class="req-item">
-                  <span class="req-id">{r.id}</span>
-                  <span class="req-title">{r.title}</span>
-                  <span class="chip">{r.priority ?? "—"}</span>
-                  {r.mvp && <span class="chip chip-mvp">MVP</span>}
-                </li>
-              ))}
-            </ul>
+        <div class="section-header-row">
+          <div>
+            <h2 class="section-title">Funcionalidades</h2>
+            <p class="panel-hint section-lead">
+              O que o aplicativo propõe entregar — agrupado por épico, com prioridade e escopo MVP.
+            </p>
           </div>
+          <div class="section-stats">
+            <span class="stat-chip">{functional.filter((r) => r.mvp).length} MVP</span>
+            <span class="stat-chip stat-chip-muted">
+              {functional.filter((r) => !r.mvp).length} pós-MVP
+            </span>
+          </div>
+        </div>
+        {epicGroups.map((group) => (
+          <RequirementEpic
+            epicId={group.epicId}
+            title={group.title}
+            status={group.status}
+            requirements={group.reqs}
+          />
         ))}
+      </section>
+    )}
+
+    {artifactCount > 0 && (
+      <section id="artefatos" class="panel project-section">
+        <div class="section-header-row">
+          <div>
+            <h2 class="section-title">Artefatos do pacote</h2>
+            <p class="panel-hint section-lead">
+              Resumos sanitizados dos arquivos gerados pelo Sky-Forge — sem expor conteúdo proprietário.
+            </p>
+          </div>
+          <a href={withBase(`/projects/${slug}/artefatos/`)} class="cta-link cta-link-inline">
+            Explorar todos ({artifactCount}) →
+          </a>
+        </div>
+        <ArtifactExplorer artifacts={artifacts} compact />
       </section>
     )}
 
     {nfrs.length > 0 && (
       <section id="requisitos" class="panel project-section">
         <h2 class="section-title">Requisitos não funcionais</h2>
-        <ul class="req-list">
+        <p class="panel-hint section-lead">
+          Qualidade, segurança e conformidade — critérios mensuráveis para produção.
+        </p>
+        <ul class="requirement-cards requirement-cards-compact">
           {nfrs.map((r) => (
-            <li class="req-item">
-              <span class="req-id">{r.id}</span>
-              <span class="req-title">{r.statement}</span>
-              {r.category && <span class="chip">{r.category}</span>}
+            <li class="requirement-card requirement-card-nfr">
+              <div class="requirement-card-head">
+                <span class="req-id">{r.id}</span>
+                {r.category && <span class="artifact-stage-chip">{r.category}</span>}
+              </div>
+              <p class="requirement-card-desc">{r.statement}</p>
             </li>
           ))}
         </ul>
@@ -237,16 +258,39 @@ const epicGroups = groupByEpic(functional);
       )}
       {project.indices && (
         <div style="margin-top: 1.25rem;">
-          <h3>Índices SKY</h3>
-          {Object.entries(project.indices).map(([key, score]) => (
-            <div class="bar-row">
-              <span title={indexLabel(key)}>{key}</span>
-              <div class="bar-track">
-                <div class="bar-fill" style={`width: ${score}%`} />
+          <div class="section-header-row" style="margin-bottom: 0.5rem;">
+            <h3 style="margin: 0;">Índices SKY</h3>
+            <span class="chip" title="Medido antes do lançamento — checkpoints de impacto tornam o score verificado">
+              {project.score_kind === "verified" ? "impacto verificado" : "score de intenção"}
+              {project.spec_version && ` · espec v${project.spec_version}`}
+            </span>
+          </div>
+          {Object.entries(project.indices).map(([key, score]) => {
+            const meta = project.indices_meta?.[key];
+            return (
+              <div class="bar-row bar-row-indices">
+                <span>
+                  <strong>{key}</strong>
+                  <span class="index-name">{indexLabel(key)}</span>
+                </span>
+                <div class="bar-track">
+                  <div class="bar-fill" style={`width: ${score}%`} />
+                </div>
+                <span>
+                  {score}
+                  {meta?.evidence_count != null && (
+                    <span class="evidence-count" title={`${meta.evidence_count} evidências vinculadas`}>
+                      · {meta.evidence_count} ev.
+                    </span>
+                  )}
+                </span>
               </div>
-              <span>{score}</span>
-            </div>
-          ))}
+            );
+          })}
+          <p class="panel-hint" style="margin: 0.65rem 0 0;">
+            O que separa um 60 de um 80 em cada índice está na
+            <a href={withBase("/metodo/")}>rubrica aberta do método</a> — evidenciar antes de pontuar.
+          </p>
         </div>
       )}
       {project.pipeline && project.pipeline.length > 0 && (

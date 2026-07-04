@@ -102,6 +102,22 @@ function Read-Indices([string]$Merits) {
     return $idx
 }
 
+function Read-IndicesMeta([string]$Merits) {
+    # Evidência e confiança por índice — "SPI 81 · 6 evidências" (SKY_INDICES_METHOD.md §3)
+    $meta = @{}
+    foreach ($i in @('SPI', 'HCE', 'GAP', 'CWB', 'UXD')) {
+        if ($Merits -notmatch "(?m)^  $i`:\s*$\r?\n((?:[ \t]{4,}[^\r\n]*\r?\n?)*)") { continue }
+        $block = $Matches[1]
+        $entry = @{}
+        if ($block -match '(?m)^\s+confidence:\s*(\S+)') { $entry['confidence'] = $Matches[1] }
+        if ($block -match '(?m)^\s{4}evidence:\s*$\r?\n((?:[ \t]{6,}[^\r\n]*\r?\n?)*)') {
+            $entry['evidence_count'] = @([regex]::Matches($Matches[1], '(?m)^\s+- ')).Count
+        }
+        if ($entry.Count -gt 0) { $meta[$i] = $entry }
+    }
+    return $meta
+}
+
 function Read-Phases([string]$Roadmap) {
     $phases = @()
     $matches = [regex]::Matches($Roadmap, '(?ms)- id:\s*(\S+)\s*\r?\n\s+title:\s*(.+?)\s*\r?\n(?:[^\r\n]+\r?\n)*?\s+status:\s*(\S+)')
@@ -154,6 +170,220 @@ function Read-Integrations([string]$Content) {
             reason = $_.reason
         }
     })
+}
+
+function Truncate-Text([string]$Text, [int]$Max = 280) {
+    if (-not $Text) { return $null }
+    $clean = ($Text -replace '\s+', ' ').Trim()
+    if ($clean.Length -le $Max) { return $clean }
+    return $clean.Substring(0, $Max - 3) + '...'
+}
+
+function Test-ArtifactPath([string]$OutputDir, [string]$RelativePath) {
+    if (-not $OutputDir) { return $false }
+    $full = Join-Path $OutputDir $RelativePath
+    return Test-Path $full
+}
+
+function Read-TextHead([string]$OutputDir, [string]$RelativePath, [int]$Lines = 6) {
+    if (-not (Test-ArtifactPath $OutputDir $RelativePath)) { return $null }
+    $full = Join-Path $OutputDir $RelativePath
+    $raw = Get-Content $full -Raw -ErrorAction SilentlyContinue
+    if (-not $raw) { return $null }
+    if ($RelativePath -match '\.(md|yaml|yml)$') {
+        $picked = @($raw -split "`r?`n" | Where-Object {
+            $line = $_.Trim()
+            $line -ne '' -and
+            $line -notmatch '^\s*#' -and
+            $line -notmatch '^\|' -and
+            $line -notmatch '^[-|:]+$'
+        } | Select-Object -First $Lines)
+        $head = ($picked -join ' ') -replace '\*\*([^*]+)\*\*', '$1'
+        return Truncate-Text $head 320
+    }
+    return $null
+}
+
+function Get-CloudDesignEntries([string]$OutputDir) {
+    $dir = Join-Path $OutputDir 'cloud-design'
+    if (-not (Test-Path $dir)) { return @() }
+    $labels = @{
+        'aplicacao-mockup.dc.html' = 'Mockup navegável da aplicação principal'
+        'arquitetura.dc.html' = 'Diagramas C4 e decisões arquiteturais'
+        'handoff-desenvolvimento.dc.html' = 'Handoff completo de desenvolvimento'
+        'handoff.dc.html' = 'Handoff resumido'
+        'site-bonomi.dc.html' = 'Site institucional white-label (referência)'
+    }
+    return @(Get-ChildItem $dir -File | ForEach-Object {
+        @{
+            id = [System.IO.Path]::GetFileNameWithoutExtension($_.Name)
+            filename = $_.Name
+            label = if ($labels.ContainsKey($_.Name)) { $labels[$_.Name] } else { $_.BaseName -replace '-', ' ' }
+            type = 'cloud-design-file'
+            available = $true
+        }
+    })
+}
+
+function Build-Artifacts([string]$OutputDir, [hashtable]$Context) {
+    $defs = @(
+        @{
+            id = 'brief'
+            label = 'Brief'
+            type = 'yaml'
+            stage = 'brief'
+            path = 'brief.yaml'
+            description = 'Visão, problema, proposta de valor, usuários e escopo MVP'
+        },
+        @{
+            id = 'functional-requirements'
+            label = 'Requisitos funcionais'
+            type = 'yaml'
+            stage = 'requirements'
+            path = 'functional-requirements.yaml'
+            description = 'Funcionalidades agrupadas por épico com prioridade e escopo MVP'
+        },
+        @{
+            id = 'nfr'
+            label = 'Requisitos não funcionais'
+            type = 'yaml'
+            stage = 'requirements'
+            path = 'nfr.yaml'
+            description = 'Segurança, LGPD, acessibilidade, performance e manutenibilidade'
+        },
+        @{
+            id = 'integrations'
+            label = 'Integrações'
+            type = 'yaml'
+            stage = 'architecture'
+            path = 'integrations.yaml'
+            description = 'Stack, auth, storage, e-mail e conectores externos'
+        },
+        @{
+            id = 'ux-spec'
+            label = 'Especificação UX'
+            type = 'yaml'
+            stage = 'architecture'
+            path = 'ux-spec.yaml'
+            description = 'Princípios de baixa excitação, telas-chave e tokens de design'
+        },
+        @{
+            id = 'architecture'
+            label = 'Arquitetura'
+            type = 'markdown'
+            stage = 'architecture'
+            path = 'architecture/c4-summary.md'
+            description = 'Resumo C4 sanitizado — containers, domínios e diferencial'
+        },
+        @{
+            id = 'maturity'
+            label = 'Maturidade'
+            type = 'yaml'
+            stage = 'brief'
+            path = 'maturity.yaml'
+            description = 'Readiness por dimensão e gates do pipeline Sky-Forge'
+        },
+        @{
+            id = 'roadmap'
+            label = 'Roadmap'
+            type = 'yaml'
+            stage = 'requirements'
+            path = 'roadmap/phases.yaml'
+            description = 'Épicos E1–E6, dependências e próximo passo imediato'
+        },
+        @{
+            id = 'prompts'
+            label = 'Prompts avançados'
+            type = 'markdown'
+            stage = 'prompts'
+            path = 'prompts/'
+            description = 'Instruções de implementação para agentes de código'
+        },
+        @{
+            id = 'scaffold'
+            label = 'Scaffold do repositório'
+            type = 'markdown'
+            stage = 'scaffold'
+            path = 'scaffold/AGENTS.md'
+            description = 'AGENTS.md inicial e convenções do app a implementar'
+        },
+        @{
+            id = 'cloud-design'
+            label = 'Cloud Design'
+            type = 'cloud-design'
+            stage = 'cloud-design'
+            path = 'cloud-design/'
+            description = 'Protótipos visuais proprietários — apenas metadados no showcase público'
+        }
+    )
+
+    $artifacts = [System.Collections.Generic.List[hashtable]]::new()
+    foreach ($def in $defs) {
+        $available = if ($def.path -match '/$') {
+            Test-Path (Join-Path $OutputDir ($def.path.TrimEnd('/')))
+        } else {
+            Test-ArtifactPath $OutputDir $def.path
+        }
+        if ($def.id -eq 'prompts' -and $available) {
+            $promptFile = Get-ChildItem (Join-Path $OutputDir 'prompts') -Filter '*.md' -ErrorAction SilentlyContinue | Select-Object -First 1
+            if ($promptFile) { $def.path = "prompts/$($promptFile.Name)" }
+            else { $available = $false }
+        }
+        if ($def.id -eq 'prompts' -and -not $available) { continue }
+
+        $summary = $null
+        switch ($def.id) {
+            'brief' { $summary = Truncate-Text $Context.value_proposition 280 }
+            'functional-requirements' {
+                $count = @($Context.functional_reqs).Count
+                $mvp = @($Context.functional_reqs | Where-Object { $_.mvp }).Count
+                $summary = "$count requisitos funcionais · $mvp no MVP"
+            }
+            'nfr' {
+                $count = @($Context.nfr_reqs).Count
+                $summary = if ($count) { "$count requisitos não funcionais" } else { $null }
+            }
+            'integrations' {
+                $count = @($Context.integrations).Count
+                $summary = if ($count) { "$count integrações mapeadas" } else { $null }
+            }
+            'ux-spec' {
+                $screens = @($Context.ux_screens).Count
+                $principles = @($Context.ux_principles).Count
+                $summary = if ($screens) { "$screens telas · $principles princípios UX" } else { $null }
+            }
+            'architecture' { $summary = Read-TextHead $OutputDir $def.path 4 }
+            'maturity' {
+                if ($Context.readiness) { $summary = "Readiness geral: $([math]::Round([double]$Context.readiness * 100))%" }
+            }
+            'roadmap' {
+                $count = @($Context.phases).Count
+                $summary = if ($count) { "$count épicos no roadmap" } else { $null }
+            }
+            'prompts' { $summary = Read-TextHead $OutputDir $def.path 3 }
+            'scaffold' { $summary = Read-TextHead $OutputDir $def.path 3 }
+            'cloud-design' {
+                $entries = Get-CloudDesignEntries $OutputDir
+                $summary = if ($entries.Count) { "$($entries.Count) protótipos visuais (resumo sanitizado)" } else { $null }
+            }
+        }
+
+        $item = @{
+            id = $def.id
+            label = $def.label
+            type = $def.type
+            stage = $def.stage
+            path = $def.path
+            description = $def.description
+            summary = $summary
+            available = [bool]$available
+        }
+        if ($def.id -eq 'cloud-design' -and $available) {
+            $item['children'] = @(Get-CloudDesignEntries $OutputDir)
+        }
+        $artifacts.Add($item)
+    }
+    return @($artifacts)
 }
 
 function Read-UxSummary([string]$Content) {
@@ -211,6 +441,10 @@ if ($excerpt) {
 $readiness = Read-YamlField $maturity 'overall_readiness'
 $skyScore = Read-YamlField $merits 'sky_score'
 $elevation = Read-YamlField $merits 'elevation_level'
+$specVersion = Read-YamlField $merits 'spec_version'
+if ($specVersion) { $specVersion = $specVersion.Trim('"').Trim("'") }
+$scoreKind = Read-YamlField $merits 'score_kind'
+if (-not $scoreKind) { $scoreKind = 'intent' }
 $tier = Read-YamlField $brief 'tier'
 
 $tags = Read-YamlList $brief 'app_types'
@@ -229,10 +463,22 @@ $functionalReqs = Read-YamlRequirementItems $functional | ForEach-Object {
     @{
         id = $_.id
         title = $_.title
+        description = $_.description
         epic = $_.epic
         priority = $_.priority
         mvp = [bool]$_.mvp
     }
+}
+
+$epics = @()
+if ($roadmap) {
+    $epics = @(Read-Phases $roadmap | ForEach-Object {
+        @{
+            id = $_.id
+            title = $_.title
+            status = $_.status
+        }
+    })
 }
 
 $nfrReqs = Read-YamlRequirementItems $nfr | ForEach-Object {
@@ -244,6 +490,32 @@ $nfrReqs = Read-YamlRequirementItems $nfr | ForEach-Object {
 }
 
 $uxSummary = Read-UxSummary $uxSpec
+$integrationsList = @(Read-Integrations $integrations)
+$phasesList = Read-Phases $roadmap
+
+$artifactContext = @{
+    value_proposition = $vision.value_proposition
+    functional_reqs = $functionalReqs
+    nfr_reqs = $nfrReqs
+    integrations = $integrationsList
+    ux_screens = $uxSummary.key_screens
+    ux_principles = $uxSummary.principles
+    readiness = $readiness
+    phases = $phasesList
+}
+$artifactsList = if ($OutputDir) { Build-Artifacts $OutputDir $artifactContext } else { @() }
+
+# Opt-in é pegajoso: republicar sem -Public não despublica (despublicar é ação explícita)
+$registryDir = Get-SkyRegistryDir
+$indexPath = Join-Path $registryDir 'index.json'
+$index = @{ version = '1.0'; projects = @() }
+if (Test-Path $indexPath) {
+    $index = Get-Content $indexPath -Raw | ConvertFrom-Json
+    if (-not $index.projects) { $index.projects = @() }
+}
+$prev = @($index.projects | Where-Object { $_.slug -eq $Slug } | Select-Object -First 1)
+$isPublic = [bool]$Public
+if (-not $Public -and $prev -and $prev.public -eq $true) { $isPublic = $true }
 
 $preview = [ordered]@{
     slug = $Slug
@@ -258,46 +530,31 @@ $preview = [ordered]@{
     requirements = @{
         functional = @($functionalReqs)
         non_functional = @($nfrReqs)
+        epics = @($epics)
     }
     architecture = @{
-        integrations = @(Read-Integrations $integrations)
+        integrations = $integrationsList
         ux = $uxSummary
     }
     indices = Read-Indices $merits
+    indices_meta = Read-IndicesMeta $merits
+    spec_version = $specVersion
+    score_kind = $scoreKind
     dimensions = Read-DimensionScores $maturity
     phases = Read-Phases $roadmap
     pipeline = Read-Pipeline $maturity
-    artifacts = @(
-        @{ label = 'Brief'; type = 'yaml'; path = 'brief.yaml' }
-        @{ label = 'Requisitos'; type = 'yaml'; path = 'functional-requirements.yaml' }
-        @{ label = 'NFR'; type = 'yaml'; path = 'nfr.yaml' }
-        @{ label = 'Integrações'; type = 'yaml'; path = 'integrations.yaml' }
-        @{ label = 'UX'; type = 'yaml'; path = 'ux-spec.yaml' }
-        @{ label = 'Maturidade'; type = 'yaml'; path = 'maturity.yaml' }
-        @{ label = 'Roadmap'; type = 'yaml'; path = 'roadmap/phases.yaml' }
-        @{ label = 'Cloud Design'; type = 'cloud-design'; path = 'cloud-design/' }
-    )
-    public = [bool]$Public
+    artifacts = @($artifactsList)
+    public = $isPublic
     published_at = (Get-Date).ToUniversalTime().ToString('o')
     outputs_dir = $OutputDir
 }
 
-$registryDir = Get-SkyRegistryDir
 New-Item -ItemType Directory -Path $registryDir -Force | Out-Null
 $previewPath = Join-Path $registryDir "$Slug.preview.json"
 $preview | ConvertTo-Json -Depth 10 | Set-Content $previewPath -Encoding UTF8
 
 # Atualizar index.json
-$indexPath = Join-Path $registryDir 'index.json'
-$index = @{ version = '1.0'; projects = @() }
-if (Test-Path $indexPath) {
-    $index = Get-Content $indexPath -Raw | ConvertFrom-Json
-    if (-not $index.projects) { $index.projects = @() }
-}
 $existing = @($index.projects | Where-Object { $_.slug -ne $Slug })
-$prev = @($index.projects | Where-Object { $_.slug -eq $Slug } | Select-Object -First 1)
-$isPublic = [bool]$Public
-if (-not $Public -and $prev -and $prev.public -eq $true) { $isPublic = $true }
 $entry = [ordered]@{
     slug = $Slug
     title = $title

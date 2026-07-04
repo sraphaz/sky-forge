@@ -5,12 +5,19 @@ required: [version, slug, policies, indices]
 properties:
   version:
     type: string
+  spec_version:
+    type: string
+    description: Versão da espec SKY contra a qual os scores foram medidos (ex. "1.1") — ver SKY_INDICES_METHOD.md
   slug:
     type: string
   sky_score:
     type: number
     minimum: 0
     maximum: 100
+  score_kind:
+    enum: [intent, verified]
+    default: intent
+    description: intent = medido antes do lançamento; verified = reavaliado com checkpoint de impacto
   elevation_level:
     enum: [ground, rise, horizon, sky]
   policies:
@@ -48,6 +55,13 @@ properties:
         impact_indices: { type: array, items: { type: string } }
         ai_suggested: { type: boolean }
         user_confirmed: { type: boolean, nullable: true }
+        evidenced:
+          type: boolean
+          default: false
+          description: Só true quando a evidência existe no artefato (RF com critério de aceite) — índice não sobe antes disso
+        requirement_id:
+          type: string
+          description: RF/roadmap gerado ao confirmar — trilha ai_suggested → user_confirmed → evidenced
         scope: { enum: [mvp, post_mvp, optional] }
   humanity_connections:
     type: array
@@ -65,6 +79,33 @@ properties:
       accessibility_target: { type: string, default: "WCAG 2.1 AA" }
       excitation_level: { enum: [low, medium], default: low }
       design_tokens_required: { type: boolean, default: true }
+  cycles:
+    type: array
+    description: Espiral — linha do tempo de ciclos com delta de score ("SKY 58 → 72")
+    items:
+      type: object
+      required: [cycle, date]
+      properties:
+        cycle: { type: integer, minimum: 1 }
+        date: { type: string }
+        sky_score: { type: number }
+        trigger: { type: string, description: "O que motivou o re-intake (mudança na realidade)" }
+        notes: { type: string }
+  impact_checkpoints:
+    type: array
+    description: Pós-lançamento — previsto vs. observado aos 90/180 dias
+    items:
+      type: object
+      required: [days, status]
+      properties:
+        days: { enum: [90, 180] }
+        status: { enum: [scheduled, done, skipped] }
+        date: { type: string }
+        predicted: { type: string }
+        observed: { type: string }
+        indices_delta:
+          type: object
+          description: Ajuste por índice após verificação (ex. SPI +4)
 definitions:
   index:
     type: object
@@ -75,4 +116,20 @@ definitions:
         minimum: 0
         maximum: 100
       rationale: { type: string }
-      evidence: { type: array, items: { type: string } }
+      evidence:
+        type: array
+        description: Evidências vinculadas — trechos do intake, artefatos, dados externos, medições
+        items:
+          oneOf:
+            - type: string
+            - type: object
+              required: [type, ref]
+              properties:
+                type: { enum: [intake, artifact, external, verified] }
+                ref: { type: string, description: "Trecho, caminho de arquivo ou fonte" }
+      confidence:
+        enum: [low, medium, high]
+        description: low = exibir faixa provável em vez de número exato — ver SKY_INDICES_METHOD.md §3
+      band:
+        type: number
+        description: Meia-largura da banda de incerteza (ex. 9 → "81 ±9")

@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../../../layouts/BaseLayout.astro";
 import AgentsPanel from "../../../components/AgentsPanel.astro";
+import ProjectSectionNav from "../../../components/ProjectSectionNav.astro";
 import { loadIndex, loadPreview, loadAgentsView } from "../../../lib/registry";
 import { withBase } from "../../../lib/paths";
 
@@ -32,6 +33,10 @@ if (!project) {
       </p>
     </div>
   </header>
+
+  <div class="container">
+    <ProjectSectionNav slug={slug!} hasProcess activeSection="agentes" />
+  </div>
 
   <main class="container">
     {agents ? (

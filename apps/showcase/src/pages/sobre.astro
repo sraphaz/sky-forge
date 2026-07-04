@@ -9,17 +9,18 @@ import { withBase } from "../lib/paths";
 >
   <header class="site-header">
     <div class="container">
-      <a class="back-link" href={withBase("/")} style="color: var(--color-sky-glow);">← Hub de projetos</a>
+      <a class="back-link" href={withBase("/")} style="color: var(--color-sky-glow);">← Sky-Forge</a>
       <span class="badge">Plataforma · MIT</span>
       <h1>Sobre o Sky-Forge</h1>
       <p>
         Funil conversacional que transforma uma ideia em especificação verificável — com maturidade,
-        índices SKY, UX digna e pacote exportável. Cada projeto no hub é <em>output</em> de um intake;
+        índices SKY, UX digna e pacote exportável. Cada projeto na galeria é <em>output</em> de um intake;
         a página do projeto fala do <strong>aplicativo</strong>, não da ferramenta.
       </p>
       <nav class="hub-nav" aria-label="Navegação principal">
         <a href={withBase("/")} class="hub-nav-link">Projetos</a>
         <a href={withBase("/agentes/")} class="hub-nav-link">Agentes</a>
+        <a href={withBase("/metodo/")} class="hub-nav-link">Método</a>
         <a href={withBase("/sobre/")} class="hub-nav-link hub-nav-active">Sobre</a>
       </nav>
     </div>
@@ -41,7 +42,7 @@ import { withBase } from "../lib/paths";
         <div>
           <h4 class="subheading">Navegador (este site)</h4>
           <p>
-            Hub read-only dos projetos publicados com opt-in
+            Galeria read-only dos projetos publicados com opt-in
             (<code>publish -Public</code>). Ideal para compartilhar visão — sem briefs completos
             nem dados sensíveis.
           </p>
@@ -81,7 +82,7 @@ import { withBase } from "../lib/paths";
         <li><strong>Elevar & UX</strong> — índices SKY, acessibilidade, tokens</li>
         <li><strong>Especificar</strong> — requisitos, integrações, roadmap</li>
         <li><strong>Entregar</strong> — pacote em pasta externa (privado)</li>
-        <li><strong>Apresentar</strong> — preview sanitizado no hub (opt-in)</li>
+        <li><strong>Apresentar</strong> — preview sanitizado na galeria (opt-in)</li>
         <li><strong>Implementar</strong> — scaffold e prompts para o repo do app</li>
       </ol>
     </section>
@@ -99,17 +100,17 @@ import { withBase } from "../lib/paths";
           <span>Pasta externa · briefs, scaffold, Cloud Design</span>
         </div>
         <div class="layer layer-preview">
-          <strong>Previews no hub</strong>
+          <strong>Previews na galeria</strong>
           <span><code>showcase/registry/</code> · metadados sanitizados</span>
         </div>
       </div>
     </section>
 
     <section class="panel">
-      <h3>No hub vs. no pacote</h3>
+      <h3>Na galeria vs. no pacote</h3>
       <div class="two-col">
         <div>
-          <h4 class="subheading">Hub (público, opt-in)</h4>
+          <h4 class="subheading">Galeria (pública, opt-in)</h4>
           <p class="panel-hint">Visão do app, requisitos, arquitetura, roadmap e trilha de produção.</p>
         </div>
         <div>
@@ -147,7 +148,7 @@ import { withBase } from "../lib/paths";
     </section>
 
     <p style="margin-top: 1.5rem;">
-      <a href={withBase("/")}>Ver projetos no hub →</a>
+      <a href={withBase("/")}>Ver projetos →</a>
     </p>
   </main>
 </BaseLayout>

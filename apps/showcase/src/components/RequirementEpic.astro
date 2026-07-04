@@ -1,0 +1,61 @@
+---
+import {
+  phaseClass,
+  priorityLabel,
+  priorityClass,
+  type FunctionalRequirement,
+} from "../lib/registry";
+
+interface Props {
+  epicId: string;
+  title: string;
+  status?: string;
+  requirements: FunctionalRequirement[];
+}
+
+const { epicId, title, status, requirements } = Astro.props;
+const mvpCount = requirements.filter((r) => r.mvp).length;
+const postMvpCount = requirements.length - mvpCount;
+---
+
+<article class="epic-panel" id={`epic-${epicId}`}>
+  <header class="epic-panel-header">
+    <div>
+      <h3 class="epic-panel-title">{title}</h3>
+      <p class="epic-panel-meta">
+        {requirements.length} funcionalidade{requirements.length !== 1 ? "s" : ""}
+        · {mvpCount} MVP
+        {postMvpCount > 0 && <> · {postMvpCount} pós-MVP</>}
+      </p>
+    </div>
+    {status && (
+      <span class={`epic-status ${phaseClass(status)}`}>{status.replace(/_/g, " ")}</span>
+    )}
+  </header>
+
+  <ul class="requirement-cards">
+    {requirements.map((r) => (
+      <li class="requirement-card">
+        <div class="requirement-card-head">
+          <span class="req-id">{r.id}</span>
+          <span class={`priority-badge ${priorityClass(r.priority)}`}>
+            {priorityLabel(r.priority)}
+          </span>
+          {r.mvp ? (
+            <span class="scope-badge scope-mvp">MVP</span>
+          ) : (
+            <span class="scope-badge scope-post">Pós-MVP</span>
+          )}
+        </div>
+        <h4 class="requirement-card-title">{r.title}</h4>
+        {r.description ? (
+          <p class="requirement-card-desc">{r.description}</p>
+        ) : (
+          <p class="requirement-card-desc requirement-card-desc-muted">
+            Detalhamento disponível no pacote exportado.
+          </p>
+        )}
+      </li>
+    ))}
+  </ul>
+</article>
