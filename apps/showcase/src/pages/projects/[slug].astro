@@ -5,6 +5,7 @@ import RequirementEpic from "../../components/RequirementEpic.astro";
 import ArtifactExplorer from "../../components/ArtifactExplorer.astro";
 import MaturityBar from "../../components/MaturityBar.astro";
 import ProjectCtaPanel from "../../components/ProjectCtaPanel.astro";
+import GapsPanel from "../../components/GapsPanel.astro";
 import {
   loadIndex,
   loadPreview,
@@ -21,6 +22,7 @@ import {
   competitorTypeLabel,
   confidenceLabel,
 } from "../../lib/registry";
+import { extractGaps } from "../../lib/gaps";
 import { withBase } from "../../lib/paths";
 
 export async function getStaticPaths() {
@@ -50,6 +52,8 @@ const artifactCount = artifacts.filter((a) => a.available !== false).length;
 const journeyPhase = agents?.journey_phase;
 const market = project.market;
 const hasMarket = market != null && (market.mpi != null || (market.competitors?.length ?? 0) > 0);
+const gaps = extractGaps(project);
+const visionCondensed = vision?.value_proposition?.split("\n")[0] ?? project.excerpt;
 ---
 
 <BaseLayout title={project.title} description={project.excerpt}>
@@ -97,12 +101,32 @@ const hasMarket = market != null && (market.mpi != null || (market.competitors?.
   </header>
 
   <div class="container">
-    <ProjectSectionNav slug={slug!} hasProcess={agents != null} hasMarket={hasMarket} />
+    <ProjectSectionNav slug={slug!} hasProcess={agents != null} hasMarket={hasMarket} gapCount={gaps.total_count} />
   </div>
 
   <main id="main-content" class="container project-sections">
+    <section id="lacunas" class="project-section">
+      <GapsPanel slug={slug!} gaps={gaps} variant="hero" />
+    </section>
+
+    {visionCondensed && (
+      <section id="visao-resumo" class="panel project-section project-section-collapsible">
+        <details class="collapsible-section" open={gaps.total_count === 0}>
+          <summary class="collapsible-summary">
+            <h2 class="section-title">Visão em uma linha</h2>
+          </summary>
+          <p class="vision-condensed">{visionCondensed}</p>
+          {vision?.reference_tenant && (
+            <p class="panel-hint">Tenant de referência: <strong>{vision.reference_tenant}</strong></p>
+          )}
+        </details>
+      </section>
+    )}
+
     {(project.indices || project.dimensions) && (
-      <section id="indices" class="panel project-section">
+      <details class="collapsible-wrap">
+        <summary class="collapsible-toggle">Expandir índices & maturidade</summary>
+        <section id="indices" class="panel project-section">
         <h2 class="section-title">Índices SKY & maturidade</h2>
         {project.indices && (
           <>
@@ -161,8 +185,11 @@ const hasMarket = market != null && (market.mpi != null || (market.competitors?.
           </div>
         )}
       </section>
+      </details>
     )}
     {hasMarket && (
+      <details class="collapsible-wrap">
+        <summary class="collapsible-toggle">Expandir posicionamento de mercado</summary>
       <section id="mercado" class="panel project-section">
         <h2 class="section-title">Posicionamento de mercado</h2>
         <p class="panel-hint section-lead">
@@ -206,8 +233,11 @@ const hasMarket = market != null && (market.mpi != null || (market.competitors?.
           </div>
         )}
       </section>
+      </details>
     )}
 
+    <details class="collapsible-wrap">
+      <summary class="collapsible-toggle">Expandir visão completa</summary>
     <section id="visao" class="panel project-section">
       <h2 class="section-title">Visão do aplicativo</h2>
       {vision?.problem && (
@@ -245,8 +275,11 @@ const hasMarket = market != null && (market.mpi != null || (market.competitors?.
         </div>
       )}
     </section>
+    </details>
 
     {functional.length > 0 && (
+      <details class="collapsible-wrap">
+        <summary class="collapsible-toggle">Expandir funcionalidades ({functional.length})</summary>
       <section id="funcionalidades" class="panel project-section">
         <div class="section-header-row">
           <div>
@@ -271,6 +304,7 @@ const hasMarket = market != null && (market.mpi != null || (market.competitors?.
           />
         ))}
       </section>
+      </details>
     )}
 
     {artifactCount > 0 && (

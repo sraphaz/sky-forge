@@ -6,7 +6,8 @@ interface Props {
   hasProduction?: boolean;
   hasProcess?: boolean;
   hasMarket?: boolean;
-  activeSection?: "overview" | "artefatos" | "agentes";
+  activeSection?: "overview" | "artefatos" | "agentes" | "lacunas";
+  gapCount?: number;
 }
 
 const {
@@ -15,9 +16,13 @@ const {
   hasProcess = true,
   hasMarket = false,
   activeSection = "overview",
+  gapCount = 0,
 } = Astro.props;
 
+const lacunasHref = withBase(`/projects/${slug}/lacunas/`);
+
 const anchorSections = [
+  ...(gapCount > 0 ? [{ id: "lacunas", label: "Lacunas" }] : []),
   { id: "indices", label: "Índices" },
   ...(hasMarket ? [{ id: "mercado", label: "Mercado" }] : []),
   { id: "visao", label: "Visão" },
@@ -30,13 +35,23 @@ const anchorSections = [
 ---
 
 <nav class="section-nav" aria-label="Seções do projeto">
+  <a
+    href={lacunasHref}
+    class:list={[
+      "section-nav-link",
+      "section-nav-lacunas",
+      activeSection === "lacunas" && "section-nav-active",
+    ]}
+  >
+    Lacunas{gapCount > 0 ? ` (${gapCount})` : ""}
+  </a>
   {activeSection === "overview" ? (
     anchorSections.map((s) => (
       <a href={`#${s.id}`} class="section-nav-link">{s.label}</a>
     ))
-  ) : (
+  ) : activeSection !== "lacunas" ? (
     <a href={withBase(`/projects/${slug}/`)} class="section-nav-link">Visão geral</a>
-  )}
+  ) : null}
   <a
     href={withBase(`/projects/${slug}/artefatos/`)}
     class={`section-nav-link ${activeSection === "artefatos" ? "section-nav-active" : ""}`}

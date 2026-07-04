@@ -7,48 +7,50 @@ import { formatPercent } from "../lib/registry";
 interface Props {
   project: ProjectIndexEntry;
   featured?: boolean;
+  gapCount?: number;
 }
 
-const { project, featured = false } = Astro.props;
+const { project, featured = false, gapCount = project.gap_count ?? 0 } = Astro.props;
 const href = withBase(`/projects/${project.slug}/`);
+const lacunasHref = withBase(`/projects/${project.slug}/lacunas/`);
 const isPrivate = project.public === false;
 const skyScore = project.sky_score != null ? Math.round(project.sky_score) : null;
+const primaryHref = gapCount > 0 ? lacunasHref : href;
+const primaryLabel = gapCount > 0 ? `Preencher lacunas (${gapCount}) →` : "Ver dossiê público →";
 ---
 
 <article class:list={["card", "sf-card", featured && "sf-card-featured"]}>
   <div class="meta-row">
+    {gapCount > 0 && <span class="chip chip-gap-count">{gapCount} lacuna{gapCount !== 1 ? "s" : ""}</span>}
     {project.tier && <span class="chip chip-tier">{project.tier}</span>}
     {project.elevation_level && <span class="chip">{project.elevation_level}</span>}
     {isPrivate && <span class="chip chip-private">Privado</span>}
-    {project.tags?.slice(0, 3).map((tag) => <span class="chip chip-tag">{tag}</span>)}
+    {project.tags?.slice(0, 2).map((tag) => <span class="chip chip-tag">{tag}</span>)}
   </div>
   <h2 class="sf-card-title"><a href={href}>{project.title}</a></h2>
   {project.excerpt && <p class="sf-card-excerpt">{project.excerpt}</p>}
 
   <div class="sf-card-metrics">
-    {skyScore != null && (
-      <div class="sf-metric">
-        <span class="sf-metric-label">SKY_SCORE</span>
-        <span class="sf-metric-value sf-grad-text">{skyScore}</span>
-      </div>
-    )}
-    {project.elevation_level && (
-      <div class="sf-metric">
-        <span class="sf-metric-label">NÍVEL</span>
-        <span class="sf-metric-value">{project.elevation_level}</span>
-      </div>
-    )}
     {project.readiness != null && (
       <div class="sf-metric">
-        <span class="sf-metric-label">READINESS</span>
+        <span class="sf-metric-label">MATURIDADE</span>
         <span class="sf-metric-value">{formatPercent(project.readiness)}</span>
+      </div>
+    )}
+    {skyScore != null && (
+      <div class="sf-metric">
+        <span class="sf-metric-label">SKY SCORE</span>
+        <span class="sf-metric-value sf-grad-text">{skyScore}</span>
       </div>
     )}
   </div>
 
-  {project.readiness != null && !featured && (
+  {project.readiness != null && (
     <MaturityBar value={project.readiness} variant="card" id={`maturity-${project.slug}`} />
   )}
 
-  <a href={href} class="sf-card-cta">Ver dossiê público →</a>
+  <a href={primaryHref} class="btn-primary sf-card-primary-cta">{primaryLabel}</a>
+  {gapCount > 0 && (
+    <a href={href} class="sf-card-cta sf-card-secondary-link">Ver visão resumida →</a>
+  )}
 </article>

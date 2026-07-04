@@ -12,6 +12,7 @@ export type ProjectIndexEntry = {
   preview_file: string;
   agents_file?: string;
   public?: boolean;
+  gap_count?: number;
 };
 
 export type AgentEvent = {
@@ -71,6 +72,23 @@ export type FunctionalRequirement = {
   epic?: string;
   priority?: string;
   mvp?: boolean;
+  ai_suggested?: boolean;
+};
+
+export type GapPreviewItem = {
+  id: string;
+  label: string;
+  kind: "maturity" | "ai_suggested" | "pipeline" | "unconfirmed";
+  dimension?: string;
+  detail?: string;
+};
+
+export type ProjectGapsPreview = {
+  total_count: number;
+  next_action?: string;
+  top: GapPreviewItem[];
+  dimension_gaps?: Record<string, string[]>;
+  ai_suggested_rfs?: { id: string; title: string; description?: string }[];
 };
 
 export type RequirementEpic = {
@@ -138,6 +156,8 @@ export type MarketBenchmark = {
 };
 
 export type ProjectPreview = ProjectIndexEntry & {
+  gaps?: ProjectGapsPreview;
+  dimension_gaps?: Record<string, string[]>;
   vision?: ProjectVision;
   requirements?: {
     functional?: FunctionalRequirement[];

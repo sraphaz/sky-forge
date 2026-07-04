@@ -1,0 +1,127 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import ProjectSectionNav from "../../../components/ProjectSectionNav.astro";
+import GapsPanel from "../../../components/GapsPanel.astro";
+import MaturityBar from "../../../components/MaturityBar.astro";
+import {
+  loadIndex,
+  loadPreview,
+  loadAgentsView,
+  formatPercent,
+  dimensionLabel,
+  journeyPhaseLabel,
+} from "../../../lib/registry";
+import { extractGaps } from "../../../lib/gaps";
+import { withBase } from "../../../lib/paths";
+
+export async function getStaticPaths() {
+  const { projects } = loadIndex();
+  return projects
+    .filter((p) => p.public !== false)
+    .map((p) => ({ params: { slug: p.slug } }));
+}
+
+const { slug } = Astro.params;
+const project = await loadPreview(slug!);
+const agents = await loadAgentsView(slug!);
+
+if (!project) {
+  return Astro.redirect(withBase("/"));
+}
+
+const gaps = extractGaps(project);
+const allGaps = project.gaps?.top ?? gaps.top;
+const dimGaps = project.gaps?.dimension_gaps ?? project.dimension_gaps ?? {};
+const journeyPhase = agents?.journey_phase;
+---
+
+<BaseLayout
+  title={`Lacunas — ${project.title}`}
+  description={`${gaps.total_count} lacunas pendentes — continue o intake no Cursor.`}
+>
+  <header class="site-header site-header-compact project-hero-compact">
+    <div class="container">
+      <a class="back-link" href={withBase(`/projects/${slug}/`)}>← Visão do projeto</a>
+      <div class="meta-row">
+        <span class="badge chip-gap-count">Lacunas ({gaps.total_count})</span>
+        {journeyPhase && (
+          <span class="badge project-phase-badge">{journeyPhaseLabel(journeyPhase)}</span>
+        )}
+      </div>
+      <h1>O que falta preencher</h1>
+      <p class="hero-lead">
+        Lacunas são decisões ainda não tomadas — maturidade, sugestões de mercado ou confirmações pendentes.
+        O showcase é read-only; o intake acontece no Cursor.
+      </p>
+      {project.readiness != null && (
+        <div style="margin-top: 1rem; max-width: 28rem;">
+          <MaturityBar value={project.readiness} label="Maturidade geral" variant="hero" />
+        </div>
+      )}
+    </div>
+  </header>
+
+  <div class="container">
+    <ProjectSectionNav slug={slug!} hasProcess={agents != null} activeSection="lacunas" gapCount={gaps.total_count} />
+  </div>
+
+  <main id="main-content" class="container project-sections">
+    <GapsPanel slug={slug!} gaps={gaps} variant="page" />
+
+    {Object.keys(dimGaps).length > 0 && (
+      <section class="panel project-section">
+        <h2 class="section-title">Por dimensão</h2>
+        {Object.entries(dimGaps).map(([dim, list]) => (
+          <div class="gaps-dimension-block">
+            <h3>
+              {dimensionLabel(dim)}
+              {project.dimensions?.[dim] != null && (
+                <span class="chip chip-gap-dim">{formatPercent(project.dimensions[dim])}</span>
+              )}
+            </h3>
+            <ul class="plain-list">
+              {list.map((g) => (
+                <li>{g}</li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </section>
+    )}
+
+    {(project.gaps?.ai_suggested_rfs?.length ?? 0) > 0 && (
+      <section class="panel project-section">
+        <h2 class="section-title">Requisitos sugeridos (benchmark)</h2>
+        <p class="panel-hint">
+          Sugeridos pelo market-benchmark — confirme para incluir no escopo ou descarte explicitamente.
+        </p>
+        <ul class="requirement-cards">
+          {project.gaps!.ai_suggested_rfs!.map((rf) => (
+            <li class="requirement-card">
+              <div class="requirement-card-head">
+                <span class="req-id">{rf.id}</span>
+                <span class="chip chip-gap-ai_suggested">Sugestão IA</span>
+              </div>
+              <p class="requirement-card-title">{rf.title}</p>
+              {rf.description && <p class="requirement-card-desc">{rf.description}</p>}
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
+
+    {allGaps.length > gaps.top.length && (
+      <section class="panel project-section">
+        <h2 class="section-title">Lista completa</h2>
+        <ul class="gaps-full-list">
+          {allGaps.map((gap, i) => (
+            <li class="gaps-full-item">
+              <span class="gaps-rank">{i + 1}</span>
+              <span>{gap.label}</span>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
+  </main>
+</BaseLayout>

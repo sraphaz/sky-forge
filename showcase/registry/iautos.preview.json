@@ -469,6 +469,73 @@
                },
     "spec_version":  "1.2",
     "score_kind":  "intent",
+    "gaps":  {
+                 "total_count":  8,
+                 "next_action":  "Confirme ou descarte requisitos sugeridos pelo benchmark de mercado (RF-014 a RF-019) — nada entra no escopo sem você.",
+                 "top":  [
+                             {
+                                 "id":  "RF-014",
+                                 "label":  "Controle de prazos processuais com alertas",
+                                 "kind":  "ai_suggested",
+                                 "dimension":  "product",
+                                 "detail":  "Sugerido pelo benchmark de mercado — aguarda sua confirmação"
+                             },
+                             {
+                                 "id":  "RF-015",
+                                 "label":  "Captura automática de intimações e andamentos processuais",
+                                 "kind":  "ai_suggested",
+                                 "dimension":  "product",
+                                 "detail":  "Sugerido pelo benchmark de mercado — aguarda sua confirmação"
+                             },
+                             {
+                                 "id":  "dim-sustainability-deploy",
+                                 "label":  "Deploy e CI/CD não detalhados",
+                                 "kind":  "maturity",
+                                 "dimension":  "sustainability"
+                             }
+                         ],
+                 "dimension_gaps":  {
+                                        "sustainability":  [
+                                                               "Deploy e CI/CD não detalhados",
+                                                               "Observabilidade e SLOs por tenant"
+                                                           ],
+                                        "elevation":  [
+                                                          "humanity_connections aguardando confirmação do criador"
+                                                      ]
+                                    },
+                 "ai_suggested_rfs":  [
+                                          {
+                                              "id":  "RF-014",
+                                              "title":  "Controle de prazos processuais com alertas",
+                                              "description":  "Agenda jurídica com prazos por caso e alertas (e-mail/app) — presente em todo o segmento"
+                                          },
+                                          {
+                                              "id":  "RF-015",
+                                              "title":  "Captura automática de intimações e andamentos processuais",
+                                              "description":  "Robôs/integração tribunais (PJe, e-SAJ, TJs, STJ) alimentando a pasta do caso"
+                                          },
+                                          {
+                                              "id":  "RF-016",
+                                              "title":  "Financeiro de honorários e timesheet",
+                                              "description":  "Honorários, parcelas, despesas por caso e registro de horas por atendimento"
+                                          },
+                                          {
+                                              "id":  "RF-017",
+                                              "title":  "Portal do cliente com atualizações automáticas",
+                                              "description":  "Área do cliente final com status do caso e notificações — aproveita o white-label por tenant"
+                                          },
+                                          {
+                                              "id":  "RF-018",
+                                              "title":  "Assinatura eletrônica de documentos",
+                                              "description":  "Assinatura de procurações/contratos integrada ao fluxo de documentos do caso"
+                                          },
+                                          {
+                                              "id":  "RF-019",
+                                              "title":  "CRM jurídico — prospecção e atendimentos pré-caso",
+                                              "description":  "Registro de atendimento antes de virar caso, convertível sem perda de histórico"
+                                          }
+                                      ]
+             },
     "dimensions":  {
                        "technical":  0.85,
                        "sustainability":  0.62,

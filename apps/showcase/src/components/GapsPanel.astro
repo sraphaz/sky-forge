@@ -1,0 +1,112 @@
+---
+import type { ProjectGapsSummary } from "../lib/gaps";
+import { withBase } from "../lib/paths";
+import { dimensionLabel } from "../lib/registry";
+
+interface Props {
+  slug: string;
+  gaps: ProjectGapsSummary;
+  variant?: "hero" | "compact" | "page";
+}
+
+const { slug, gaps, variant = "hero" } = Astro.props;
+const lacunasHref = withBase(`/projects/${slug}/lacunas/`);
+const kindLabels: Record<string, string> = {
+  maturity: "Maturidade",
+  ai_suggested: "Sugestão IA",
+  pipeline: "Pipeline",
+  unconfirmed: "Aguardando confirmação",
+};
+---
+
+<section
+  class:list={["panel", "gaps-panel", `gaps-panel-${variant}`]}
+  aria-labelledby={`gaps-title-${slug}`}
+>
+  <div class="gaps-panel-header">
+    <div>
+      <p class="sf-kicker gaps-kicker">PRÓXIMA LACUNA · {gaps.total_count} pendente{gaps.total_count !== 1 ? "s" : ""}</p>
+      <h2 class="section-title gaps-title" id={`gaps-title-${slug}`}>
+        {variant === "page" ? "Lacunas a preencher" : "Continuar intake"}
+      </h2>
+      <p class="panel-hint gaps-lead">{gaps.next_action}</p>
+    </div>
+    {variant !== "page" && (
+      <a href={lacunasHref} class="btn-primary gaps-primary-cta">
+        Ver todas ({gaps.total_count}) →
+      </a>
+    )}
+  </div>
+
+  {gaps.top.length > 0 ? (
+    <ol class="gaps-list">
+      {gaps.top.map((gap, i) => (
+        <li class="gaps-item">
+          <span class="gaps-rank" aria-hidden="true">{i + 1}</span>
+          <div class="gaps-body">
+            <div class="gaps-item-meta">
+              <span class={`chip chip-gap chip-gap-${gap.kind}`}>{kindLabels[gap.kind] ?? gap.kind}</span>
+              {gap.dimension && (
+                <span class="chip chip-gap-dim">{dimensionLabel(gap.dimension)}</span>
+              )}
+            </div>
+            <strong class="gaps-item-label">{gap.label}</strong>
+            {gap.detail && <p class="gaps-item-detail">{gap.detail}</p>}
+          </div>
+        </li>
+      ))}
+    </ol>
+  ) : (
+    <p class="empty">Nenhuma lacuna registrada — maturidade alta ou dados ainda não publicados.</p>
+  )}
+
+  <div class="gaps-cta-block">
+    <p class="gaps-cta-heading"><strong>Preencher no Cursor</strong></p>
+    <p class="panel-hint">Cole no chat do Cursor ou rode no terminal local:</p>
+    <div class="gaps-command-row">
+      <code class="cta-code gaps-code" id={`intake-cmd-${slug}`}>{gaps.intake_command}</code>
+      <button
+        type="button"
+        class="btn-secondary gaps-copy-btn"
+        data-copy-target={`intake-cmd-${slug}`}
+        data-copy-label="Comando copiado"
+      >
+        Copiar comando
+      </button>
+    </div>
+    <details class="gaps-prompt-details">
+      <summary>Prompt pronto para colar no chat</summary>
+      <pre class="gaps-prompt-pre" id={`cursor-prompt-${slug}`}>{gaps.cursor_prompt}</pre>
+      <button
+        type="button"
+        class="btn-secondary gaps-copy-btn"
+        data-copy-target={`cursor-prompt-${slug}`}
+        data-copy-label="Prompt copiado"
+      >
+        Copiar prompt
+      </button>
+    </details>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll("[data-copy-target]").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const id = btn.getAttribute("data-copy-target");
+      const el = id ? document.getElementById(id) : null;
+      const text = el?.textContent?.trim();
+      if (!text) return;
+      try {
+        await navigator.clipboard.writeText(text);
+        const label = btn.getAttribute("data-copy-label") ?? "Copiado";
+        const prev = btn.textContent;
+        btn.textContent = label;
+        setTimeout(() => {
+          btn.textContent = prev;
+        }, 2000);
+      } catch {
+        /* fallback silencioso — usuário pode selecionar manualmente */
+      }
+    });
+  });
+</script>

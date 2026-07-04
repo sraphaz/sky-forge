@@ -92,6 +92,86 @@ function Read-DimensionScores([string]$Maturity) {
     return $dims
 }
 
+function Read-DimensionGaps([string]$Maturity) {
+    $gaps = @{}
+    foreach ($d in @('business', 'product', 'ux_design', 'technical', 'sustainability', 'elevation')) {
+        if ($Maturity -match "(?ms)$d`:\s*\r?\n(?:[^\r\n]+\r?\n)*?\s+gaps:\s*\r?\n((?:\s+- .+\r?\n)+)") {
+            $items = @([regex]::Matches($Matches[1], '(?m)^\s+- (.+)$') | ForEach-Object { $_.Groups[1].Value.Trim() })
+            if ($items.Count -gt 0) { $gaps[$d] = @($items) }
+        }
+    }
+    return $gaps
+}
+
+function Build-GapsSummary([hashtable]$DimensionGaps, [array]$FunctionalReqs, [array]$PipelinePending, [double]$Readiness) {
+    $top = [System.Collections.Generic.List[hashtable]]::new()
+    $total = 0
+
+    foreach ($dim in ($DimensionGaps.Keys | Sort-Object)) {
+        foreach ($g in @($DimensionGaps[$dim])) {
+            $total++
+            if ($top.Count -lt 3) {
+                $top.Add(@{
+                    id = "dim-$dim-$($g.Substring(0, [Math]::Min(20, $g.Length)).Replace(' ', '-').ToLower())"
+                    label = $g
+                    kind = 'maturity'
+                    dimension = $dim
+                })
+            }
+        }
+    }
+
+    $aiSuggested = @($FunctionalReqs | Where-Object { $_.ai_suggested -eq $true })
+    foreach ($rf in $aiSuggested) {
+        $total++
+        if ($top.Count -lt 3) {
+            $top.Add(@{
+                id = $rf.id
+                label = $rf.title
+                kind = 'ai_suggested'
+                dimension = 'product'
+                detail = 'Sugerido pelo benchmark de mercado — aguarda sua confirmação'
+            })
+        }
+    }
+
+    foreach ($stage in @($PipelinePending)) {
+        $total++
+        if ($top.Count -lt 3) {
+            $top.Add(@{
+                id = "pipe-$($stage.stage)"
+                label = "Pipeline: $($stage.stage -replace '_', ' ')"
+                kind = 'pipeline'
+            })
+        }
+    }
+
+    $nextAction = 'Continue o intake no Cursor para fechar a próxima lacuna.'
+    if ($top.Count -gt 0 -and $top[0].kind -eq 'ai_suggested') {
+        $nextAction = 'Confirme ou descarte requisitos sugeridos pelo benchmark — nada entra no escopo sem você.'
+    } elseif ($top.Count -gt 0 -and $top[0].kind -eq 'maturity') {
+        $nextAction = "Preencha a lacuna em $($top[0].dimension) conversando com o sky-host."
+    } elseif ($Readiness -ge 0.85) {
+        $nextAction = 'Maturidade alta — revise sugestões pendentes ou avance para export.'
+    }
+
+    $aiRfList = @($aiSuggested | ForEach-Object {
+        @{
+            id = $_.id
+            title = $_.title
+            description = $_.description
+        }
+    })
+
+    return @{
+        total_count = $total
+        next_action = $nextAction
+        top = @($top)
+        dimension_gaps = $DimensionGaps
+        ai_suggested_rfs = @($aiRfList)
+    }
+}
+
 function Read-Indices([string]$Merits) {
     $idx = @{}
     foreach ($i in @('SPI', 'HCE', 'GAP', 'CWB', 'UXD', 'MPI')) {
@@ -780,6 +860,9 @@ $vision = [ordered]@{
 }
 
 $functionalReqs = Read-YamlRequirementItems $functional | ForEach-Object {
+    $aiSuggested = $false
+    if ($_.source -eq 'market-benchmark' -or $_.source -eq 'ai_suggested') { $aiSuggested = $true }
+    if ($_.id -match '^RF-0(1[4-9]|[2-9]\d)$') { $aiSuggested = $true }
     @{
         id = $_.id
         title = $_.title
@@ -787,6 +870,7 @@ $functionalReqs = Read-YamlRequirementItems $functional | ForEach-Object {
         epic = $_.epic
         priority = $_.priority
         mvp = [bool]$_.mvp
+        ai_suggested = $aiSuggested
     }
 }
 
@@ -812,6 +896,11 @@ $nfrReqs = Read-YamlRequirementItems $nfr | ForEach-Object {
 $uxSummary = Read-UxSummary $uxSpec
 $integrationsList = @(Read-Integrations $integrations)
 $phasesList = Read-Phases $roadmap
+$dimensionGaps = Read-DimensionGaps $maturity
+$pipelineList = Read-Pipeline $maturity
+$pipelinePending = @($pipelineList | Where-Object { -not $_.approved })
+$readinessNum = if ($readiness) { [double]$readiness } else { 0 }
+$gapsSummary = Build-GapsSummary $dimensionGaps @($functionalReqs) @($pipelinePending) $readinessNum
 
 $artifactContext = @{
     slug = $Slug
@@ -863,8 +952,9 @@ $preview = [ordered]@{
     spec_version = $specVersion
     score_kind = $scoreKind
     dimensions = Read-DimensionScores $maturity
+    gaps = $gapsSummary
     phases = Read-Phases $roadmap
-    pipeline = Read-Pipeline $maturity
+    pipeline = $pipelineList
     artifacts = @($artifactsList)
     public = $isPublic
     published_at = (Get-Date).ToUniversalTime().ToString('o')
@@ -889,6 +979,7 @@ $entry = [ordered]@{
     preview_file = "$Slug.preview.json"
     agents_file = "$Slug.agents.json"
     public = $isPublic
+    gap_count = $gapsSummary.total_count
 }
 $index.projects = @($existing) + @($entry)
 @{ version = '1.0'; projects = $index.projects } | ConvertTo-Json -Depth 10 | Set-Content $indexPath -Encoding UTF8

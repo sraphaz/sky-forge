@@ -1,6 +1,6 @@
 # Sky-Forge — Direção de UX do produto
 
-**Versão**: 1.0 | **Data**: 2026-07-04  
+**Versão**: 1.1 | **Data**: 2026-07-04  
 **Relacionados**: [USER_JOURNEY.md](USER_JOURNEY.md) · [OUTPUTS_AND_SHOWCASE.md](OUTPUTS_AND_SHOWCASE.md) · [sky-host](../../.cursor/rules/sky-host.mdc)
 
 Especificação concisa da experiência do **Sky-Forge como aplicativo**: hub de projetos, exportação para IA, conexão Git e plataforma técnica. Alinha-se aos princípios UXD — calmo, digno, baixa excitação, WCAG AA.
@@ -24,13 +24,17 @@ Ambos compartilham a mesma **linguagem visual** (tokens em `global.css`) e a mes
 
 ```
 Home (hub de projetos)
-├── Lista de projetos (cards)
+├── Painel "Próxima lacuna" (se houver projetos com gaps)
+├── Lista de projetos (cards: maturidade % + chip "N lacunas" + CTA primário)
 ├── Ações globais: Novo projeto · Agentes · Sobre plataforma
 │
-├── /projects/{slug}/          → Saída do projeto (visão elevada)
-│   ├── Resumo · SKY Score · maturidade · índices
-│   ├── Roadmap e pipeline
-│   └── CTAs: Exportar para IA · Conectar Git · Retomar no Cursor
+├── /projects/{slug}/          → Saída do projeto (lacunas FIRST)
+│   ├── Lacunas & próximo passo (painel + link /lacunas/)
+│   ├── Visão condensada (expandir para completa)
+│   ├── Índices, mercado, funcionalidades (progressive disclosure)
+│   └── CTAs: Preencher no Cursor · Exportar para IA · Git
+│
+├── /projects/{slug}/lacunas/  → Lista completa + prompt copy-paste
 │
 ├── /projects/{slug}/agentes/  → Como foi produzido (proveniência)
 │   ├── Coreografia de agentes
@@ -76,8 +80,9 @@ flowchart TB
 
 | Tela | Primário | Secundário | Nunca na mesma ação |
 |------|----------|------------|---------------------|
-| Home | Lista + estado | Link Sobre | Export + publish juntos |
-| Projeto | Maturidade + próximo passo | Índices SKY | Brief completo sensível |
+| Home | Lacunas + lista | Link Sobre | Export + publish juntos |
+| Projeto | Lacunas & próximo passo | Visão condensada | Brief completo sensível |
+| Lacunas | Top 3 + prompt Cursor | Por dimensão / RF sugeridos | Intake inline no browser |
 | Como foi produzido | Agentes + gates | Eventos recentes | Paths absolutos |
 | Sobre | Modos de uso | Diagrama técnico | Urgência / upsell |
 | Exportar | Escolher formato | Destino pasta | Publicar showcase |
@@ -86,8 +91,9 @@ flowchart TB
 
 ## Princípios visuais e de interação
 
-1. **Uma decisão por vez** — máximo 4 opções numeradas (sky-host).
-2. **Progresso sempre visível** — barra de maturidade + fase humana.
+1. **Lacunas primeiro** — impossível abrir o hub sem ver o que falta; badge sticky "Lacunas (N)".
+2. **Uma decisão por vez** — máximo 4 opções numeradas (sky-host).
+3. **Progresso sempre visível** — barra de maturidade + fase humana + chip de lacunas.
 3. **Privacidade por padrão** — projetos locais não aparecem no hub até opt-in.
 4. **Tom calmo** — sem contadores animados, badges piscantes ou copy de urgência.
 5. **Tipografia digna** — Cormorant (títulos) + Mulish (corpo); contraste AA.
@@ -187,11 +193,9 @@ sequenceDiagram
 
 | Elemento | Fonte | Notas |
 |----------|-------|-------|
-| Título + excerpt | `index.json` / sessão | Máx. 2 linhas |
-| Tier / elevação | preview | chips discretos |
-| SKY Score | preview | pill, não animado |
-| Maturidade % | preview | barra opcional na página detalhe |
-| Ação | "Ver visão completa →" | link único primário |
+| Chip lacunas | `gaps.total_count` / preview | destaque visual, link /lacunas/ |
+| Maturidade % | preview | barra no card |
+| Ação primária | gap_count > 0 ? lacunas : visão | um CTA só |
 
 **Estados vazios:**
 

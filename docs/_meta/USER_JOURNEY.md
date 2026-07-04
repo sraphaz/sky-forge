@@ -1,17 +1,18 @@
 # Jornada do usuário Sky-Forge
 
-**Versão**: 1.0 | **Data**: 2026-07-04
+**Versão**: 1.1 | **Data**: 2026-07-04
 
 Mapa de experiência para **sky-host** e agentes especializados. O usuário nunca deve adivinhar o próximo passo.
 
 ## Princípios de UX
 
-1. **Uma decisão por vez** — nunca export + publish + showcase no mesmo turno.
-2. **Progresso visível** — sempre mostrar fase atual e % de maturidade.
-3. **Linguagem humana primeiro** — YAML e comandos só depois da explicação.
-4. **Privacidade por padrão** — pacotes externos; publicação é opt-in explícito.
-5. **Celebrar sem hype** — tom calmo, baixa excitação (alinhado a UXD).
-6. **Sempre oferecer saída** — "posso voltar depois", "manter privado", "só exportar".
+1. **Lacunas primeiro** — home e projeto mostram "próxima lacuna" antes de visão longa; rota `/projects/{slug}/lacunas/`.
+2. **Uma decisão por vez** — nunca export + publish + showcase no mesmo turno.
+3. **Progresso visível** — sempre mostrar fase atual e % de maturidade.
+4. **Linguagem humana primeiro** — YAML e comandos só depois da explicação.
+5. **Privacidade por padrão** — pacotes externos; publicação é opt-in explícito.
+6. **Celebrar sem hype** — tom calmo, baixa excitação (alinhado a UXD).
+7. **Sempre oferecer saída** — "posso voltar depois", "manter privado", "só exportar".
 
 ## Fases da jornada
 
@@ -43,10 +44,10 @@ Onde você está:
   · Fase: Entregar → você pode exportar o pacote agora
 
 O que posso fazer por você agora (escolha uma):
-  1) Exportar pacote para pasta externa (privado)
-  2) Ver o que falta para pacote completo (85%)
-  3) Publicar preview visual no showcase (opt-in)
-  4) Continuar o intake — lacuna: precificação SaaS
+  1) Preencher lacuna — benchmark RF-014 (prazos processuais)
+  2) Exportar pacote para pasta externa (privado)
+  3) Ver todas as lacunas no showcase (/projects/iautos/lacunas/)
+  4) Publicar preview visual no showcase (opt-in)
 
 Responda com o número ou descreva em suas palavras.
 ```

@@ -17,7 +17,8 @@
                                   ],
                          "preview_file":  "iautos.preview.json",
                          "public":  true,
-                         "agents_file":  "iautos.agents.json"
+                         "agents_file":  "iautos.agents.json",
+                         "gap_count":  8
                      }
                  ]
 }
