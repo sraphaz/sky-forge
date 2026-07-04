@@ -187,10 +187,10 @@ Em `/projects/{slug}/lacunas/`:
 - **Lacuna de maturidade** → textarea + *Responder*; a resposta entra em
   `decisions-inbox.yaml`, consumida pelo intake-conductor no próximo turno.
 - **Sugestões de um clique (1.6.0)** — cada lacuna oferece 2–3 respostas
-  plausíveis geradas pela IA a partir do contexto da sessão
-  (`gaps-suggestions.yaml`, `ai_suggested: true`, regenerável no intake);
-  um toque preenche a textarea, sempre editável. Resposta usada tal e qual
-  grava `answer_source: ai_suggested`; texto próprio, `answer_source: user_text`.
+  plausíveis (`gaps-suggestions.yaml`, `ai_suggested: true`); badge **Recomendada**
+  na opção preferida; texto de **efeito** por lacuna e por sugestão.
+- **Lote e refresh (1.7.0)** — marque N lacunas/RFs e envie de uma vez; a página
+  não recarrega — contadores e chips sincronizam via `GET /api/gaps/state`.
 - Toda decisão: evento `gap.decide` na auditoria + `publish-preview.ps1`
   regenera o preview — a página recarrega mostrando chips
   *Aceito por você* / *Recusado* e a contagem de lacunas atualizada.

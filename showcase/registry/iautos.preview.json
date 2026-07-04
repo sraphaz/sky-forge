@@ -518,130 +518,243 @@
     "gaps":  {
                  "ai_suggested_rfs":  [
                                           {
-                                              "status":  "accepted",
-                                              "title":  "Controle de prazos processuais com alertas",
+                                              "effect":  "Inclui agenda jurídica no escopo pós-MVP (épico E6); comum no segmento — não bloqueia MVP E1–E5.",
                                               "description":  "Agenda jurídica com prazos por caso e alertas (e-mail/app) — presente em todo o segmento",
-                                              "id":  "RF-014"
+                                              "title":  "Controle de prazos processuais com alertas",
+                                              "id":  "RF-014",
+                                              "status":  "accepted"
                                           },
                                           {
-                                              "status":  "accepted",
-                                              "title":  "Captura automática de intimações e andamentos processuais",
+                                              "effect":  "Adiciona captura de andamentos (robôs tribunais) ao épico E6; reduz lacuna vs. ADVBOX/EasyJur.",
                                               "description":  "Robôs/integração tribunais (PJe, e-SAJ, TJs, STJ) alimentando a pasta do caso",
-                                              "id":  "RF-015"
+                                              "title":  "Captura automática de intimações e andamentos processuais",
+                                              "id":  "RF-015",
+                                              "status":  "accepted"
                                           },
                                           {
-                                              "status":  "accepted",
-                                              "title":  "Financeiro de honorários e timesheet",
+                                              "effect":  "Financeiro/timesheet entra como could pós-MVP; fora do ERP completo declarado out-of-scope.",
                                               "description":  "Honorários, parcelas, despesas por caso e registro de horas por atendimento",
-                                              "id":  "RF-016"
+                                              "title":  "Financeiro de honorários e timesheet",
+                                              "id":  "RF-016",
+                                              "status":  "accepted"
                                           },
                                           {
-                                              "status":  "accepted",
-                                              "title":  "Portal do cliente com atualizações automáticas",
+                                              "effect":  "Portal do cliente aproveita white-label por tenant; could pós-MVP, sinergia com RF-012.",
                                               "description":  "Área do cliente final com status do caso e notificações — aproveita o white-label por tenant",
-                                              "id":  "RF-017"
+                                              "title":  "Portal do cliente com atualizações automáticas",
+                                              "id":  "RF-017",
+                                              "status":  "accepted"
                                           },
                                           {
-                                              "status":  "accepted",
-                                              "title":  "Assinatura eletrônica de documentos",
+                                              "effect":  "Assinatura eletrônica integrada ao fluxo de documentos; could pós-MVP, épico E6.",
                                               "description":  "Assinatura de procurações/contratos integrada ao fluxo de documentos do caso",
-                                              "id":  "RF-018"
+                                              "title":  "Assinatura eletrônica de documentos",
+                                              "id":  "RF-018",
+                                              "status":  "accepted"
                                           },
                                           {
-                                              "status":  "accepted",
-                                              "title":  "CRM jurídico — prospecção e atendimentos pré-caso",
+                                              "effect":  "CRM pré-caso converte atendimento em caso; could pós-MVP, complementa funil do escritório.",
                                               "description":  "Registro de atendimento antes de virar caso, convertível sem perda de histórico",
-                                              "id":  "RF-019"
+                                              "title":  "CRM jurídico — prospecção e atendimentos pré-caso",
+                                              "id":  "RF-019",
+                                              "status":  "accepted"
                                           }
                                       ],
                  "gap_suggestions":  [
                                          {
-                                             "answers":  [
-                                                             "Assinatura mensal por tenant em 3 faixas (Solo, Escritório, Avançado) por nº de advogados e casos ativos; IA gerenciada inclusa com franquia de tokens e BYOK sem custo adicional.",
-                                                             "Preço por advogado ativo/mês (padrão do segmento — Astrea, ADVBOX) + setup white-label único à parte; Bonomi Almeida como tenant fundador com condição especial vitalícia.",
-                                                             "MVP com early adopters em preço fixo promocional por escritório; revisitar a precificação após 6 meses com custos reais de IA medidos por tenant."
-                                                         ],
+                                             "gap_effect":  "Fecha lacuna de negócio; desbloqueia pitch comercial e projeção de MRR para novos tenants.",
+                                             "items":  [
+                                                           {
+                                                               "effect":  "Modelo previsível para o tenant; facilita projeção de receita recorrente no brief comercial.",
+                                                               "recommended":  true,
+                                                               "text":  "Assinatura mensal por tenant em 3 faixas (Solo, Escritório, Avançado) por nº de advogados e casos ativos; IA gerenciada inclusa com franquia de tokens e BYOK sem custo adicional."
+                                                           },
+                                                           {
+                                                               "effect":  "Alinha com benchmarks do segmento; setup white-label vira receita única de onboarding.",
+                                                               "recommended":  false,
+                                                               "text":  "Preço por advogado ativo/mês (padrão do segmento — Astrea, ADVBOX) + setup white-label único à parte; Bonomi Almeida como tenant fundador com condição especial vitalícia."
+                                                           },
+                                                           {
+                                                               "effect":  "Menor risco comercial no lançamento; precificação calibrada com dados reais de custo de IA.",
+                                                               "recommended":  false,
+                                                               "text":  "MVP com early adopters em preço fixo promocional por escritório; revisitar a precificação após 6 meses com custos reais de IA medidos por tenant."
+                                                           }
+                                                       ],
                                              "dimension":  "business",
                                              "gap":  "modelo de precificação SaaS para outros escritórios não detalhado"
                                          },
                                          {
-                                             "answers":  [
-                                                             "E6 fase 1: conector de e-mail (Resend) e Google Calendar — destravam prazos e comunicação; WhatsApp Business e gov.br ficam para fase 2 conforme demanda dos tenants.",
-                                                             "Priorizar o chat interno de equipe antes dos conectores externos — colaboração é dor imediata do escritório de referência; Integration Hub genérico vem depois.",
-                                                             "Congelar E6 até validar E1–E5 com o tenant Bonomi e decidir a prioridade com dados de uso reais do MVP."
-                                                         ],
+                                             "gap_effect":  "Define ordem do épico E6 (pós-MVP); impacta roadmap e escopo de integrações no pacote.",
+                                             "items":  [
+                                                           {
+                                                               "effect":  "Integrações de maior ROI imediato; WhatsApp e gov.br ficam documentados como fase 2.",
+                                                               "recommended":  true,
+                                                               "text":  "E6 fase 1: conector de e-mail (Resend) e Google Calendar — destravam prazos e comunicação; WhatsApp Business e gov.br ficam para fase 2 conforme demanda dos tenants."
+                                                           },
+                                                           {
+                                                               "effect":  "Ataca colaboração interna primeiro; conectores externos entram depois da validação do MVP.",
+                                                               "recommended":  false,
+                                                               "text":  "Priorizar o chat interno de equipe antes dos conectores externos — colaboração é dor imediata do escritório de referência; Integration Hub genérico vem depois."
+                                                           },
+                                                           {
+                                                               "effect":  "Protege foco do MVP; E6 só reabre com evidência de uso do tenant fundador.",
+                                                               "recommended":  false,
+                                                               "text":  "Congelar E6 até validar E1–E5 com o tenant Bonomi e decidir a prioridade com dados de uso reais do MVP."
+                                                           }
+                                                       ],
                                              "dimension":  "product",
                                              "gap":  "priorização final E6 integrações"
                                          },
                                          {
-                                             "answers":  [
-                                                             "Derivar critérios Given/When/Then de cada IA-xx do handoff no functional-requirements.yaml, validados pelo fundador por épico antes da implementação.",
-                                                             "Aceite mínimo por RF: fluxo feliz coberto por Playwright + regra ouro (original separado de interpretação) verificada; detalhamento fino por sprint."
-                                                         ],
+                                             "gap_effect":  "Eleva maturidade de produto; cada RF do handoff ganha critério verificável antes da implementação.",
+                                             "items":  [
+                                                           {
+                                                               "effect":  "Critérios rastreáveis por épico; intake pode marcar produto como especificado.",
+                                                               "recommended":  true,
+                                                               "text":  "Derivar critérios Given/When/Then de cada IA-xx do handoff no functional-requirements.yaml, validados pelo fundador por épico antes da implementação."
+                                                           },
+                                                           {
+                                                               "effect":  "DoD pragmático por sprint; regra ouro vira gate automatizado.",
+                                                               "recommended":  false,
+                                                               "text":  "Aceite mínimo por RF: fluxo feliz coberto por Playwright + regra ouro (original separado de interpretação) verificada; detalhamento fino por sprint."
+                                                           }
+                                                       ],
                                              "dimension":  "product",
                                              "gap":  "critérios de aceite por IA-01..IA-20"
                                          },
                                          {
-                                             "answers":  [
-                                                             "Gerar theme/tokens.css por tenant a partir do ux-spec (primary, accent, background, tipografia) com fallback neutro e validação automática de contraste AA no CI.",
-                                                             "Adotar o formato W3C Design Tokens (JSON) como fonte única, com build exportando CSS variables e tema Tailwind por tenant."
-                                                         ],
+                                             "gap_effect":  "Fecha lacuna UX; cada tenant exporta tema consistente com o mockup Cloud Design.",
+                                             "items":  [
+                                                           {
+                                                               "effect":  "Tokens prontos para o repo do app; contraste AA verificado no pipeline.",
+                                                               "recommended":  true,
+                                                               "text":  "Gerar theme/tokens.css por tenant a partir do ux-spec (primary, accent, background, tipografia) com fallback neutro e validação automática de contraste AA no CI."
+                                                           },
+                                                           {
+                                                               "effect":  "Padrão interoperável; facilita handoff para implementação multi-tenant.",
+                                                               "recommended":  false,
+                                                               "text":  "Adotar o formato W3C Design Tokens (JSON) como fonte única, com build exportando CSS variables e tema Tailwind por tenant."
+                                                           }
+                                                       ],
                                              "dimension":  "ux_design",
                                              "gap":  "tokens white-label exportáveis para código"
                                          },
                                          {
-                                             "answers":  [
-                                                             "Integrar axe-core ao Playwright nos fluxos críticos (login, caso, editor, aprovação de rascunho) com gate no CI — violação AA bloqueia merge.",
-                                                             "Auditoria manual com NVDA/VoiceOver por release nas telas-chave + checklist WCAG 2.1 AA documentado no Definition of Done."
-                                                         ],
+                                             "gap_effect":  "Fecha lacuna UX e sustenta NFR-004 (WCAG 2.1 AA) com evidência no CI.",
+                                             "items":  [
+                                                           {
+                                                               "effect":  "Acessibilidade contínua; regressões bloqueadas antes do deploy.",
+                                                               "recommended":  true,
+                                                               "text":  "Integrar axe-core ao Playwright nos fluxos críticos (login, caso, editor, aprovação de rascunho) com gate no CI — violação AA bloqueia merge."
+                                                           },
+                                                           {
+                                                               "effect":  "Complementa automação com validação humana por release.",
+                                                               "recommended":  false,
+                                                               "text":  "Auditoria manual com NVDA/VoiceOver por release nas telas-chave + checklist WCAG 2.1 AA documentado no Definition of Done."
+                                                           }
+                                                       ],
                                              "dimension":  "ux_design",
                                              "gap":  "testes a11y formais"
                                          },
                                          {
-                                             "answers":  [
-                                                             "Policies RLS por tenant_id em todas as tabelas, com teste automatizado de isolamento no CI (NFR-001) incluindo caso negativo cross-tenant antes do go-live.",
-                                                             "RLS no Postgres + defesa em profundidade: escopo de tenant também no middleware da API; revisão de policies obrigatória em cada migração."
-                                                         ],
+                                             "gap_effect":  "Fecha lacuna técnica e destrava NFR-001 (isolamento multi-tenant) em produção.",
+                                             "items":  [
+                                                           {
+                                                               "effect":  "Isolamento verificável; gate de deploy exige teste cross-tenant negativo.",
+                                                               "recommended":  true,
+                                                               "text":  "Policies RLS por tenant_id em todas as tabelas, com teste automatizado de isolamento no CI (NFR-001) incluindo caso negativo cross-tenant antes do go-live."
+                                                           },
+                                                           {
+                                                               "effect":  "Dupla camada de proteção; migrações revisadas contra vazamento.",
+                                                               "recommended":  false,
+                                                               "text":  "RLS no Postgres + defesa em profundidade: escopo de tenant também no middleware da API; revisão de policies obrigatória em cada migração."
+                                                           }
+                                                       ],
                                              "dimension":  "technical",
                                              "gap":  "RLS SQL em produção"
                                          },
                                          {
-                                             "answers":  [
-                                                             "Vault (ou OpenBao) em produção para chaves BYOK por tenant, com rotação e auditoria de acesso; segredos nunca em variáveis de ambiente do app.",
-                                                             "Fase 1 só com IA gerenciada (no-training) em produção; BYOK habilitado por tenant após homologação do Vault em staging com teste de revogação de chave."
-                                                         ],
+                                             "gap_effect":  "Fecha lacuna técnica do RF-010 (IA híbrida); habilita BYOK seguro por tenant.",
+                                             "items":  [
+                                                           {
+                                                               "effect":  "BYOK operacional com trilha de auditoria; alinhado ao handoff IA-15.",
+                                                               "recommended":  true,
+                                                               "text":  "Vault (ou OpenBao) em produção para chaves BYOK por tenant, com rotação e auditoria de acesso; segredos nunca em variáveis de ambiente do app."
+                                                           },
+                                                           {
+                                                               "effect":  "Reduz complexidade do MVP; BYOK entra após homologação controlada.",
+                                                               "recommended":  false,
+                                                               "text":  "Fase 1 só com IA gerenciada (no-training) em produção; BYOK habilitado por tenant após homologação do Vault em staging com teste de revogação de chave."
+                                                           }
+                                                       ],
                                              "dimension":  "technical",
                                              "gap":  "Vault/BYOK em ambiente real"
                                          },
                                          {
-                                             "answers":  [
-                                                             "GitHub Actions: lint + typecheck + Vitest + Playwright em cada PR; deploy automático em staging e produção com aprovação manual (gate humano).",
-                                                             "Pipeline com migrações de banco versionadas e o teste de isolamento RLS como etapa obrigatória antes de qualquer deploy."
-                                                         ],
+                                             "gap_effect":  "Fecha lacuna de sustentação; pipeline repetível para deploys seguros.",
+                                             "items":  [
+                                                           {
+                                                               "effect":  "Qualidade contínua; produção só após aprovação explícita.",
+                                                               "recommended":  true,
+                                                               "text":  "GitHub Actions: lint + typecheck + Vitest + Playwright em cada PR; deploy automático em staging e produção com aprovação manual (gate humano)."
+                                                           },
+                                                           {
+                                                               "effect":  "Migrações seguras; RLS testado a cada release.",
+                                                               "recommended":  false,
+                                                               "text":  "Pipeline com migrações de banco versionadas e o teste de isolamento RLS como etapa obrigatória antes de qualquer deploy."
+                                                           }
+                                                       ],
                                              "dimension":  "sustainability",
                                              "gap":  "CI/CD"
                                          },
                                          {
-                                             "answers":  [
-                                                             "Sentry para erros + OpenTelemetry nas rotas críticas (RAG, upload, editor), com dashboard de latência p95 do retriever (meta NFR-005 \u003c 3s).",
-                                                             "Logs estruturados por tenant com correlation id + alerta de custo de IA por tenant (aviso a 80% do orçamento mensal)."
-                                                         ],
+                                             "gap_effect":  "Fecha lacuna ops; suporta NFR-005 (RAG \u003c 3s p95) com métricas reais.",
+                                             "items":  [
+                                                           {
+                                                               "effect":  "Visibilidade de erros e latência; alertas quando RAG degradar.",
+                                                               "recommended":  true,
+                                                               "text":  "Sentry para erros + OpenTelemetry nas rotas críticas (RAG, upload, editor), com dashboard de latência p95 do retriever (meta NFR-005 \u003c 3s)."
+                                                           },
+                                                           {
+                                                               "effect":  "Rastreio por tenant; controle de custo de IA antes de estourar budget.",
+                                                               "recommended":  false,
+                                                               "text":  "Logs estruturados por tenant com correlation id + alerta de custo de IA por tenant (aviso a 80% do orçamento mensal)."
+                                                           }
+                                                       ],
                                              "dimension":  "sustainability",
                                              "gap":  "observabilidade produção"
                                          },
                                          {
-                                             "answers":  [
-                                                             "Runbook mínimo: backup/restore por tenant testado, rotação de chaves, resposta a incidente LGPD (comunicação em 72h) e rollback de deploy.",
-                                                             "Documentar onboarding/offboarding de tenant (tema, domínio, storage, IA) como checklist executável em scripts/."
-                                                         ],
+                                             "gap_effect":  "Fecha lacuna ops; equipe sabe responder a incidentes LGPD e rollback.",
+                                             "items":  [
+                                                           {
+                                                               "effect":  "Procedimentos LGPD e rollback documentados; backup testado.",
+                                                               "recommended":  true,
+                                                               "text":  "Runbook mínimo: backup/restore por tenant testado, rotação de chaves, resposta a incidente LGPD (comunicação em 72h) e rollback de deploy."
+                                                           },
+                                                           {
+                                                               "effect":  "Onboarding repetível; menos erro humano ao criar tenant.",
+                                                               "recommended":  false,
+                                                               "text":  "Documentar onboarding/offboarding de tenant (tema, domínio, storage, IA) como checklist executável em scripts/."
+                                                           }
+                                                       ],
                                              "dimension":  "sustainability",
                                              "gap":  "runbook ops"
                                          },
                                          {
-                                             "answers":  [
-                                                             "Sessão de 30 min com o fundador para revisar as sugestões de elevação (acesso à justiça, educação jurídica do cliente final) marcando cada uma como aceita/recusada.",
-                                                             "Aceitar como pós-MVP a conexão com acesso à justiça (pro bono facilitado pelo portal do cliente) e documentar as demais como exploratórias."
-                                                         ],
+                                             "gap_effect":  "Fecha lacuna de elevação; índices SKY e conexões humanity_connections deixam de ser só sugestão.",
+                                             "items":  [
+                                                           {
+                                                               "effect":  "Elevação confirmada item a item; sky-merits.yaml atualizado com evidência humana.",
+                                                               "recommended":  true,
+                                                               "text":  "Sessão de 30 min com o fundador para revisar as sugestões de elevação (acesso à justiça, educação jurídica do cliente final) marcando cada uma como aceita/recusada."
+                                                           },
+                                                           {
+                                                               "effect":  "Uma conexão entra no roadmap pós-MVP; demais ficam como exploratório documentado.",
+                                                               "recommended":  false,
+                                                               "text":  "Aceitar como pós-MVP a conexão com acesso à justiça (pro bono facilitado pelo portal do cliente) e documentar as demais como exploratórias."
+                                                           }
+                                                       ],
                                              "dimension":  "elevation",
                                              "gap":  "confirmar sugestões ELV com fundador"
                                          }
@@ -1066,6 +1179,6 @@
                       }
                   ],
     "public":  true,
-    "published_at":  "2026-07-04T19:03:26.3690078Z",
+    "published_at":  "2026-07-04T19:18:59.6888268Z",
     "outputs_dir":  "C:\\Users\\rapha\\CursorRepos\\sky-forge\\outputs\\iautos"
 }

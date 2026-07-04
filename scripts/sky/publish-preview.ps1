@@ -184,22 +184,73 @@ function Build-GapsSummary([hashtable]$DimensionGaps, [array]$FunctionalReqs, [a
 
 function Read-GapSuggestions([string]$Content) {
     # gaps-suggestions.yaml — respostas plausíveis geradas pela IA por lacuna
-    # (ai_suggested até o criador usar; ver SKY_APP_UX.md, modo interativo local)
+    # Schema v1.1: items[] com text, effect, recommended; gap_effect opcional
     if (-not $Content) { return @() }
-    $items = @()
-    foreach ($m in [regex]::Matches($Content, '(?m)^  - dimension:\s*(\S+)\s*\r?\n\s+gap:\s*([^\r\n]+)\r?\n\s+answers:\s*\r?\n((?:^[ \t]{4,}- [^\r\n]+\r?\n?)+)')) {
-        $answers = @([regex]::Matches($m.Groups[3].Value, '(?m)^\s+- (.+)$') | ForEach-Object {
-            $_.Groups[1].Value.Trim().Trim('"').Trim("'")
-        })
-        if ($answers.Count -gt 0) {
-            $items += @{
-                dimension = $m.Groups[1].Value
-                gap = $m.Groups[2].Value.Trim().Trim('"').Trim("'")
-                answers = @($answers)
+    $items = [System.Collections.Generic.List[hashtable]]::new()
+    $lines = $Content -split "`r?`n"
+    $i = 0
+    while ($i -lt $lines.Count) {
+        if ($lines[$i] -match '^  - dimension:\s*(\S+)\s*$') {
+            $dim = $Matches[1]
+            $i++
+            $gap = $null
+            $gapEffect = $null
+            $answerItems = [System.Collections.Generic.List[hashtable]]::new()
+            while ($i -lt $lines.Count -and ($lines[$i] -match '^\s{4}\S' -or $lines[$i] -match '^\s{4}$')) {
+                $line = $lines[$i]
+                if ($line -match '^\s{4}gap:\s*(.+)$') {
+                    $gap = $Matches[1].Trim().Trim('"').Trim("'")
+                }
+                elseif ($line -match '^\s{4}gap_effect:\s*(.+)$') {
+                    $gapEffect = $Matches[1].Trim().Trim('"').Trim("'")
+                }
+                elseif ($line -match '^\s{4}items:\s*$') {
+                    $i++
+                    while ($i -lt $lines.Count -and $lines[$i] -match '^\s{6}- text:\s*(.+)$') {
+                        $text = $Matches[1].Trim().Trim('"').Trim("'")
+                        $effect = $null
+                        $recommended = $false
+                        $i++
+                        while ($i -lt $lines.Count -and $lines[$i] -match '^\s{8}\S') {
+                            if ($lines[$i] -match '^\s{8}effect:\s*(.+)$') {
+                                $effect = $Matches[1].Trim().Trim('"').Trim("'")
+                            }
+                            elseif ($lines[$i] -match '^\s{8}recommended:\s*true\s*$') {
+                                $recommended = $true
+                            }
+                            $i++
+                        }
+                        $answerItems.Add(@{ text = $text; effect = $effect; recommended = $recommended })
+                    }
+                    continue
+                }
+                $i++
             }
+            if ($gap -and $answerItems.Count -gt 0) {
+                $entry = @{
+                    dimension = $dim
+                    gap = $gap
+                    items = @($answerItems)
+                }
+                if ($gapEffect) { $entry['gap_effect'] = $gapEffect }
+                $items.Add($entry)
+            }
+            continue
         }
+        $i++
     }
     return @($items)
+}
+
+function Read-RfEffects([string]$Content) {
+    $map = @{}
+    if (-not $Content) { return $map }
+    foreach ($m in [regex]::Matches($Content, '(?m)^  - id:\s*(RF-\d{3})\s*\r?\n\s+effect:\s*(.+)$')) {
+        $id = $m.Groups[1].Value
+        $effect = $m.Groups[2].Value.Trim().Trim('"').Trim("'")
+        $map[$id] = $effect
+    }
+    return $map
 }
 
 function Read-Indices([string]$Merits) {
@@ -901,7 +952,11 @@ $functionalReqs = Read-YamlRequirementItems $functional | ForEach-Object {
         priority = $_.priority
         mvp = [bool]$_.mvp
         ai_suggested = $aiSuggested
-        user_confirmed = if ($_.ContainsKey('user_confirmed')) { [bool]$_.user_confirmed } else { $null }
+        user_confirmed = if ($null -ne $_ -and $_.ContainsKey('user_confirmed') -and $null -ne $_.user_confirmed) {
+            if ($_.user_confirmed -eq $true -or $_.user_confirmed -eq 'true') { $true }
+            elseif ($_.user_confirmed -eq $false -or $_.user_confirmed -eq 'false') { $false }
+            else { $null }
+        } else { $null }
     }
 }
 
@@ -934,7 +989,27 @@ $readinessNum = if ($readiness) { [double]$readiness } else { 0 }
 $gapsSummary = Build-GapsSummary $dimensionGaps @($functionalReqs) @($pipelinePending) $readinessNum
 $gapSuggestionsRaw = Resolve-SkyDataFile $Slug 'gaps-suggestions.yaml' 'gaps-suggestions.yaml'
 $gapSuggestions = @(Read-GapSuggestions $gapSuggestionsRaw)
+$rfEffects = Read-RfEffects $gapSuggestionsRaw
 if ($gapSuggestions.Count -gt 0) { $gapsSummary['gap_suggestions'] = $gapSuggestions }
+if ($gapsSummary['ai_suggested_rfs'] -and $rfEffects.Count -gt 0) {
+    $merged = [System.Collections.Generic.List[hashtable]]::new()
+    foreach ($rf in @($gapsSummary['ai_suggested_rfs'])) {
+        if ($null -eq $rf) { continue }
+        $id = $rf.id
+        if ($rfEffects.ContainsKey($id)) {
+            $merged.Add([ordered]@{
+                id = $id
+                title = $rf.title
+                description = $rf.description
+                status = $rf.status
+                effect = $rfEffects[$id]
+            })
+        } else {
+            $merged.Add($rf)
+        }
+    }
+    $gapsSummary['ai_suggested_rfs'] = @($merged)
+}
 
 $artifactContext = @{
     slug = $Slug

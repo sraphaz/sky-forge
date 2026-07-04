@@ -1,23 +1,11 @@
 /**
  * sky-local-api — modo interativo local do showcase.
  *
- * Integração Astro que registra endpoints de escrita SOMENTE no dev server
- * (`astro dev` / `sky.ps1 showcase`). O build estático (GitHub Pages) não é
- * afetado: nenhum adapter, nenhuma rota server-side no output.
- *
- * Endpoints (sob o `base` do site, ex.: /sky-forge/api/...):
- *   GET  /api/health       → { ok: true } — sonda de capacidade usada pela UI
- *   POST /api/gaps/decide  → { slug, item_id, decision, note?, dry_run? }
- *
- * Decisões:
- *   confirm | reject  → RFs ai_suggested: user_confirmed: true|false em
- *                       .sky/sessions/{slug}/functional-requirements.yaml
- *   skip              → registra em decisions-inbox.yaml, sem alterar RFs
- *   answer            → resposta livre a uma lacuna aberta (note obrigatória),
- *                       registrada em decisions-inbox.yaml para o intake
- *
- * Toda decisão: auditoria via record-agent-event.ps1 e regeneração do preview
- * via publish-preview.ps1 (a UI recarrega e reflete o novo estado).
+ * Endpoints (dev server only, sob base /sky-forge):
+ *   GET  /api/health
+ *   GET  /api/gaps/state?slug=
+ *   POST /api/gaps/decide
+ *   POST /api/gaps/decide-batch
  */
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
@@ -29,12 +17,14 @@ const execFileAsync = promisify(execFile);
 
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..", "..");
 const SESSIONS_DIR = path.join(REPO_ROOT, ".sky", "sessions");
+const REGISTRY_DIR = path.join(REPO_ROOT, "showcase", "registry");
 const SCRIPTS_DIR = path.join(REPO_ROOT, "scripts", "sky");
 
-/**
- * publish-preview.ps1 prefere o pacote exportado (outputs/{slug}) à sessão;
- * decisões precisam ser espelhadas nos dois para o preview refletir o estado.
- */
+const SLUG_RE = /^[a-z0-9][a-z0-9-]{0,63}$/;
+const ITEM_ID_RE = /^[A-Za-z0-9._-]{1,64}$/;
+const RF_ID_RE = /^RF-\d{3}$/;
+const DECISIONS = new Set(["confirm", "reject", "skip", "answer"]);
+
 function getOutputsDir() {
   if (process.env.SKY_OUTPUTS_DIR) {
     return path.isAbsolute(process.env.SKY_OUTPUTS_DIR)
@@ -47,15 +37,10 @@ function getOutputsDir() {
     const m = raw.match(/^outputs:\s*\r?\n(?:[^\r\n]+\r?\n)*?\s+dir:\s*(.+)$/m);
     if (m) dir = m[1].trim().replace(/^["']|["']$/g, "");
   } catch {
-    /* config ausente — usa default */
+    /* default */
   }
   return path.isAbsolute(dir) ? dir : path.join(REPO_ROOT, dir);
 }
-
-const SLUG_RE = /^[a-z0-9][a-z0-9-]{0,63}$/;
-const ITEM_ID_RE = /^[A-Za-z0-9._-]{1,64}$/;
-const RF_ID_RE = /^RF-\d{3}$/;
-const DECISIONS = new Set(["confirm", "reject", "skip", "answer"]);
 
 function sendJson(res, status, body) {
   res.statusCode = status;
@@ -70,7 +55,7 @@ function readBody(req) {
     let size = 0;
     req.on("data", (chunk) => {
       size += chunk.length;
-      if (size > 64 * 1024) {
+      if (size > 256 * 1024) {
         reject(new Error("body too large"));
         req.destroy();
         return;
@@ -86,10 +71,6 @@ function detectEol(text) {
   return text.includes("\r\n") ? "\r\n" : "\n";
 }
 
-/**
- * Define user_confirmed dentro do bloco do RF preservando comentários,
- * ordem e line endings do YAML (edição textual dirigida, sem re-serializar).
- */
 function setUserConfirmed(yamlText, rfId, value) {
   const eol = detectEol(yamlText);
   const lines = yamlText.split(/\r?\n/);
@@ -143,7 +124,6 @@ function appendToDecisionsInbox(sessionDir, slug, entry) {
   if (!fs.existsSync(inboxPath)) {
     const header = [
       "# Decisões tomadas no showcase local — consumir no próximo intake",
-      "# (intake-conductor aplica em maturity/brief e remove entradas processadas).",
       'version: "1.0"',
       `slug: ${slug}`,
       "decisions:",
@@ -153,6 +133,28 @@ function appendToDecisionsInbox(sessionDir, slug, entry) {
   }
   fs.appendFileSync(inboxPath, lines.join(eol) + eol, "utf8");
   return inboxPath;
+}
+
+function readDecisionsInbox(sessionDir) {
+  const inboxPath = path.join(sessionDir, "decisions-inbox.yaml");
+  if (!fs.existsSync(inboxPath)) return [];
+  const raw = fs.readFileSync(inboxPath, "utf8");
+  const entries = [];
+  const blocks = raw.split(/\r?\n(?=  - at:)/);
+  for (const block of blocks) {
+    const itemM = block.match(/item_id:\s*"([^"]+)"/);
+    const decisionM = block.match(/decision:\s*(\w+)/);
+    if (itemM && decisionM) {
+      entries.push({ item_id: itemM[1], decision: decisionM[1] });
+    }
+  }
+  return entries;
+}
+
+function readPreview(slug) {
+  const previewPath = path.join(REGISTRY_DIR, `${slug}.preview.json`);
+  if (!fs.existsSync(previewPath)) return null;
+  return JSON.parse(fs.readFileSync(previewPath, "utf8"));
 }
 
 async function runPowerShell(scriptPath, args) {
@@ -165,7 +167,7 @@ async function runPowerShell(scriptPath, args) {
 
 async function recordAudit(slug, itemId, decision, dryRun, extra = "") {
   const script = path.join(SCRIPTS_DIR, "record-agent-event.ps1");
-  if (!fs.existsSync(script)) return false;
+  if (!fs.existsSync(script) || dryRun) return false;
   try {
     await runPowerShell(script, [
       "-Slug", slug,
@@ -173,7 +175,7 @@ async function recordAudit(slug, itemId, decision, dryRun, extra = "") {
       "-Action", "gap.decide",
       "-Outcome", "ok",
       "-AutonomyLevel", "activate",
-      "-Details", `${itemId} ${decision}${extra} via showcase local${dryRun ? " (dry_run)" : ""}`,
+      "-Details", `${itemId} ${decision}${extra} via showcase local`,
     ]);
     return true;
   } catch {
@@ -192,54 +194,89 @@ async function refreshPreview(slug) {
   }
 }
 
-async function handleDecide(req, res) {
-  let payload;
-  try {
-    payload = JSON.parse((await readBody(req)) || "{}");
-  } catch {
-    return sendJson(res, 400, { ok: false, error: "JSON inválido" });
+function buildGapsState(slug) {
+  const preview = readPreview(slug);
+  const sessionDir = path.join(SESSIONS_DIR, slug);
+  const inbox = readDecisionsInbox(sessionDir);
+  const inboxById = new Map(inbox.map((e) => [e.item_id, e]));
+
+  const gaps = preview?.gaps ?? {};
+  const totalCount = gaps.total_count ?? 0;
+  const items = [];
+
+  if (gaps.ai_suggested_rfs) {
+    for (const rf of gaps.ai_suggested_rfs) {
+      const inboxEntry = inboxById.get(rf.id);
+      let status = rf.status ?? "pending";
+      if (inboxEntry?.decision === "confirm") status = "accepted";
+      else if (inboxEntry?.decision === "reject") status = "rejected";
+      else if (inboxEntry?.decision === "skip") status = "skipped";
+      items.push({
+        id: rf.id,
+        kind: "rf_suggestion",
+        label: rf.title,
+        status,
+        effect: rf.effect ?? null,
+      });
+    }
   }
 
-  const slug = String(payload.slug ?? "");
+  const dimGaps = gaps.dimension_gaps ?? preview?.dimension_gaps ?? {};
+  for (const [dim, list] of Object.entries(dimGaps)) {
+    list.forEach((label, idx) => {
+      const id = `dim-${dim}-${idx + 1}`;
+      const inboxEntry = inboxById.get(id);
+      const status = inboxEntry?.decision === "answer" ? "answered" : "pending";
+      items.push({ id, kind: "gap_answer", label, dimension: dim, status });
+    });
+  }
+
+  const answeredCount = items.filter((i) =>
+    i.status === "answered" || i.status === "accepted" || i.status === "rejected" || i.status === "skipped",
+  ).length;
+  const uiPendingCount = Math.max(0, totalCount - items.filter((i) =>
+    i.status === "answered" && i.kind === "gap_answer",
+  ).length);
+
+  return {
+    slug,
+    total_count: totalCount,
+    ui_pending_count: uiPendingCount,
+    answered_count: answeredCount,
+    next_action: gaps.next_action ?? null,
+    top: gaps.top ?? [],
+    ai_suggested_rfs: gaps.ai_suggested_rfs ?? [],
+    items,
+  };
+}
+
+async function processDecision(slug, payload, opts = {}) {
+  const { dryRun = false, skipAudit = false } = opts;
   const itemId = String(payload.item_id ?? "");
   const decision = String(payload.decision ?? "");
   const note = typeof payload.note === "string" ? payload.note.slice(0, 4000).trim() : "";
-  // Origem da resposta: sugestão da IA usada tal e qual ou texto do criador
   const answerSource = payload.answer_source === "ai_suggested" ? "ai_suggested" : "user_text";
   const label = typeof payload.label === "string" ? payload.label.slice(0, 300).trim() : "";
   const dimension = typeof payload.dimension === "string" ? payload.dimension.slice(0, 40).trim() : "";
-  const dryRun = payload.dry_run === true;
 
-  if (!SLUG_RE.test(slug)) return sendJson(res, 400, { ok: false, error: "slug inválido" });
-  if (!ITEM_ID_RE.test(itemId)) return sendJson(res, 400, { ok: false, error: "item_id inválido" });
-  if (!DECISIONS.has(decision)) {
-    return sendJson(res, 400, { ok: false, error: "decision deve ser confirm|reject|skip|answer" });
-  }
-  if (decision === "answer" && !note) {
-    return sendJson(res, 400, { ok: false, error: "answer requer note com a resposta" });
-  }
+  if (!SLUG_RE.test(slug)) throw new Error("slug inválido");
+  if (!ITEM_ID_RE.test(itemId)) throw new Error("item_id inválido");
+  if (!DECISIONS.has(decision)) throw new Error("decision inválida");
+  if (decision === "answer" && !note) throw new Error("answer requer note");
 
   const sessionDir = path.join(SESSIONS_DIR, slug);
-  if (!fs.existsSync(sessionDir)) {
-    return sendJson(res, 404, { ok: false, error: `sessão não encontrada: ${slug}` });
-  }
+  if (!fs.existsSync(sessionDir)) throw new Error(`sessão não encontrada: ${slug}`);
 
   const isRf = RF_ID_RE.test(itemId);
   const changes = { functional_requirements: false, exported_package: false, decisions_inbox: false };
 
-  // confirm/reject de RF sugerido → user_confirmed no YAML da sessão
-  // e no pacote exportado (se existir), que é o que o preview publica
   if (isRf && (decision === "confirm" || decision === "reject")) {
     const value = decision === "confirm" ? "true" : "false";
     const sessionRfPath = path.join(sessionDir, "functional-requirements.yaml");
-    if (!fs.existsSync(sessionRfPath)) {
-      return sendJson(res, 404, { ok: false, error: "functional-requirements.yaml não encontrado" });
-    }
+    if (!fs.existsSync(sessionRfPath)) throw new Error("functional-requirements.yaml não encontrado");
     const original = fs.readFileSync(sessionRfPath, "utf8");
     const updated = setUserConfirmed(original, itemId, value);
-    if (updated == null) {
-      return sendJson(res, 404, { ok: false, error: `${itemId} não encontrado na sessão` });
-    }
+    if (updated == null) throw new Error(`${itemId} não encontrado na sessão`);
     if (!dryRun && updated !== original) {
       fs.writeFileSync(sessionRfPath, updated, "utf8");
       changes.functional_requirements = true;
@@ -257,7 +294,6 @@ async function handleDecide(req, res) {
     }
   }
 
-  // Toda decisão vai para o inbox — trilha p/ intake-conductor
   if (!dryRun) {
     appendToDecisionsInbox(sessionDir, slug, {
       at: new Date().toISOString(),
@@ -273,18 +309,80 @@ async function handleDecide(req, res) {
   }
 
   const auditExtra = decision === "answer" ? ` (${answerSource})` : "";
-  const audited = dryRun ? false : await recordAudit(slug, itemId, decision, dryRun, auditExtra);
-  const previewRefreshed = dryRun ? false : await refreshPreview(slug);
+  const audited = !skipAudit && !dryRun && (await recordAudit(slug, itemId, decision, dryRun, auditExtra));
 
+  return { item_id: itemId, decision, changes, audited };
+}
+
+async function handleDecide(req, res) {
+  let payload;
+  try {
+    payload = JSON.parse((await readBody(req)) || "{}");
+  } catch {
+    return sendJson(res, 400, { ok: false, error: "JSON inválido" });
+  }
+
+  const slug = String(payload.slug ?? "");
+  const dryRun = payload.dry_run === true;
+
+  try {
+    const result = await processDecision(slug, payload, { dryRun });
+    let previewRefreshed = false;
+    let state = null;
+    if (!dryRun) {
+      previewRefreshed = await refreshPreview(slug);
+      state = buildGapsState(slug);
+    }
+    return sendJson(res, 200, { ok: true, dry_run: dryRun, slug, ...result, preview_refreshed: previewRefreshed, state });
+  } catch (err) {
+    return sendJson(res, 400, { ok: false, error: String(err?.message ?? err) });
+  }
+}
+
+async function handleDecideBatch(req, res) {
+  let payload;
+  try {
+    payload = JSON.parse((await readBody(req)) || "{}");
+  } catch {
+    return sendJson(res, 400, { ok: false, error: "JSON inválido" });
+  }
+
+  const slug = String(payload.slug ?? "");
+  const dryRun = payload.dry_run === true;
+  const decisions = Array.isArray(payload.decisions) ? payload.decisions : [];
+
+  if (!SLUG_RE.test(slug)) return sendJson(res, 400, { ok: false, error: "slug inválido" });
+  if (decisions.length === 0) return sendJson(res, 400, { ok: false, error: "decisions vazio" });
+  if (decisions.length > 20) return sendJson(res, 400, { ok: false, error: "máximo 20 decisões por lote" });
+
+  const results = [];
+  const errors = [];
+
+  for (const d of decisions) {
+    try {
+      const result = await processDecision(slug, d, { dryRun, skipAudit: true });
+      results.push(result);
+    } catch (err) {
+      errors.push({ item_id: d.item_id, error: String(err?.message ?? err) });
+    }
+  }
+
+  if (!dryRun && results.length > 0) {
+    await refreshPreview(slug);
+    for (const r of results) {
+      await recordAudit(slug, r.item_id, r.decision, false, r.decision === "answer" ? "" : "");
+    }
+  }
+
+  const state = dryRun ? null : buildGapsState(slug);
   return sendJson(res, 200, {
-    ok: true,
+    ok: errors.length === 0,
     dry_run: dryRun,
     slug,
-    item_id: itemId,
-    decision,
-    changes,
-    audited,
-    preview_refreshed: previewRefreshed,
+    results,
+    errors,
+    preview_refreshed: !dryRun && results.length > 0,
+    state,
   });
 }
 
@@ -298,7 +396,8 @@ export default function skyLocalApi() {
       },
       "astro:server:setup": ({ server }) => {
         server.middlewares.use((req, res, next) => {
-          let url = (req.url ?? "").split("?")[0];
+          const fullUrl = req.url ?? "";
+          let url = fullUrl.split("?")[0];
           const prefix = base.replace(/\/$/, "");
           if (prefix && url.startsWith(prefix)) url = url.slice(prefix.length);
 
@@ -306,9 +405,26 @@ export default function skyLocalApi() {
             if (req.method !== "GET") return sendJson(res, 405, { ok: false });
             return sendJson(res, 200, { ok: true, service: "sky-local-api", writable: true });
           }
+          if (url === "/api/gaps/state") {
+            if (req.method !== "GET") return sendJson(res, 405, { ok: false, error: "use GET" });
+            const qIdx = fullUrl.indexOf("?");
+            const params = new URLSearchParams(qIdx >= 0 ? fullUrl.slice(qIdx) : "");
+            const stateSlug = params.get("slug") ?? "";
+            if (!SLUG_RE.test(stateSlug)) return sendJson(res, 400, { ok: false, error: "slug inválido" });
+            const sessionDir = path.join(SESSIONS_DIR, stateSlug);
+            if (!fs.existsSync(sessionDir)) return sendJson(res, 404, { ok: false, error: "sessão não encontrada" });
+            return sendJson(res, 200, { ok: true, ...buildGapsState(stateSlug) });
+          }
           if (url === "/api/gaps/decide") {
             if (req.method !== "POST") return sendJson(res, 405, { ok: false, error: "use POST" });
             handleDecide(req, res).catch((err) =>
+              sendJson(res, 500, { ok: false, error: String(err?.message ?? err) }),
+            );
+            return;
+          }
+          if (url === "/api/gaps/decide-batch") {
+            if (req.method !== "POST") return sendJson(res, 405, { ok: false, error: "use POST" });
+            handleDecideBatch(req, res).catch((err) =>
               sendJson(res, 500, { ok: false, error: String(err?.message ?? err) }),
             );
             return;

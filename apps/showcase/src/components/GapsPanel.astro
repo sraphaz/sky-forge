@@ -25,7 +25,7 @@ const kindLabels: Record<string, string> = {
 >
   <div class="gaps-panel-header">
     <div>
-      <p class="sf-kicker gaps-kicker">PRÓXIMA LACUNA · {gaps.total_count} pendente{gaps.total_count !== 1 ? "s" : ""}</p>
+      <p class="sf-kicker gaps-kicker">PRÓXIMA LACUNA · <span data-gap-count>{gaps.total_count}</span> pendente{gaps.total_count !== 1 ? "s" : ""}</p>
       <h2 class="section-title gaps-title" id={`gaps-title-${slug}`}>
         {variant === "page" ? "Lacunas a preencher" : "Continuar intake"}
       </h2>

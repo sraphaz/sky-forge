@@ -94,11 +94,13 @@ export type ProjectGapsPreview = {
     title: string;
     description?: string;
     status?: "pending" | "accepted" | "rejected";
+    effect?: string;
   }[];
   gap_suggestions?: {
     dimension: string;
     gap: string;
-    answers: string[];
+    gap_effect?: string;
+    items: { text: string; effect?: string; recommended?: boolean }[];
   }[];
 };
 

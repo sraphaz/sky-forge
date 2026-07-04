@@ -26,7 +26,7 @@ const project = await loadPreview(slug!);
 const agents = await loadAgentsView(slug!);
 
 if (!project) {
-  return Astro.redirect(withBase("/"));
+  return Astro.redirect(withBase("/hub/"));
 }
 
 const gaps = extractGaps(project);
@@ -35,10 +35,8 @@ const dimGaps = project.gaps?.dimension_gaps ?? project.dimension_gaps ?? {};
 const journeyPhase = agents?.journey_phase;
 
 const gapSuggestions = project.gaps?.gap_suggestions ?? [];
-function suggestionsFor(dimension: string, gap: string): string[] {
-  return (
-    gapSuggestions.find((s) => s.dimension === dimension && s.gap === gap)?.answers ?? []
-  );
+function gapMeta(dimension: string, gap: string) {
+  return gapSuggestions.find((s) => s.dimension === dimension && s.gap === gap);
 }
 ---
 
@@ -50,7 +48,7 @@ function suggestionsFor(dimension: string, gap: string): string[] {
     <div class="container">
       <a class="back-link" href={withBase(`/projects/${slug}/`)}>← Visão do projeto</a>
       <div class="meta-row">
-        <span class="badge chip-gap-count">Lacunas ({gaps.total_count})</span>
+        <span class="badge chip-gap-count">Lacunas (<span data-gap-count>{gaps.total_count}</span>)</span>
         {journeyPhase && (
           <span class="badge project-phase-badge">{journeyPhaseLabel(journeyPhase)}</span>
         )}
@@ -91,7 +89,7 @@ function suggestionsFor(dimension: string, gap: string): string[] {
       <section class="panel project-section">
         <h2 class="section-title">Por dimensão</h2>
         <p class="panel-hint" data-gap-interactive hidden>
-          Responda uma lacuna aqui — a resposta vai para a caixa de decisões da sessão e o intake continua de onde você parou.
+          Marque várias lacunas, escolha sugestões da IA (ou escreva a sua) e envie tudo de uma vez — sem perder o restante da página.
         </p>
         {Object.entries(dimGaps).map(([dim, list]) => (
           <div class="gaps-dimension-block">
@@ -102,48 +100,78 @@ function suggestionsFor(dimension: string, gap: string): string[] {
               )}
             </h3>
             <ul class="plain-list gaps-dimension-list">
-              {list.map((g, i) => (
-                <li class="gaps-dimension-item">
-                  <span>{g}</span>
-                  <form
-                    class="gap-answer-form"
-                    data-gap-answer
-                    data-gap-interactive
-                    data-item-id={`dim-${dim}-${i + 1}`}
-                    data-item-label={g}
-                    data-dimension={dim}
-                    hidden
+              {list.map((g, i) => {
+                const meta = gapMeta(dim, g);
+                const itemId = `dim-${dim}-${i + 1}`;
+                return (
+                  <li
+                    class="gaps-dimension-item"
+                    data-gap-item-id={itemId}
+                    data-gap-status="pending"
                   >
-                    {suggestionsFor(dim, g).length > 0 && (
-                      <fieldset class="gap-suggestions">
-                        <legend class="gap-suggestions-label">
-                          Sugestões da IA — toque para preencher, edite à vontade
-                        </legend>
-                        {suggestionsFor(dim, g).map((answer) => (
-                          <button
-                            type="button"
-                            class="gap-suggestion-chip"
-                            data-suggestion
-                            aria-pressed="false"
-                          >
-                            {answer}
-                          </button>
-                        ))}
-                      </fieldset>
+                    <div class="gap-item-header">
+                      <label class="gap-batch-check" data-gap-interactive hidden>
+                        <input type="checkbox" class="gap-batch-select" data-batch-select aria-label={`Incluir lacuna: ${g}`} />
+                        <span class="gap-item-label">{g}</span>
+                      </label>
+                      <span class="gap-item-label-static" data-gap-static>{g}</span>
+                    </div>
+                    {meta?.gap_effect && (
+                      <p class="gap-item-effect" data-gap-interactive hidden>{meta.gap_effect}</p>
                     )}
-                    <label class="gap-answer-label" for={`answer-${dim}-${i + 1}`}>
-                      Sua resposta
-                    </label>
-                    <textarea
-                      id={`answer-${dim}-${i + 1}`}
-                      class="gap-answer-textarea"
-                      rows="3"
-                      placeholder="Escreva a decisão ou a informação que falta…"
-                    ></textarea>
-                    <button type="submit" class="btn-secondary gap-answer-submit">Responder</button>
-                  </form>
-                </li>
-              ))}
+                    <form
+                      class="gap-answer-form"
+                      data-gap-answer
+                      data-gap-interactive
+                      data-item-id={itemId}
+                      data-item-label={g}
+                      data-dimension={dim}
+                      hidden
+                    >
+                      {(meta?.items?.length ?? 0) > 0 && (
+                        <fieldset class="gap-suggestions">
+                          <legend class="gap-suggestions-label">
+                            Sugestões da IA — toque para preencher, edite à vontade
+                          </legend>
+                          {meta!.items.map((item) => (
+                            <div class="gap-suggestion-card">
+                              {item.recommended && (
+                                <span class="chip chip-recommended">Recomendada</span>
+                              )}
+                              <button
+                                type="button"
+                                class="gap-suggestion-chip"
+                                data-suggestion
+                                data-suggestion-text={item.text}
+                                aria-pressed="false"
+                              >
+                                {item.text}
+                              </button>
+                              {item.effect && (
+                                <p class="gap-suggestion-effect">{item.effect}</p>
+                              )}
+                            </div>
+                          ))}
+                        </fieldset>
+                      )}
+                      <label class="gap-answer-label" for={`answer-${dim}-${i + 1}`}>
+                        Sua resposta
+                      </label>
+                      <textarea
+                        id={`answer-${dim}-${i + 1}`}
+                        class="gap-answer-textarea"
+                        rows="3"
+                        placeholder="Escreva a decisão ou a informação que falta…"
+                      ></textarea>
+                      <div class="gap-answer-actions">
+                        <button type="button" class="btn-secondary gap-answer-submit" data-send-single>
+                          Responder agora
+                        </button>
+                      </div>
+                    </form>
+                  </li>
+                );
+              })}
             </ul>
           </div>
         ))}
@@ -160,8 +188,22 @@ function suggestionsFor(dimension: string, gap: string): string[] {
           {project.gaps!.ai_suggested_rfs!.map((rf) => {
             const status = rf.status ?? "pending";
             return (
-              <li class="requirement-card" data-rf-status={status}>
+              <li
+                class="requirement-card"
+                data-rf-status={status}
+                data-gap-item-id={rf.id}
+                data-gap-status={status}
+              >
                 <div class="requirement-card-head">
+                  <label class="gap-batch-check gap-batch-check-rf" data-gap-interactive hidden>
+                    <input
+                      type="checkbox"
+                      class="gap-batch-select"
+                      data-batch-select
+                      aria-label={`Incluir ${rf.id} no envio em lote`}
+                      disabled={status !== "pending"}
+                    />
+                  </label>
                   <span class="req-id">{rf.id}</span>
                   {status === "pending" && (
                     <span class="chip chip-gap-ai_suggested">Sugestão IA</span>
@@ -175,6 +217,7 @@ function suggestionsFor(dimension: string, gap: string): string[] {
                 </div>
                 <p class="requirement-card-title">{rf.title}</p>
                 {rf.description && <p class="requirement-card-desc">{rf.description}</p>}
+                {rf.effect && <p class="gap-item-effect gap-rf-effect">{rf.effect}</p>}
                 {status === "pending" && (
                   <div
                     class="gap-actions"
@@ -184,15 +227,31 @@ function suggestionsFor(dimension: string, gap: string): string[] {
                     data-item-label={rf.title}
                     hidden
                   >
-                    <button type="button" class="btn-primary gap-action-btn" data-decide="confirm">
-                      Aceitar
-                    </button>
-                    <button type="button" class="btn-secondary gap-action-btn" data-decide="reject">
-                      Recusar
-                    </button>
-                    <button type="button" class="btn-secondary gap-action-btn" data-decide="skip">
-                      Decidir depois
-                    </button>
+                    <div class="gap-rf-batch-options" role="radiogroup" aria-label={`Decisão para ${rf.id}`}>
+                      <label class="gap-rf-radio">
+                        <input type="radio" name={`rf-batch-${rf.id}`} data-rf-batch value="confirm" />
+                        Aceitar (lote)
+                      </label>
+                      <label class="gap-rf-radio">
+                        <input type="radio" name={`rf-batch-${rf.id}`} data-rf-batch value="reject" />
+                        Recusar (lote)
+                      </label>
+                      <label class="gap-rf-radio">
+                        <input type="radio" name={`rf-batch-${rf.id}`} data-rf-batch value="skip" />
+                        Depois (lote)
+                      </label>
+                    </div>
+                    <div class="gap-rf-immediate">
+                      <button type="button" class="btn-primary gap-action-btn" data-decide="confirm">
+                        Aceitar
+                      </button>
+                      <button type="button" class="btn-secondary gap-action-btn" data-decide="reject">
+                        Recusar
+                      </button>
+                      <button type="button" class="btn-secondary gap-action-btn" data-decide="skip">
+                        Decidir depois
+                      </button>
+                    </div>
                   </div>
                 )}
               </li>
@@ -216,6 +275,12 @@ function suggestionsFor(dimension: string, gap: string): string[] {
       </section>
     )}
   </main>
+
+  <div id="gap-batch-bar" class="gap-batch-bar" hidden aria-live="polite">
+    <span id="gap-batch-count">0 seleções</span>
+    <button type="button" id="gap-batch-submit" class="btn-primary">Enviar seleções</button>
+    <button type="button" id="gap-batch-clear" class="btn-secondary">Limpar</button>
+  </div>
 
   <div id="gap-toast" class="gap-toast" role="status" aria-live="polite"></div>
 </BaseLayout>

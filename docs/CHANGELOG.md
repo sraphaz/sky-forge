@@ -1,5 +1,14 @@
 # Changelog — Sky-Forge
 
+## [1.7.0] — 2026-07-04
+
+### Lacunas em lote, opção recomendada e refresh sem reload
+
+- **Sugestões enriquecidas** — `gaps-suggestions.yaml` v1.1: cada lacuna traz `gap_effect`, itens com `text`, `effect` e `recommended: true` (badge **Recomendada**); RFs do benchmark ganham `effect` explicando impacto no escopo/épico
+- **Envio em lote** — marque várias lacunas ou RFs, escolha sugestões/respostas e envie com a barra fixa **Enviar seleções (N)**; RFs mantêm aceitar/recusar imediato ou inclusão no lote
+- **Sem reload da página** — decisões via `fetch`; contadores (`Lacunas (N)`, kicker, painel) atualizados pelo cliente após cada envio
+- **API** — `GET /api/gaps/state?slug=` retorna contagem e status por item; `POST /api/gaps/decide-batch` grava lote com uma regeneração de preview; `answer_source: ai_suggested|user_text` na auditoria
+
 ## [1.6.0] — 2026-07-04
 
 ### Sugestões de IA de um clique nas lacunas (showcase local)

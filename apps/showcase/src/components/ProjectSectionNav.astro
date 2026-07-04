@@ -43,7 +43,7 @@ const anchorSections = [
       activeSection === "lacunas" && "section-nav-active",
     ]}
   >
-    Lacunas{gapCount > 0 ? ` (${gapCount})` : ""}
+    Lacunas{gapCount > 0 ? " (" : ""}{gapCount > 0 && <span data-gap-count>{gapCount}</span>}{gapCount > 0 ? ")" : ""}
   </a>
   {activeSection === "overview" ? (
     anchorSections.map((s) => (
