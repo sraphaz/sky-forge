@@ -35,154 +35,192 @@
                          "functional":  [
                                             {
                                                 "id":  "RF-001",
-                                                "description":  "Cada escritório com tema, marca, domínio e RLS isolado",
-                                                "mvp":  true,
-                                                "priority":  "must",
+                                                "ai_suggested":  false,
                                                 "title":  "Multi-tenant white-label por domínio",
+                                                "user_confirmed":  true,
+                                                "description":  "Cada escritório com tema, marca, domínio e RLS isolado",
+                                                "priority":  "must",
+                                                "mvp":  true,
                                                 "epic":  "E1"
                                             },
                                             {
                                                 "id":  "RF-002",
-                                                "description":  "Seed 00_config..06_modelos + .index + .audit por caso",
-                                                "mvp":  true,
-                                                "priority":  "must",
+                                                "ai_suggested":  false,
                                                 "title":  "Casos como pastas versionadas (template Obsidian)",
+                                                "user_confirmed":  true,
+                                                "description":  "Seed 00_config..06_modelos + .index + .audit por caso",
+                                                "priority":  "must",
+                                                "mvp":  true,
                                                 "epic":  "E2"
                                             },
                                             {
                                                 "id":  "RF-003",
-                                                "description":  "IA só escreve em 04_ e 05_; propõe em 03_; write-once em 01_",
-                                                "mvp":  true,
-                                                "priority":  "must",
+                                                "ai_suggested":  false,
                                                 "title":  "Regra ouro — original separado de interpretação",
+                                                "user_confirmed":  true,
+                                                "description":  "IA só escreve em 04_ e 05_; propõe em 03_; write-once em 01_",
+                                                "priority":  "must",
+                                                "mvp":  true,
                                                 "epic":  "E2"
                                             },
                                             {
                                                 "id":  "RF-004",
-                                                "description":  null,
-                                                "mvp":  true,
-                                                "priority":  "must",
+                                                "ai_suggested":  false,
                                                 "title":  "Upload, OCR, versionamento de documentos",
+                                                "user_confirmed":  true,
+                                                "description":  null,
+                                                "priority":  "must",
+                                                "mvp":  true,
                                                 "epic":  "E2"
                                             },
                                             {
                                                 "id":  "RF-005",
-                                                "description":  null,
-                                                "mvp":  true,
-                                                "priority":  "must",
+                                                "ai_suggested":  false,
                                                 "title":  "Explorador de caso (pastas + tabs Explorer/Racional/Análises/Timeline/Dossiê)",
+                                                "user_confirmed":  true,
+                                                "description":  null,
+                                                "priority":  "must",
+                                                "mvp":  true,
                                                 "epic":  "E2"
                                             },
                                             {
                                                 "id":  "RF-006",
-                                                "description":  null,
-                                                "mvp":  true,
-                                                "priority":  "must",
+                                                "ai_suggested":  false,
                                                 "title":  "RAG por caso com citações rastreáveis",
+                                                "user_confirmed":  true,
+                                                "description":  null,
+                                                "priority":  "must",
+                                                "mvp":  true,
                                                 "epic":  "E3"
                                             },
                                             {
                                                 "id":  "RF-007",
-                                                "description":  null,
-                                                "mvp":  true,
-                                                "priority":  "must",
+                                                "ai_suggested":  false,
                                                 "title":  "Harness + guardrails + modelo Claim (fato/inferência/hipótese/dúvida)",
+                                                "user_confirmed":  true,
+                                                "description":  null,
+                                                "priority":  "must",
+                                                "mvp":  true,
                                                 "epic":  "E3"
                                             },
                                             {
                                                 "id":  "RF-008",
-                                                "description":  null,
-                                                "mvp":  true,
-                                                "priority":  "must",
+                                                "ai_suggested":  false,
                                                 "title":  "Roster multi-agente + Orquestrador + Agent Factory por caso",
+                                                "user_confirmed":  true,
+                                                "description":  null,
+                                                "priority":  "must",
+                                                "mvp":  true,
                                                 "epic":  "E4"
                                             },
                                             {
                                                 "id":  "RF-009",
-                                                "description":  null,
-                                                "mvp":  true,
-                                                "priority":  "must",
+                                                "ai_suggested":  false,
                                                 "title":  "Copiloto chat + editor com rascunhos human-in-the-loop",
+                                                "user_confirmed":  true,
+                                                "description":  null,
+                                                "priority":  "must",
+                                                "mvp":  true,
                                                 "epic":  "E4"
                                             },
                                             {
                                                 "id":  "RF-010",
-                                                "description":  null,
-                                                "mvp":  true,
-                                                "priority":  "must",
+                                                "ai_suggested":  false,
                                                 "title":  "IA híbrida gerenciado + BYOK via Vault",
+                                                "user_confirmed":  true,
+                                                "description":  null,
+                                                "priority":  "must",
+                                                "mvp":  true,
                                                 "epic":  "E5"
                                             },
                                             {
                                                 "id":  "RF-011",
-                                                "description":  null,
-                                                "mvp":  true,
-                                                "priority":  "must",
+                                                "ai_suggested":  false,
                                                 "title":  "Painel Segurança/LGPD",
+                                                "user_confirmed":  true,
+                                                "description":  null,
+                                                "priority":  "must",
+                                                "mvp":  true,
                                                 "epic":  "E5"
                                             },
                                             {
                                                 "id":  "RF-012",
-                                                "description":  null,
-                                                "mvp":  true,
-                                                "priority":  "should",
+                                                "ai_suggested":  false,
                                                 "title":  "Site institucional white-label (referência Bonomi)",
+                                                "user_confirmed":  true,
+                                                "description":  null,
+                                                "priority":  "should",
+                                                "mvp":  true,
                                                 "epic":  null
                                             },
                                             {
                                                 "id":  "RF-013",
-                                                "description":  null,
-                                                "mvp":  false,
-                                                "priority":  "should",
+                                                "ai_suggested":  false,
                                                 "title":  "Equipe, chat interno realtime, Integration Hub",
+                                                "user_confirmed":  null,
+                                                "description":  null,
+                                                "priority":  "should",
+                                                "mvp":  false,
                                                 "epic":  "E6"
                                             },
                                             {
                                                 "id":  "RF-014",
-                                                "description":  "Agenda jurídica com prazos por caso e alertas (e-mail/app) — presente em todo o segmento",
-                                                "mvp":  false,
-                                                "priority":  "should",
+                                                "ai_suggested":  true,
                                                 "title":  "Controle de prazos processuais com alertas",
+                                                "user_confirmed":  null,
+                                                "description":  "Agenda jurídica com prazos por caso e alertas (e-mail/app) — presente em todo o segmento",
+                                                "priority":  "should",
+                                                "mvp":  false,
                                                 "epic":  "E6"
                                             },
                                             {
                                                 "id":  "RF-015",
-                                                "description":  "Robôs/integração tribunais (PJe, e-SAJ, TJs, STJ) alimentando a pasta do caso",
-                                                "mvp":  false,
-                                                "priority":  "should",
+                                                "ai_suggested":  true,
                                                 "title":  "Captura automática de intimações e andamentos processuais",
+                                                "user_confirmed":  null,
+                                                "description":  "Robôs/integração tribunais (PJe, e-SAJ, TJs, STJ) alimentando a pasta do caso",
+                                                "priority":  "should",
+                                                "mvp":  false,
                                                 "epic":  "E6"
                                             },
                                             {
                                                 "id":  "RF-016",
-                                                "description":  "Honorários, parcelas, despesas por caso e registro de horas por atendimento",
-                                                "mvp":  false,
-                                                "priority":  "could",
+                                                "ai_suggested":  true,
                                                 "title":  "Financeiro de honorários e timesheet",
+                                                "user_confirmed":  null,
+                                                "description":  "Honorários, parcelas, despesas por caso e registro de horas por atendimento",
+                                                "priority":  "could",
+                                                "mvp":  false,
                                                 "epic":  "E6"
                                             },
                                             {
                                                 "id":  "RF-017",
-                                                "description":  "Área do cliente final com status do caso e notificações — aproveita o white-label por tenant",
-                                                "mvp":  false,
-                                                "priority":  "could",
+                                                "ai_suggested":  true,
                                                 "title":  "Portal do cliente com atualizações automáticas",
+                                                "user_confirmed":  null,
+                                                "description":  "Área do cliente final com status do caso e notificações — aproveita o white-label por tenant",
+                                                "priority":  "could",
+                                                "mvp":  false,
                                                 "epic":  "E6"
                                             },
                                             {
                                                 "id":  "RF-018",
-                                                "description":  "Assinatura de procurações/contratos integrada ao fluxo de documentos do caso",
-                                                "mvp":  false,
-                                                "priority":  "could",
+                                                "ai_suggested":  true,
                                                 "title":  "Assinatura eletrônica de documentos",
+                                                "user_confirmed":  null,
+                                                "description":  "Assinatura de procurações/contratos integrada ao fluxo de documentos do caso",
+                                                "priority":  "could",
+                                                "mvp":  false,
                                                 "epic":  "E6"
                                             },
                                             {
                                                 "id":  "RF-019",
-                                                "description":  "Registro de atendimento antes de virar caso, convertível sem perda de histórico",
-                                                "mvp":  false,
-                                                "priority":  "could",
+                                                "ai_suggested":  true,
                                                 "title":  "CRM jurídico — prospecção e atendimentos pré-caso",
+                                                "user_confirmed":  null,
+                                                "description":  "Registro de atendimento antes de virar caso, convertível sem perda de histórico",
+                                                "priority":  "could",
+                                                "mvp":  false,
                                                 "epic":  "E6"
                                             }
                                         ],
@@ -469,73 +507,6 @@
                },
     "spec_version":  "1.2",
     "score_kind":  "intent",
-    "gaps":  {
-                 "total_count":  8,
-                 "next_action":  "Confirme ou descarte requisitos sugeridos pelo benchmark de mercado (RF-014 a RF-019) — nada entra no escopo sem você.",
-                 "top":  [
-                             {
-                                 "id":  "RF-014",
-                                 "label":  "Controle de prazos processuais com alertas",
-                                 "kind":  "ai_suggested",
-                                 "dimension":  "product",
-                                 "detail":  "Sugerido pelo benchmark de mercado — aguarda sua confirmação"
-                             },
-                             {
-                                 "id":  "RF-015",
-                                 "label":  "Captura automática de intimações e andamentos processuais",
-                                 "kind":  "ai_suggested",
-                                 "dimension":  "product",
-                                 "detail":  "Sugerido pelo benchmark de mercado — aguarda sua confirmação"
-                             },
-                             {
-                                 "id":  "dim-sustainability-deploy",
-                                 "label":  "Deploy e CI/CD não detalhados",
-                                 "kind":  "maturity",
-                                 "dimension":  "sustainability"
-                             }
-                         ],
-                 "dimension_gaps":  {
-                                        "sustainability":  [
-                                                               "Deploy e CI/CD não detalhados",
-                                                               "Observabilidade e SLOs por tenant"
-                                                           ],
-                                        "elevation":  [
-                                                          "humanity_connections aguardando confirmação do criador"
-                                                      ]
-                                    },
-                 "ai_suggested_rfs":  [
-                                          {
-                                              "id":  "RF-014",
-                                              "title":  "Controle de prazos processuais com alertas",
-                                              "description":  "Agenda jurídica com prazos por caso e alertas (e-mail/app) — presente em todo o segmento"
-                                          },
-                                          {
-                                              "id":  "RF-015",
-                                              "title":  "Captura automática de intimações e andamentos processuais",
-                                              "description":  "Robôs/integração tribunais (PJe, e-SAJ, TJs, STJ) alimentando a pasta do caso"
-                                          },
-                                          {
-                                              "id":  "RF-016",
-                                              "title":  "Financeiro de honorários e timesheet",
-                                              "description":  "Honorários, parcelas, despesas por caso e registro de horas por atendimento"
-                                          },
-                                          {
-                                              "id":  "RF-017",
-                                              "title":  "Portal do cliente com atualizações automáticas",
-                                              "description":  "Área do cliente final com status do caso e notificações — aproveita o white-label por tenant"
-                                          },
-                                          {
-                                              "id":  "RF-018",
-                                              "title":  "Assinatura eletrônica de documentos",
-                                              "description":  "Assinatura de procurações/contratos integrada ao fluxo de documentos do caso"
-                                          },
-                                          {
-                                              "id":  "RF-019",
-                                              "title":  "CRM jurídico — prospecção e atendimentos pré-caso",
-                                              "description":  "Registro de atendimento antes de virar caso, convertível sem perda de histórico"
-                                          }
-                                      ]
-             },
     "dimensions":  {
                        "technical":  0.85,
                        "sustainability":  0.62,
@@ -544,6 +515,93 @@
                        "elevation":  0.72,
                        "business":  0.88
                    },
+    "gaps":  {
+                 "next_action":  "Preencha a lacuna em business conversando com o sky-host.",
+                 "top":  [
+                             {
+                                 "label":  "modelo de precificação SaaS para outros escritórios não detalhado",
+                                 "dimension":  "business",
+                                 "id":  "dim-business-modelo-de-precificaç",
+                                 "kind":  "maturity"
+                             },
+                             {
+                                 "label":  "confirmar sugestões ELV com fundador",
+                                 "dimension":  "elevation",
+                                 "id":  "dim-elevation-confirmar-sugestões-",
+                                 "kind":  "maturity"
+                             },
+                             {
+                                 "label":  "priorização final E6 integrações",
+                                 "dimension":  "product",
+                                 "id":  "dim-product-priorização-final-e6",
+                                 "kind":  "maturity"
+                             }
+                         ],
+                 "dimension_gaps":  {
+                                        "technical":  [
+                                                          "RLS SQL em produção",
+                                                          "Vault/BYOK em ambiente real"
+                                                      ],
+                                        "sustainability":  [
+                                                               "CI/CD",
+                                                               "observabilidade produção",
+                                                               "runbook ops"
+                                                           ],
+                                        "ux_design":  [
+                                                          "tokens white-label exportáveis para código",
+                                                          "testes a11y formais"
+                                                      ],
+                                        "product":  [
+                                                        "priorização final E6 integrações",
+                                                        "critérios de aceite por IA-01..IA-20"
+                                                    ],
+                                        "elevation":  [
+                                                          "confirmar sugestões ELV com fundador"
+                                                      ],
+                                        "business":  [
+                                                         "modelo de precificação SaaS para outros escritórios não detalhado"
+                                                     ]
+                                    },
+                 "total_count":  18,
+                 "ai_suggested_rfs":  [
+                                          {
+                                              "status":  "pending",
+                                              "title":  "Controle de prazos processuais com alertas",
+                                              "description":  "Agenda jurídica com prazos por caso e alertas (e-mail/app) — presente em todo o segmento",
+                                              "id":  "RF-014"
+                                          },
+                                          {
+                                              "status":  "pending",
+                                              "title":  "Captura automática de intimações e andamentos processuais",
+                                              "description":  "Robôs/integração tribunais (PJe, e-SAJ, TJs, STJ) alimentando a pasta do caso",
+                                              "id":  "RF-015"
+                                          },
+                                          {
+                                              "status":  "pending",
+                                              "title":  "Financeiro de honorários e timesheet",
+                                              "description":  "Honorários, parcelas, despesas por caso e registro de horas por atendimento",
+                                              "id":  "RF-016"
+                                          },
+                                          {
+                                              "status":  "pending",
+                                              "title":  "Portal do cliente com atualizações automáticas",
+                                              "description":  "Área do cliente final com status do caso e notificações — aproveita o white-label por tenant",
+                                              "id":  "RF-017"
+                                          },
+                                          {
+                                              "status":  "pending",
+                                              "title":  "Assinatura eletrônica de documentos",
+                                              "description":  "Assinatura de procurações/contratos integrada ao fluxo de documentos do caso",
+                                              "id":  "RF-018"
+                                          },
+                                          {
+                                              "status":  "pending",
+                                              "title":  "CRM jurídico — prospecção e atendimentos pré-caso",
+                                              "description":  "Registro de atendimento antes de virar caso, convertível sem perda de histórico",
+                                              "id":  "RF-019"
+                                          }
+                                      ]
+             },
     "phases":  [
                    {
                        "status":  "next",
@@ -916,6 +974,6 @@
                       }
                   ],
     "public":  true,
-    "published_at":  "2026-07-04T17:46:57.1366924Z",
+    "published_at":  "2026-07-04T18:39:56.4106718Z",
     "outputs_dir":  "C:\\Users\\rapha\\CursorRepos\\sky-forge\\outputs\\iautos"
 }

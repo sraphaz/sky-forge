@@ -1,6 +1,6 @@
 # Sky-Forge — Direção de UX do produto
 
-**Versão**: 1.1 | **Data**: 2026-07-04  
+**Versão**: 1.2 | **Data**: 2026-07-04  
 **Relacionados**: [USER_JOURNEY.md](USER_JOURNEY.md) · [OUTPUTS_AND_SHOWCASE.md](OUTPUTS_AND_SHOWCASE.md) · [sky-host](../../.cursor/rules/sky-host.mdc)
 
 Especificação concisa da experiência do **Sky-Forge como aplicativo**: hub de projetos, exportação para IA, conexão Git e plataforma técnica. Alinha-se aos princípios UXD — calmo, digno, baixa excitação, WCAG AA.
@@ -82,7 +82,7 @@ flowchart TB
 |------|----------|------------|---------------------|
 | Home | Lacunas + lista | Link Sobre | Export + publish juntos |
 | Projeto | Lacunas & próximo passo | Visão condensada | Brief completo sensível |
-| Lacunas | Top 3 + prompt Cursor | Por dimensão / RF sugeridos | Intake inline no browser |
+| Lacunas | Top 3 + prompt Cursor | Por dimensão / RF sugeridos · decidir inline (só local) | Intake completo no browser público |
 | Como foi produzido | Agentes + gates | Eventos recentes | Paths absolutos |
 | Sobre | Modos de uso | Diagrama técnico | Urgência / upsell |
 | Exportar | Escolher formato | Destino pasta | Publicar showcase |
@@ -163,10 +163,35 @@ sequenceDiagram
 |------------|-----------|-------|
 | Ver projetos publicados | Sim | Sim (+ privados) |
 | Intake conversacional | Não (futuro: API) | Sim |
+| Decidir lacunas no site (aceitar/recusar RF, responder) | Não — copy-prompt | **Sim — modo interativo (1.5.0)** |
 | Export pacote completo | Não | Sim |
 | Export para IA (subset) | Download JSON sanitizado | Sim, pasta escolhida |
 | Conectar Git | Não | Sim |
 | Publish -Public | Não | Sim |
+
+### Modo interativo local (realizado — 1.5.0)
+
+Quando o showcase roda localmente (`sky showcase` / `astro dev`), a integração
+`sky-local-api` registra endpoints **apenas no dev server** — o build estático
+não muda e o GitHub Pages continua read-only, sem botões quebrados:
+
+- `GET {base}/api/health` — sonda de capacidade; a UI só revela os controles
+  `[data-gap-interactive]` se a sonda responder.
+- `POST {base}/api/gaps/decide` — `{slug, item_id, decision, note?, dry_run?}`.
+
+Em `/projects/{slug}/lacunas/`:
+
+- **RF sugerido (`ai_suggested`)** → botões *Aceitar / Recusar / Decidir depois*.
+  Aceitar/recusar grava `user_confirmed: true|false` no
+  `functional-requirements.yaml` da sessão (edição textual, comentários preservados).
+- **Lacuna de maturidade** → textarea + *Responder*; a resposta entra em
+  `decisions-inbox.yaml`, consumida pelo intake-conductor no próximo turno.
+- Toda decisão: evento `gap.decide` na auditoria + `publish-preview.ps1`
+  regenera o preview — a página recarrega mostrando chips
+  *Aceito por você* / *Recusado* e a contagem de lacunas atualizada.
+
+Guardrails: uma decisão por clique, tom calmo, toast `aria-live="polite"`,
+foco visível, `prefers-reduced-motion`; nada muda sem gesto explícito do criador.
 
 ---
 

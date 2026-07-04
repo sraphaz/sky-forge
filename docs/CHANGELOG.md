@@ -1,5 +1,15 @@
 # Changelog — Sky-Forge
 
+## [1.5.0] — 2026-07-04
+
+### Decisão interativa de lacunas no showcase local
+
+- **Modo interativo local** — rodando `sky.ps1 showcase` (ou `astro dev`), a página `/projects/{slug}/lacunas/` ganha controles de decisão: **Aceitar / Recusar / Decidir depois** para requisitos `ai_suggested` e **textarea + Responder** para lacunas de maturidade; no deploy estático (GitHub Pages) os controles não aparecem e permanecem os CTAs de copiar comando/prompt
+- **Integração `sky-local-api`** ([apps/showcase/integrations/sky-local-api.mjs](../apps/showcase/integrations/sky-local-api.mjs)) — endpoints apenas no dev server (sem adapter, build estático intacto): `GET /api/health` (sonda de capacidade) e `POST /api/gaps/decide` (`{slug, item_id, decision: confirm|reject|skip|answer, note?, dry_run?}`)
+- **Persistência com trilha** — confirm/reject grava `user_confirmed: true|false` no RF em `.sky/sessions/{slug}/functional-requirements.yaml` (edição textual que preserva comentários); toda decisão vai para `.sky/sessions/{slug}/decisions-inbox.yaml` (consumido pelo intake-conductor); evento `gap.decide` na auditoria (`record-agent-event.ps1`); preview regenerado via `publish-preview.ps1` — a página recarrega refletindo o novo estado
+- **Sugestões decididas saem da contagem de lacunas** — `publish-preview.ps1` lê `user_confirmed` e publica `status: pending|accepted|rejected` por RF sugerido; o showcase mostra chips "Aceito por você" / "Recusado"
+- Guardrails preservados: nada muda sem decisão explícita do criador (`ai_suggested` até confirmação), auditoria de cada escrita, WCAG AA (toast `aria-live`, foco visível, `prefers-reduced-motion`)
+
 ## [1.4.0] — 2026-07-04
 
 ### Consciência de mercado — agente market-benchmark e índice MPI

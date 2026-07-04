@@ -179,6 +179,8 @@ switch ($Command) {
             throw "Showcase nao encontrado em apps/showcase"
         }
         Write-Host "Iniciando showcase em http://localhost:$($cfg.showcasePort)" -ForegroundColor Cyan
+        Write-Host "Modo interativo local: em /projects/{slug}/lacunas/ voce pode aceitar/recusar" -ForegroundColor Cyan
+        Write-Host "sugestoes e responder lacunas direto no site (grava em .sky/sessions/ + auditoria)." -ForegroundColor Cyan
         Push-Location $showcaseDir
         try {
             if (-not (Test-Path 'node_modules')) {

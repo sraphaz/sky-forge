@@ -2707,3 +2707,140 @@ a:hover {
   line-height: 1.65;
   font-size: 1.02rem;
 }
+
+/* —— Modo interativo local (decisão de lacunas no site) —— */
+.gap-local-banner {
+  border-left: 4px solid var(--color-success);
+  font-size: 0.92rem;
+  margin-bottom: 1.25rem;
+}
+
+.gap-local-banner code {
+  font-size: 0.82em;
+}
+
+.gap-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.85rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--sf-line);
+}
+
+.gap-action-btn {
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 600;
+  border: 1px solid transparent;
+}
+
+.gap-action-btn:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}
+
+.gap-actions.is-busy,
+.gap-answer-form.is-busy {
+  opacity: 0.75;
+}
+
+.gap-decided-note {
+  margin: 0.85rem 0 0;
+  font-size: 0.88rem;
+  color: var(--color-status-ok-text);
+}
+
+.chip-gap-accepted {
+  color: var(--color-status-ok-text);
+  background: var(--color-status-ok-bg);
+}
+
+.chip-gap-rejected {
+  color: var(--color-status-muted-text);
+  background: var(--color-status-muted-bg);
+}
+
+.requirement-card[data-rf-status="rejected"] .requirement-card-title,
+.requirement-card[data-rf-status="rejected"] .requirement-card-desc {
+  opacity: 0.7;
+}
+
+.gaps-dimension-item {
+  padding: 0.35rem 0;
+}
+
+.gap-answer-form {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin: 0.6rem 0 0.85rem;
+}
+
+.gap-answer-label {
+  font-size: max(var(--font-size-min), 0.78rem);
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.gap-answer-textarea {
+  width: 100%;
+  max-width: 44rem;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--sf-line);
+  border-radius: 8px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  line-height: 1.55;
+  resize: vertical;
+}
+
+.gap-answer-textarea:focus-visible {
+  outline: 2px solid var(--color-sky-accent);
+  outline-offset: 1px;
+}
+
+.gap-answer-submit {
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.gap-toast {
+  position: fixed;
+  bottom: 1.25rem;
+  left: 50%;
+  transform: translate(-50%, 0.5rem);
+  max-width: min(92vw, 34rem);
+  padding: 0.7rem 1.1rem;
+  border-radius: 10px;
+  background: var(--color-sky-deep);
+  color: var(--color-on-deep);
+  font-size: 0.88rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  z-index: 60;
+}
+
+.gap-toast.is-visible {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.gap-toast[data-tone="error"] {
+  background: var(--color-danger);
+  color: #fff;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gap-toast {
+    transition: none;
+  }
+}

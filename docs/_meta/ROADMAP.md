@@ -19,6 +19,7 @@ spec de UX do produto.
 | **Export para IA com escopos** | UX-C (parcial) | `sky.ps1 export -Slug x -ForAI -Scope essential\|spec\|full` gera `SKY_AI_CONTEXT.md` sanitizado (sem paths absolutos, sem `.dc.html`) pronto para colar em Cursor/Claude/ChatGPT | ✅ entregue — CLI; wizard visual fica em UX-C |
 | **Trilha de evidência nos templates** | A-02/A-04 | Toda sessão nova nasce com `spec_version`, `score_kind`, evidência tipada e `confidence` por índice; benchmark `example-horta` atualizado | ✅ entregue |
 | **Roadmap público** | — | Este documento existe, é referenciado no showcase e na auditoria | ✅ entregue |
+| **Decisão interativa de lacunas no showcase local** | UX-B (parcial) | Em `sky showcase` / `astro dev`, `/projects/{slug}/lacunas/` permite aceitar/recusar RFs `ai_suggested` e responder lacunas; escrita em `.sky/sessions/{slug}/` com auditoria e preview regenerado; deploy estático degrada para copy-prompt sem botões quebrados | ✅ entregue — 1.5.0 |
 
 ## Próximo ciclo — confiança
 

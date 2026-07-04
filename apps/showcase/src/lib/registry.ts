@@ -73,6 +73,7 @@ export type FunctionalRequirement = {
   priority?: string;
   mvp?: boolean;
   ai_suggested?: boolean;
+  user_confirmed?: boolean | null;
 };
 
 export type GapPreviewItem = {
@@ -88,7 +89,12 @@ export type ProjectGapsPreview = {
   next_action?: string;
   top: GapPreviewItem[];
   dimension_gaps?: Record<string, string[]>;
-  ai_suggested_rfs?: { id: string; title: string; description?: string }[];
+  ai_suggested_rfs?: {
+    id: string;
+    title: string;
+    description?: string;
+    status?: "pending" | "accepted" | "rejected";
+  }[];
 };
 
 export type RequirementEpic = {

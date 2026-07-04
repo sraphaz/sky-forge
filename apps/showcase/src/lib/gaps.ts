@@ -88,7 +88,10 @@ export function extractGaps(project: ProjectPreview): ProjectGapsSummary {
   }
 
   const functional = project.requirements?.functional ?? [];
-  for (const rf of functional.filter(isAiSuggestedRf)) {
+  const pendingSuggestions = functional.filter(
+    (rf) => isAiSuggestedRf(rf) && rf.user_confirmed == null,
+  );
+  for (const rf of pendingSuggestions) {
     items.push({
       id: rf.id,
       label: rf.title,

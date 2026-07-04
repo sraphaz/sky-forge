@@ -95,8 +95,12 @@ function Read-DimensionScores([string]$Maturity) {
 function Read-DimensionGaps([string]$Maturity) {
     $gaps = @{}
     foreach ($d in @('business', 'product', 'ux_design', 'technical', 'sustainability', 'elevation')) {
+        # Lista em bloco (- item) ou inline (gaps: ["a", "b"])
         if ($Maturity -match "(?ms)$d`:\s*\r?\n(?:[^\r\n]+\r?\n)*?\s+gaps:\s*\r?\n((?:\s+- .+\r?\n)+)") {
             $items = @([regex]::Matches($Matches[1], '(?m)^\s+- (.+)$') | ForEach-Object { $_.Groups[1].Value.Trim() })
+            if ($items.Count -gt 0) { $gaps[$d] = @($items) }
+        } elseif ($Maturity -match "(?ms)$d`:\s*\r?\n(?:[^\r\n]+\r?\n)*?\s+gaps:\s*\[([^\]]*)\]") {
+            $items = @($Matches[1] -split '",' | ForEach-Object { $_.Trim().Trim(',').Trim().Trim('"').Trim("'") } | Where-Object { $_ })
             if ($items.Count -gt 0) { $gaps[$d] = @($items) }
         }
     }
@@ -121,7 +125,8 @@ function Build-GapsSummary([hashtable]$DimensionGaps, [array]$FunctionalReqs, [a
         }
     }
 
-    $aiSuggested = @($FunctionalReqs | Where-Object { $_.ai_suggested -eq $true })
+    # Só sugestões ainda sem decisão contam como lacuna (user_confirmed null)
+    $aiSuggested = @($FunctionalReqs | Where-Object { $_.ai_suggested -eq $true -and $null -eq $_.user_confirmed })
     foreach ($rf in $aiSuggested) {
         $total++
         if ($top.Count -lt 3) {
@@ -155,11 +160,16 @@ function Build-GapsSummary([hashtable]$DimensionGaps, [array]$FunctionalReqs, [a
         $nextAction = 'Maturidade alta — revise sugestões pendentes ou avance para export.'
     }
 
-    $aiRfList = @($aiSuggested | ForEach-Object {
+    # Lista completa (pendentes + decididos) — o showcase mostra o estado de cada um
+    $allAiSuggested = @($FunctionalReqs | Where-Object { $_.ai_suggested -eq $true })
+    $aiRfList = @($allAiSuggested | ForEach-Object {
         @{
             id = $_.id
             title = $_.title
             description = $_.description
+            status = if ($_.user_confirmed -eq $true) { 'accepted' }
+                     elseif ($_.user_confirmed -eq $false) { 'rejected' }
+                     else { 'pending' }
         }
     })
 
@@ -268,7 +278,7 @@ function Resolve-SkyDataFile([string]$Slug, [string]$OutputName, [string]$Sessio
 }
 
 function Read-YamlRequirementItems([string]$Content) {
-    return Read-YamlItems $Content 'requirements' @('title', 'description', 'category', 'statement', 'priority', 'mvp', 'epic', 'source')
+    return Read-YamlItems $Content 'requirements' @('title', 'description', 'category', 'statement', 'priority', 'mvp', 'epic', 'source', 'user_confirmed')
 }
 
 function Read-Integrations([string]$Content) {
@@ -871,6 +881,7 @@ $functionalReqs = Read-YamlRequirementItems $functional | ForEach-Object {
         priority = $_.priority
         mvp = [bool]$_.mvp
         ai_suggested = $aiSuggested
+        user_confirmed = if ($_.ContainsKey('user_confirmed')) { [bool]$_.user_confirmed } else { $null }
     }
 }
 
