@@ -34,7 +34,7 @@ if (-not (Test-Path $packageDir)) {
 $specDir = Join-Path $ctx.WorkspacePath 'spec'
 New-Item -ItemType Directory -Path $specDir -Force | Out-Null
 
-$copyDirs = @('stories', 'architecture', 'testing', 'prompts')
+$copyDirs = @('stories', 'architecture', 'testing', 'prompts', 'design-redesign', 'cloud-design')
 foreach ($dir in $copyDirs) {
     $src = Join-Path $packageDir $dir
     if (Test-Path $src) {
@@ -75,4 +75,4 @@ note: |
 Set-Content (Join-Path $specDir 'SKY_SPEC_MANIFEST.yaml') -Value $manifest -Encoding UTF8
 
 Write-Host "Spec sincronizado: $specDir" -ForegroundColor Green
-Write-Host "  stories/, architecture/, brief.yaml + manifest"
+Write-Host "  stories/, architecture/, cloud-design/, design-redesign/ + brief"
