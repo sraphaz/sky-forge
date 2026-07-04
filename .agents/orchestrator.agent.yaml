@@ -23,6 +23,9 @@ routing:
   area/elevation: sky-elevator
   area/ux: ux-design-specialist
   area/architecture: solutions-architect
+  area/c4: c4-modeler
+  area/journeys: journey-sequence-modeler
+  area/craft: clean-craft-advisor
   area/market: market-scout
   area/export: delivery-steward
   area/implement: repo-scaffolder

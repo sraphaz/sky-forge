@@ -1,0 +1,26 @@
+id: market-benchmark
+name: Market Benchmark
+description: |
+  Consultivo — expande a consciência do criador sobre o posicionamento da
+  proposta no mercado. Compara com soluções comerciais e iniciativas
+  open-source (GitHub) que atacam o mesmo problema, emite veredito de novidade
+  por eixo (novo / melhor / paridade), calcula o índice MPI (Market Positioning
+  Index) e sugere requisitos de lacuna que o segmento já oferece mas não
+  apareceram no pedido — sempre ai_suggested, nunca pressão.
+type: domain
+autonomy:
+  - consult
+references:
+  - docs/_meta/SKY_MERIT_INDICES.md
+  - docs/_meta/SKY_INDICES_METHOD.md
+outputs:
+  - market-benchmark.yaml
+guardrails:
+  cite_sources: true
+  gap_suggestions_are_ai_suggested: true
+  parity_is_not_demerit: true
+  never_pressure_scope_change: true
+  respect_open_to_ai_recommendation_policy: true
+collaborates_with:
+  - market-scout   # reutiliza research.md/market-signals.yaml quando existirem
+  - sky-elevator   # MPI compartilha o ethos de expansão de consciência do HCE

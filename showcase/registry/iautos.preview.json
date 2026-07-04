@@ -136,6 +136,54 @@
                                                 "priority":  "should",
                                                 "title":  "Equipe, chat interno realtime, Integration Hub",
                                                 "epic":  "E6"
+                                            },
+                                            {
+                                                "id":  "RF-014",
+                                                "description":  "Agenda jurídica com prazos por caso e alertas (e-mail/app) — presente em todo o segmento",
+                                                "mvp":  false,
+                                                "priority":  "should",
+                                                "title":  "Controle de prazos processuais com alertas",
+                                                "epic":  "E6"
+                                            },
+                                            {
+                                                "id":  "RF-015",
+                                                "description":  "Robôs/integração tribunais (PJe, e-SAJ, TJs, STJ) alimentando a pasta do caso",
+                                                "mvp":  false,
+                                                "priority":  "should",
+                                                "title":  "Captura automática de intimações e andamentos processuais",
+                                                "epic":  "E6"
+                                            },
+                                            {
+                                                "id":  "RF-016",
+                                                "description":  "Honorários, parcelas, despesas por caso e registro de horas por atendimento",
+                                                "mvp":  false,
+                                                "priority":  "could",
+                                                "title":  "Financeiro de honorários e timesheet",
+                                                "epic":  "E6"
+                                            },
+                                            {
+                                                "id":  "RF-017",
+                                                "description":  "Área do cliente final com status do caso e notificações — aproveita o white-label por tenant",
+                                                "mvp":  false,
+                                                "priority":  "could",
+                                                "title":  "Portal do cliente com atualizações automáticas",
+                                                "epic":  "E6"
+                                            },
+                                            {
+                                                "id":  "RF-018",
+                                                "description":  "Assinatura de procurações/contratos integrada ao fluxo de documentos do caso",
+                                                "mvp":  false,
+                                                "priority":  "could",
+                                                "title":  "Assinatura eletrônica de documentos",
+                                                "epic":  "E6"
+                                            },
+                                            {
+                                                "id":  "RF-019",
+                                                "description":  "Registro de atendimento antes de virar caso, convertível sem perda de histórico",
+                                                "mvp":  false,
+                                                "priority":  "could",
+                                                "title":  "CRM jurídico — prospecção e atendimentos pré-caso",
+                                                "epic":  "E6"
                                             }
                                         ],
                          "epics":  [
@@ -282,14 +330,27 @@
                                 }
                      },
     "indices":  {
+                    "MPI":  66,
                     "HCE":  74,
-                    "CWB":  65,
-                    "UXD":  78,
                     "GAP":  70,
-                    "SPI":  68
+                    "SPI":  68,
+                    "CWB":  65,
+                    "UXD":  78
                 },
     "indices_meta":  {
+                         "MPI":  {
+                                     "evidence_count":  4,
+                                     "confidence":  "medium"
+                                 },
                          "HCE":  {
+                                     "evidence_count":  3,
+                                     "confidence":  "medium"
+                                 },
+                         "GAP":  {
+                                     "evidence_count":  2,
+                                     "confidence":  "medium"
+                                 },
+                         "SPI":  {
                                      "evidence_count":  3,
                                      "confidence":  "medium"
                                  },
@@ -300,17 +361,113 @@
                          "UXD":  {
                                      "evidence_count":  4,
                                      "confidence":  "high"
-                                 },
-                         "GAP":  {
-                                     "evidence_count":  2,
-                                     "confidence":  "medium"
-                                 },
-                         "SPI":  {
-                                     "evidence_count":  3,
-                                     "confidence":  "medium"
                                  }
                      },
-    "spec_version":  "1.1",
+    "market":  {
+                   "mpi":  66,
+                   "confidence":  "medium",
+                   "band":  8,
+                   "competitors":  [
+                                       {
+                                           "url":  "https://aurum.com.br/astrea/",
+                                           "name":  "Astrea (Aurum)",
+                                           "type":  "commercial"
+                                       },
+                                       {
+                                           "url":  "https://advbox.com.br/",
+                                           "name":  "ADVBOX",
+                                           "type":  "commercial"
+                                       },
+                                       {
+                                           "url":  "https://www.projuris.com.br/",
+                                           "name":  "Projuris",
+                                           "type":  "commercial"
+                                       },
+                                       {
+                                           "url":  "https://easyjur.com/",
+                                           "name":  "EasyJur",
+                                           "type":  "commercial"
+                                       },
+                                       {
+                                           "url":  "https://www.sajadv.com.br/",
+                                           "name":  "SAJ ADV (Softplan)",
+                                           "type":  "commercial"
+                                       },
+                                       {
+                                           "url":  "https://www.preambulo.com.br/",
+                                           "name":  "CPJ-3C (Preambulo)",
+                                           "type":  "commercial"
+                                       },
+                                       {
+                                           "url":  "https://www.thomsonreuters.com.br/pt/juridico/legal-one.html",
+                                           "name":  "Legal One (Thomson Reuters)",
+                                           "type":  "commercial"
+                                       },
+                                       {
+                                           "url":  "https://ialocus.com.br/",
+                                           "name":  "Locus.IA",
+                                           "type":  "commercial"
+                                       },
+                                       {
+                                           "url":  "https://legaldocs.ia.br/",
+                                           "name":  "Jurisforce Intelligence AI",
+                                           "type":  "commercial"
+                                       },
+                                       {
+                                           "url":  "https://github.com/QuanteraAI/OpenSpecter",
+                                           "name":  "OpenSpecter (Quantera.ai)",
+                                           "type":  "open_source"
+                                       },
+                                       {
+                                           "url":  "https://github.com/JustVugg/judicex",
+                                           "name":  "Judicex (JustVugg)",
+                                           "type":  "open_source"
+                                       },
+                                       {
+                                           "url":  "https://github.com/mcatsim/LexNebulis",
+                                           "name":  "LexNebulis (mcatsim)",
+                                           "type":  "open_source"
+                                       },
+                                       {
+                                           "url":  "https://github.com/probe365/advocacia-ia",
+                                           "name":  "Advocacia e IA (probe365)",
+                                           "type":  "open_source"
+                                       },
+                                       {
+                                           "url":  "https://github.com/carlosvictorodrigues/ratio",
+                                           "name":  "Ratio (carlosvictorodrigues)",
+                                           "type":  "open_source"
+                                       },
+                                       {
+                                           "url":  "https://github.com/protonspy/JusChat",
+                                           "name":  "JusChat (protonspy)",
+                                           "type":  "open_source"
+                                       }
+                                   ],
+                   "verdicts":  [
+                                    {
+                                        "verdict":  "behind",
+                                        "axis":  "Gestão processual básica (prazos, intimações, financeiro, portal do cliente)"
+                                    },
+                                    {
+                                        "verdict":  "new",
+                                        "axis":  "Casos como pastas versionadas com regra ouro (original ≠ interpretação)"
+                                    },
+                                    {
+                                        "verdict":  "better",
+                                        "axis":  "Copiloto IA com RAG por caso, modelo Claim e human-in-the-loop"
+                                    },
+                                    {
+                                        "verdict":  "new",
+                                        "axis":  "White-label multi-tenant com site institucional por escritório"
+                                    },
+                                    {
+                                        "verdict":  "better",
+                                        "axis":  "Soberania de dados — BYOK híbrido, LGPD, sigilo OAB"
+                                    }
+                                ]
+               },
+    "spec_version":  "1.2",
     "score_kind":  "intent",
     "dimensions":  {
                        "technical":  0.85,
@@ -389,103 +546,259 @@
     "artifacts":  [
                       {
                           "stage":  "brief",
+                          "content_format":  "markdown",
                           "available":  true,
                           "id":  "brief",
                           "type":  "yaml",
                           "description":  "Visão, problema, proposta de valor, usuários e escopo MVP",
                           "summary":  "Plataforma legaltech brasileira white-label: casos como pastas versionadas (template Obsidian), copiloto com RAG por caso, multi-agente com guardrails, site institucional por tenant, colaboração interna e conformidade LGPD/OAB.",
                           "label":  "Brief",
-                          "path":  "brief.yaml"
+                          "path":  "brief.yaml",
+                          "content":  "# IAutos — Legaltech white-label para escritórios de advocacia\n\n## Problema\n\nEscritórios pequenos e médios no Brasil carecem de uma plataforma marca-própria que una\ngestão de casos (pastas versionadas, metodologia Obsidian validada) e copiloto jurídico\ncom governança, LGPD, citações rastreáveis e human-in-the-loop — sem depender de\nferramentas estrangeiras desconectadas da realidade local.\n\n## Motivação\n\nProdutizar o Processo_Obsidian_IA_Template já usado pelo escritório Bonomi Almeida\nAdvogados, escalando para SaaS multi-tenant white-label com IA híbrida (gerenciado + BYOK).\n\n## Proposta de valor\n\nPlataforma legaltech brasileira white-label: casos como pastas versionadas (template Obsidian),\ncopiloto com RAG por caso, multi-agente com guardrails, site institucional por tenant,\ncolaboração interna e conformidade LGPD/OAB.\n\n## Escopo MVP\n\nTenant Bonomi Almeida como instância inaugural. Épicos E1–E5 do handoff (fundação, casos,\nnúcleo IA, multi-agente, conformidade). Site institucional já mockado. E6 (chat/integrações)\npós-MVP ou fase 1.5 conforme capacidade.\n\n## Usuários principais\n\n- advogado(a) do escritório — opera casos, revisa análises, aprova rascunhos\n- equipe administrativa — upload, organização, prazos\n- administrador do tenant — marca, integrações, LGPD, conexão de IA\n- cliente final do escritório (indireto) — beneficia-se de atendimento mais organizado\n\n## Fora do escopo\n\n- Conclusão jurídica automática sem revisão humana\n- Cross-tenant ou vazamento entre pastas de caso\n- Marketplace agressivo de leads\n- Substituir ERP financeiro completo do escritório no MVP"
                       },
                       {
                           "stage":  "requirements",
+                          "content_format":  "markdown",
                           "available":  true,
                           "id":  "functional-requirements",
                           "type":  "yaml",
                           "description":  "Funcionalidades agrupadas por épico com prioridade e escopo MVP",
-                          "summary":  "13 requisitos funcionais · 12 no MVP",
+                          "summary":  "19 requisitos funcionais · 12 no MVP",
                           "label":  "Requisitos funcionais",
-                          "path":  "functional-requirements.yaml"
+                          "path":  "functional-requirements.yaml",
+                          "content":  "# Requisitos funcionais\n\n## RF-001 — Multi-tenant white-label por domínio · **MVP**\n\nCada escritório com tema, marca, domínio e RLS isolado\n\n*Épico:* E1 · *Prioridade:* must\n\n## RF-002 — Casos como pastas versionadas (template Obsidian) · **MVP**\n\nSeed 00_config..06_modelos + .index + .audit por caso\n\n*Épico:* E2 · *Prioridade:* must\n\n## RF-003 — Regra ouro — original separado de interpretação · **MVP**\n\nIA só escreve em 04_ e 05_; propõe em 03_; write-once em 01_\n\n*Épico:* E2 · *Prioridade:* must\n\n## RF-004 — Upload, OCR, versionamento de documentos · **MVP**\n\n*Épico:* E2 · *Prioridade:* must\n\n## RF-005 — Explorador de caso (pastas + tabs Explorer/Racional/Análises/Timeline/Dossiê) · **MVP**\n\n*Épico:* E2 · *Prioridade:* must\n\n## RF-006 — RAG por caso com citações rastreáveis · **MVP**\n\n*Épico:* E3 · *Prioridade:* must\n\n## RF-007 — Harness + guardrails + modelo Claim (fato/inferência/hipótese/dúvida) · **MVP**\n\n*Épico:* E3 · *Prioridade:* must\n\n## RF-008 — Roster multi-agente + Orquestrador + Agent Factory por caso · **MVP**\n\n*Épico:* E4 · *Prioridade:* must\n\n## RF-009 — Copiloto chat + editor com rascunhos human-in-the-loop · **MVP**\n\n*Épico:* E4 · *Prioridade:* must\n\n## RF-010 — IA híbrida gerenciado + BYOK via Vault · **MVP**\n\n*Épico:* E5 · *Prioridade:* must\n\n## RF-011 — Painel Segurança/LGPD · **MVP**\n\n*Épico:* E5 · *Prioridade:* must\n\n## RF-012 — Site institucional white-label (referência Bonomi) · **MVP**\n\n*Épico:*  · *Prioridade:* should\n\n## RF-013 — Equipe, chat interno realtime, Integration Hub · pós-MVP\n\n*Épico:* E6 · *Prioridade:* should\n\n## RF-014 — Controle de prazos processuais com alertas · pós-MVP\n\nAgenda jurídica com prazos por caso e alertas (e-mail/app) — presente em todo o segmento\n\n*Épico:* E6 · *Prioridade:* should\n\n## RF-015 — Captura automática de intimações e andamentos processuais · pós-MVP\n\nRobôs/integração tribunais (PJe, e-SAJ, TJs, STJ) alimentando a pasta do caso\n\n*Épico:* E6 · *Prioridade:* should\n\n## RF-016 — Financeiro de honorários e timesheet · pós-MVP\n\nHonorários, parcelas, despesas por caso e registro de horas por atendimento\n\n*Épico:* E6 · *Prioridade:* could\n\n## RF-017 — Portal do cliente com atualizações automáticas · pós-MVP\n\nÁrea do cliente final com status do caso e notificações — aproveita o white-label por tenant\n\n*Épico:* E6 · *Prioridade:* could\n\n## RF-018 — Assinatura eletrônica de documentos · pós-MVP\n\nAssinatura de procurações/contratos integrada ao fluxo de documentos do caso\n\n*Épico:* E6 · *Prioridade:* could\n\n## RF-019 — CRM jurídico — prospecção e atendimentos pré-caso · pós-MVP\n\nRegistro de atendimento antes de virar caso, convertível sem perda de histórico\n\n*Épico:* E6 · *Prioridade:* could"
                       },
                       {
                           "stage":  "requirements",
+                          "content_format":  "markdown",
                           "available":  true,
                           "id":  "nfr",
                           "type":  "yaml",
                           "description":  "Segurança, LGPD, acessibilidade, performance e manutenibilidade",
                           "summary":  "6 requisitos não funcionais",
                           "label":  "Requisitos não funcionais",
-                          "path":  "nfr.yaml"
+                          "path":  "nfr.yaml",
+                          "content":  "# Requisitos não funcionais\n\n## NFR-001 (security)\n\nIsolamento multi-tenant com RLS — zero cross-tenant\n\n## NFR-002 (compliance)\n\nLGPD — retenção, consentimento, exportar/excluir dados\n\n## NFR-003 (compliance)\n\nSigilo profissional OAB — no-training/zero-retention no provedor gerenciado\n\n## NFR-004 (accessibility)\n\nWCAG 2.1 AA no app advogado\n\n## NFR-005 (performance)\n\nRetriever RAG \u003c 3s p95 em pasta média\n\n## NFR-006 (maintainability)\n\nTypeScript estrito, sem any; Vitest + Playwright no DoD"
                       },
                       {
                           "stage":  "architecture",
+                          "content_format":  "markdown",
                           "available":  true,
                           "id":  "integrations",
                           "type":  "yaml",
                           "description":  "Stack, auth, storage, e-mail e conectores externos",
                           "summary":  "5 integrações mapeadas",
                           "label":  "Integrações",
-                          "path":  "integrations.yaml"
+                          "path":  "integrations.yaml",
+                          "content":  "# Integrações\n\n## INT-001\n\n- **Tipo:** auth\n- **Provedor:** custom_jwt_rbac\n- **Obrigatoriedade:** obrigatório\n- **Motivo:** RBAC por tenant + papéis advogado/admin já especificado no handoff\n\n## INT-002\n\n- **Tipo:** storage\n- **Provedor:** minio_dev\n- **Obrigatoriedade:** obrigatório\n- **Motivo:** Handoff define MinIO local; S3 em produção\n\n## INT-003\n\n- **Tipo:** other\n- **Provedor:** vault_hybrid\n- **Obrigatoriedade:** obrigatório\n- **Motivo:** IA-15 gerenciado + BYOK\n\n## INT-004\n\n- **Tipo:** email\n- **Provedor:** resend\n- **Obrigatoriedade:** opcional\n- **Motivo:** E6 fase 1 — conector e-mail\n\n## INT-005\n\n- **Tipo:** other\n- **Provedor:** google_calendar\n- **Obrigatoriedade:** opcional\n- **Motivo:** IA-20 conectores fase 1"
                       },
                       {
                           "stage":  "architecture",
+                          "content_format":  "markdown",
                           "available":  true,
                           "id":  "ux-spec",
                           "type":  "yaml",
                           "description":  "Princípios de baixa excitação, telas-chave e tokens de design",
                           "summary":  "7 telas · 5 princípios UX",
                           "label":  "Especificação UX",
-                          "path":  "ux-spec.yaml"
+                          "path":  "ux-spec.yaml",
+                          "content":  "# Especificação UX\n\n## Princípios\n\n- low excitation legal calm\n- wcag 2 1 aa\n- design tokens css variables per tenant\n- human in the loop visible\n- never mix original with interpretation ui\n\n## Telas principais\n\n- **dashboard** — Dashboard\n- **cases-list** — Lista de casos\n- **case-detail** — Detalhe do caso\n- **agents-roster** — Agentes — harness compartilhado\n- **equipe-chat** — Equipe \u0026 Chat (E6)\n- **editor** — Editor de documentos / rascunhos\n- **settings** — Configurações"
                       },
                       {
                           "stage":  "architecture",
+                          "content_format":  "markdown",
                           "available":  true,
                           "id":  "architecture",
                           "type":  "markdown",
                           "description":  "Resumo C4 sanitizado — containers, domínios e diferencial",
-                          "summary":  "SaaS multi-tenant white-label legaltech — instância referência: Bonomi Almeida Advogados. - Tenant/Brand — white-label tokens - Case/Folder — pastas versionadas (template Obsidian) - Document — ingestão, OCR, write-once",
-                          "label":  "Arquitetura",
-                          "path":  "architecture/c4-summary.md"
+                          "summary":  "SaaS multi-tenant white-label legaltech — instância referência: Bonomi Almeida Advogados. Casos como pastas versionadas (template Obsidian), copiloto com RAG por caso e multi-agente com guardrails, isolamento RLS por tenant e conformidade LGPD/OAB. - Tenant/Brand — white-label, tokens, domínio - Case/Folder — pastas...",
+                          "label":  "Arquitetura — resumo C4",
+                          "path":  "architecture/c4-summary.md",
+                          "content":  "# Resumo de arquitetura · IAutos\r\n\r\nSaaS multi-tenant white-label legaltech — instância referência: **Bonomi Almeida Advogados**.\r\n\r\n## Visão em uma frase\r\n\r\nCasos como pastas versionadas (template Obsidian), copiloto com RAG por caso e multi-agente com guardrails, isolamento RLS por tenant e conformidade LGPD/OAB.\r\n\r\n## Três níveis C4\r\n\r\n| Nível | Foco |\r\n|-------|------|\r\n| **Contexto** | Advogados, admins, LLM, storage, conformidade |\r\n| **Containers** | Web, API, Case, Document, RAG, Agent, Copilot, Vault, Audit |\r\n| **Componentes** | GoldRuleGuard, HarnessRunner, ClaimModel, DraftWorkflow HITL |\r\n\r\n## Domínios (bounded contexts)\r\n\r\n- **Tenant/Brand** — white-label, tokens, domínio\r\n- **Case/Folder** — pastas 00..06, regra ouro\r\n- **Document** — ingestão, OCR, versionamento\r\n- **Knowledge/RAG** — embeddings e citações por caso\r\n- **Agent/Harness** — roster, guardrails, Claim\r\n- **Copilot** — chat, rascunhos, aprovação humana\r\n- **Compliance** — audit, LGPD, painel segurança\r\n\r\n## Jornadas modeladas\r\n\r\n- Abrir caso → analisar com RAG → rascunho HITL\r\n- Onboarding tenant → marca → conexão IA\r\n- Fluxo end-to-end: `context-flow.md`\r\n\r\n## Diferencial arquitetural\r\n\r\nSeparação **fato (01_) vs interpretação (04_/05_)** enforced no domínio, não só na UI.\r\n\r\n## Artefatos relacionados\r\n\r\n- `c4-context.md`, `c4-containers.md`, `c4-components.md`\r\n- `domains.md`, `context-flow.md`, `sequences/`\r\n- `craft-review.md`, `adrs/`"
+                      },
+                      {
+                          "stage":  "architecture",
+                          "content_format":  "markdown",
+                          "available":  true,
+                          "id":  "c4-context",
+                          "type":  "markdown",
+                          "description":  "Sistema IAutos no ecossistema externo — atores e integrações",
+                          "summary":  "Nível 1 — contexto do sistema",
+                          "label":  "C4 — Contexto (L1)",
+                          "path":  "architecture/c4-context.md",
+                          "content":  "# C4 Nível 1 — Contexto · IAutos\r\n\r\n**Slug:** iautos · **Tenant referência:** Bonomi Almeida Advogados\r\n\r\n## Propósito\r\n\r\nMostrar o sistema IAutos no ecossistema externo: quem usa, com quem integra e o que entrega.\r\n\r\n## Diagrama de contexto\r\n\r\n```mermaid\r\nflowchart TB\r\n  subgraph users [Usuários]\r\n    ADV[Advogado(a)]\r\n    ADM[Admin do tenant]\r\n    STAFF[Equipe administrativa]\r\n  end\r\n\r\n  subgraph iautos [IAutos Platform]\r\n    SYS[Sistema IAutos\u003cbr/\u003eLegaltech white-label SaaS]\r\n  end\r\n\r\n  subgraph external [Sistemas externos]\r\n    LLM[Provedores LLM\u003cbr/\u003eAnthropic / OpenAI BYOK]\r\n    STOR[Object Storage\u003cbr/\u003eMinIO / S3]\r\n    EMAIL[E-mail\u003cbr/\u003eResend — E6]\r\n    CAL[Calendário / WhatsApp — E6]\r\n    OAB[Expectativas OAB / LGPD]\r\n  end\r\n\r\n  CLIENTE[Cliente do escritório\u003cbr/\u003eindireto]\r\n\r\n  ADV --\u003e SYS\r\n  ADM --\u003e SYS\r\n  STAFF --\u003e SYS\r\n  SYS --\u003e LLM\r\n  SYS --\u003e STOR\r\n  SYS -.-\u003e EMAIL\r\n  SYS -.-\u003e CAL\r\n  SYS --\u003e OAB\r\n  CLIENTE -. beneficia .-\u003e SYS\r\n```\r\n\r\n## Relações\r\n\r\n| Ator / Sistema | Relação | Notas |\r\n|----------------|---------|-------|\r\n| Advogado | Opera casos, revisa análises, aprova rascunhos | RF-005, RF-009 |\r\n| Admin tenant | Marca, integrações, LGPD, conexão IA | RF-001, RF-010, RF-011 |\r\n| Equipe admin | Upload, organização, prazos | RF-004 |\r\n| Provedores LLM | IA gerenciada + BYOK via Vault | RF-010, INT-003 |\r\n| Object Storage | Documentos, OCR, versionamento | RF-004, INT-002 |\r\n| LGPD / OAB | Conformidade, sigilo, human-in-the-loop | RF-011, NFR |\r\n\r\n## Escopo do diagrama\r\n\r\nInclui integrações MVP (E1–E5). Conectores E6 (e-mail, calendário) aparecem tracejados como pós-MVP."
+                      },
+                      {
+                          "stage":  "architecture",
+                          "content_format":  "markdown",
+                          "available":  true,
+                          "id":  "c4-containers",
+                          "type":  "markdown",
+                          "description":  "Aplicações, APIs, serviços e stores",
+                          "summary":  "Nível 2 — containers e responsabilidades",
+                          "label":  "C4 — Containers (L2)",
+                          "path":  "architecture/c4-containers.md",
+                          "content":  "# C4 Nível 2 — Containers · IAutos\r\n\r\n## Containers principais\r\n\r\n```mermaid\r\nflowchart TB\r\n  subgraph tenant [Tenant boundary — RLS]\r\n    WEB[Web App\u003cbr/\u003eNext.js white-label]\r\n    SITE[Site institucional\u003cbr/\u003epor tenant]\r\n    API[API Gateway / BFF\u003cbr/\u003eRBAC JWT]\r\n    CASE[Case Service\u003cbr/\u003epastas versionadas]\r\n    DOC[Document Service\u003cbr/\u003eupload OCR versionamento]\r\n    RAG[RAG Engine\u003cbr/\u003eembeddings por caso]\r\n    AGENT[Agent Orchestrator\u003cbr/\u003eroster + harness]\r\n    COPILOT[Copilot Service\u003cbr/\u003echat + editor]\r\n    VAULT[AI Vault\u003cbr/\u003egerenciado + BYOK]\r\n    AUDIT[Audit \u0026 LGPD\u003cbr/\u003etrilha + painel]\r\n    RT[Realtime\u003cbr/\u003echat interno E6]\r\n  end\r\n\r\n  DB[(PostgreSQL\u003cbr/\u003eRLS multi-tenant)]\r\n  OBJ[(MinIO / S3)]\r\n  VEC[(Vector Store\u003cbr/\u003epor case_id)]\r\n  LLM[LLM Providers]\r\n\r\n  WEB --\u003e API\r\n  SITE --\u003e API\r\n  API --\u003e CASE\r\n  API --\u003e DOC\r\n  API --\u003e COPILOT\r\n  API --\u003e AGENT\r\n  API --\u003e AUDIT\r\n  CASE --\u003e DB\r\n  DOC --\u003e DB\r\n  DOC --\u003e OBJ\r\n  RAG --\u003e VEC\r\n  RAG --\u003e OBJ\r\n  AGENT --\u003e RAG\r\n  AGENT --\u003e VAULT\r\n  COPILOT --\u003e AGENT\r\n  COPILOT --\u003e VAULT\r\n  VAULT --\u003e LLM\r\n  RT -. E6 .-\u003e API\r\n  AUDIT --\u003e DB\r\n```\r\n\r\n## Responsabilidades\r\n\r\n| Container | Responsabilidade | RFs |\r\n|-----------|------------------|-----|\r\n| Web App | UI calma, tokens por tenant, tabs do caso | RF-005, ux-spec |\r\n| Site institucional | White-label Bonomi e futuros tenants | RF-012 |\r\n| API Gateway | Auth JWT/RBAC, roteamento, rate limit | RF-001, INT-001 |\r\n| Case Service | Seed 00..06, regra ouro, `.index` | RF-002, RF-003 |\r\n| Document Service | Upload, OCR, write-once em 01_ | RF-004 |\r\n| RAG Engine | Retrieval + citações rastreáveis | RF-006 |\r\n| Agent Orchestrator | Roster, factory, guardrails, Claim | RF-007, RF-008 |\r\n| Copilot Service | Chat + rascunhos HITL | RF-009 |\r\n| AI Vault | Chaves BYOK + roteamento gerenciado | RF-010 |\r\n| Audit \u0026 LGPD | Painel conformidade, trilhas | RF-011 |\r\n\r\n## Decisões de deploy (Growth tier)\r\n\r\n- Monorepo app + workers assíncronos para OCR/RAG\r\n- RLS PostgreSQL como enforcement primário de tenant\r\n- Vector store isolado por `tenant_id` + `case_id`"
+                      },
+                      {
+                          "stage":  "architecture",
+                          "content_format":  "markdown",
+                          "available":  true,
+                          "id":  "c4-components",
+                          "type":  "markdown",
+                          "description":  "Componentes internos dos containers críticos",
+                          "summary":  "Nível 3 — Case, Agent, Copilot",
+                          "label":  "C4 — Componentes (L3)",
+                          "path":  "architecture/c4-components.md",
+                          "content":  "# C4 Nível 3 — Componentes · IAutos\r\n\r\nFoco nos containers críticos: **Case Service**, **Agent Orchestrator**, **Copilot Service**.\r\n\r\n## Case Service\r\n\r\n```mermaid\r\nflowchart LR\r\n  subgraph case_svc [Case Service]\r\n    CF[CaseFolderSeeder\u003cbr/\u003e00..06 template]\r\n    GR[GoldRuleGuard\u003cbr/\u003e01_ write-once]\r\n    IDX[IndexBuilder\u003cbr/\u003e.index metadata]\r\n    REPO[CaseRepository\u003cbr/\u003eRLS scoped]\r\n  end\r\n  DB[(PostgreSQL)]\r\n  OBJ[(Object Storage)]\r\n\r\n  CF --\u003e REPO\r\n  GR --\u003e REPO\r\n  IDX --\u003e REPO\r\n  REPO --\u003e DB\r\n  CF --\u003e OBJ\r\n```\r\n\r\n| Componente | Função |\r\n|------------|--------|\r\n| CaseFolderSeeder | Cria estrutura Obsidian por caso | RF-002 |\r\n| GoldRuleGuard | Bloqueia IA em 01_; permite 03_ proposta, 04_/05_ escrita IA | RF-003 |\r\n| IndexBuilder | Mantém `.index` e metadados de navegação | RF-005 |\r\n| CaseRepository | Persistência com `tenant_id` + `case_id` | RF-001 |\r\n\r\n## Agent Orchestrator\r\n\r\n```mermaid\r\nflowchart LR\r\n  subgraph agent_orch [Agent Orchestrator]\r\n    ROSTER[RosterRegistry]\r\n    FACTORY[AgentFactory per case]\r\n    HARNESS[HarnessRunner\u003cbr/\u003eguardrails]\r\n    CLAIM[ClaimModel\u003cbr/\u003efato/inferência/hipótese]\r\n    DISPATCH[TaskDispatcher]\r\n  end\r\n  RAG[RAG Engine]\r\n  VAULT[AI Vault]\r\n\r\n  DISPATCH --\u003e HARNESS\r\n  HARNESS --\u003e CLAIM\r\n  HARNESS --\u003e FACTORY\r\n  FACTORY --\u003e ROSTER\r\n  HARNESS --\u003e RAG\r\n  HARNESS --\u003e VAULT\r\n```\r\n\r\n| Componente | Função |\r\n|------------|--------|\r\n| HarnessRunner | Políticas, limites, recusa | RF-007 |\r\n| ClaimModel | Separação epistemológica nas saídas | RF-007 |\r\n| AgentFactory | Instancia agentes por caso | RF-008 |\r\n| TaskDispatcher | Orquestra multi-agente | RF-008 |\r\n\r\n## Copilot Service\r\n\r\n```mermaid\r\nflowchart LR\r\n  subgraph copilot [Copilot Service]\r\n    CHAT[ChatSessionManager]\r\n    DRAFT[DraftWorkflow\u003cbr/\u003eHITL approve/reject]\r\n    EDITOR[EditorBridge\u003cbr/\u003e04_ 05_ only]\r\n  end\r\n  AGENT[Agent Orchestrator]\r\n\r\n  CHAT --\u003e AGENT\r\n  AGENT --\u003e DRAFT\r\n  DRAFT --\u003e EDITOR\r\n```\r\n\r\n| Componente | Função |\r\n|------------|--------|\r\n| DraftWorkflow | Estados: proposta → revisão advogado → publicado | RF-009 |\r\n| EditorBridge | Garante destino correto na árvore do caso | RF-003, RF-009 |\r\n\r\n## Notas de craft\r\n\r\nVer `craft-review.md` — Dependency Rule entre domínio (Case) e infra (RAG/Vault)."
+                      },
+                      {
+                          "stage":  "architecture",
+                          "content_format":  "markdown",
+                          "available":  true,
+                          "id":  "domains",
+                          "type":  "markdown",
+                          "description":  "Bounded contexts e context map",
+                          "summary":  "Bounded contexts e integração entre eles. ```mermaid flowchart LR",
+                          "label":  "Domínios",
+                          "path":  "architecture/domains.md",
+                          "content":  "# Domínios · IAutos\r\n\r\nBounded contexts e integração entre eles.\r\n\r\n```mermaid\r\nflowchart LR\r\n  TENANT[Tenant / Brand]\r\n  CASE[Case / Folder]\r\n  DOC[Document]\r\n  RAG[Knowledge / RAG]\r\n  AGENT[Agent / Harness]\r\n  COPILOT[Copilot]\r\n  COMP[Compliance]\r\n\r\n  TENANT --\u003e CASE\r\n  CASE --\u003e DOC\r\n  DOC --\u003e RAG\r\n  CASE --\u003e AGENT\r\n  RAG --\u003e AGENT\r\n  AGENT --\u003e COPILOT\r\n  CASE --\u003e COMP\r\n  AGENT --\u003e COMP\r\n  TENANT --\u003e COMP\r\n```\r\n\r\n| Domínio | Entidades centrais | Invariantes |\r\n|---------|-------------------|-------------|\r\n| Tenant/Brand | Tenant, Theme, Domain | Isolamento RLS; sem cross-tenant |\r\n| Case/Folder | Case, FolderNode, Index | Template 00..06; regra ouro |\r\n| Document | Document, Version, OCRJob | Write-once 01_; versionamento |\r\n| Knowledge/RAG | Chunk, Citation, Embedding | Escopo `case_id`; citações rastreáveis |\r\n| Agent/Harness | Agent, Task, Claim | Guardrails; Claim model |\r\n| Copilot | Session, Draft, Approval | HITL obrigatório |\r\n| Compliance | AuditEvent, Consent, Policy | LGPD, trilha imutável |\r\n\r\n## Context map (integração)\r\n\r\n| Upstream | Downstream | Padrão |\r\n|----------|------------|--------|\r\n| Case | Document | Customer-Supplier |\r\n| Document | RAG | Conformist (eventos de ingestão) |\r\n| Agent | RAG | ACL |\r\n| Copilot | Agent | Orchestration |\r\n| Compliance | Todos | Shared Kernel (audit hooks) |\r\n\r\n## Épicos alinhados\r\n\r\n- E1 → Tenant/Brand\r\n- E2 → Case, Document\r\n- E3 → RAG, Agent (núcleo IA)\r\n- E4 → Agent, Copilot (multi-agente)\r\n- E5 → Compliance, Vault\r\n- E6 → Copilot (chat equipe), integrações externas"
+                      },
+                      {
+                          "stage":  "architecture",
+                          "content_format":  "markdown",
+                          "available":  true,
+                          "id":  "context-flow",
+                          "type":  "markdown",
+                          "description":  "Fluxo end-to-end do onboarding ao valor entregue",
+                          "summary":  "Fluxo end-to-end onboarding → HITL",
+                          "label":  "Fluxograma de contexto",
+                          "path":  "architecture/context-flow.md",
+                          "content":  "# Fluxograma de contexto — IAutos (end-to-end)\r\n\r\nVisão do fluxo principal do sistema do onboarding ao valor entregue ao advogado.\r\n\r\n```mermaid\r\nflowchart TB\r\n  START([Novo tenant / escritório])\r\n  ONB[Onboarding: marca, domínio, RBAC]\r\n  CASE_CRIAR[Criar caso — seed pastas 00..06]\r\n  UPLOAD[Upload documentos → OCR]\r\n  INDEX[Indexação + RAG por caso]\r\n  PERGUNTA[Advogado pergunta / solicita análise]\r\n  AGENTES[Orquestrador + agentes + harness]\r\n  CLAIM[Saída com Claim model + citações]\r\n  RASCUNHO[Rascunho em 04_ ou 05_]\r\n  REVISAO{Advogado aprova?}\r\n  PUBLICADO[Documento publicado no caso]\r\n  AUDIT[Trilha audit / LGPD]\r\n  E6[Equipe \u0026 integrações — E6]\r\n  END([Caso ativo e governado])\r\n\r\n  START --\u003e ONB\r\n  ONB --\u003e CASE_CRIAR\r\n  CASE_CRIAR --\u003e UPLOAD\r\n  UPLOAD --\u003e INDEX\r\n  INDEX --\u003e PERGUNTA\r\n  PERGUNTA --\u003e AGENTES\r\n  AGENTES --\u003e CLAIM\r\n  CLAIM --\u003e RASCUNHO\r\n  RASCUNHO --\u003e REVISAO\r\n  REVISAO --\u003e|Sim| PUBLICADO\r\n  REVISAO --\u003e|Não — edita| RASCUNHO\r\n  REVISAO --\u003e|Rejeita| PERGUNTA\r\n  PUBLICADO --\u003e AUDIT\r\n  PUBLICADO --\u003e E6\r\n  E6 --\u003e END\r\n  AUDIT --\u003e END\r\n```\r\n\r\n## Caminhos alternativos\r\n\r\n| Caminho | Condição | Resultado |\r\n|---------|----------|-----------|\r\n| Rejeição HITL | Advogado não aprova rascunho | Retorna à análise; sem escrita em 01_ |\r\n| Guardrail block | Harness recusa pedido | Mensagem calma; log audit |\r\n| BYOK indisponível | Vault sem chave tenant | Fallback gerenciado ou aviso admin |\r\n\r\n## RFs cobertos\r\n\r\nRF-001..RF-011 (MVP E1–E5). RF-013 (E6) no ramo opcional.\r\n\r\n## Telas UX relacionadas\r\n\r\ndashboard → cases-list → case-detail (tabs) → editor → settings/security"
+                      },
+                      {
+                          "stage":  "architecture",
+                          "available":  true,
+                          "id":  "sequences",
+                          "type":  "markdown",
+                          "description":  "Diagramas de sequência Mermaid das jornadas principais",
+                          "summary":  "3 jornadas modeladas",
+                          "label":  "Jornadas — sequência",
+                          "path":  "architecture/sequences/",
+                          "children":  [
+                                           {
+                                               "id":  "journey-caso-analise-rascunho",
+                                               "label":  "journey caso analise rascunho",
+                                               "available":  true,
+                                               "content":  "# Jornada: Abrir caso → Analisar → Rascunho HITL\r\n\r\n**RFs:** RF-005, RF-006, RF-007, RF-009  \r\n**Atores:** Advogado, Web App, API, Case Service, RAG, Agent Orchestrator, Copilot, AI Vault\r\n\r\n```mermaid\r\nsequenceDiagram\r\n  actor Adv as Advogado\r\n  participant Web as Web App\r\n  participant API as API Gateway\r\n  participant Case as Case Service\r\n  participant RAG as RAG Engine\r\n  participant Agent as Agent Orchestrator\r\n  participant Copilot as Copilot Service\r\n  participant Vault as AI Vault\r\n  participant LLM as LLM Provider\r\n\r\n  Adv-\u003e\u003eWeb: Abre caso (tab Análises)\r\n  Web-\u003e\u003eAPI: GET /cases/{id}\r\n  API-\u003e\u003eCase: load case + folders\r\n  Case--\u003e\u003eWeb: árvore 00..06\r\n\r\n  Adv-\u003e\u003eWeb: Pergunta / pede análise\r\n  Web-\u003e\u003eAPI: POST /copilot/chat\r\n  API-\u003e\u003eCopilot: forward message\r\n  Copilot-\u003e\u003eAgent: dispatch task\r\n  Agent-\u003e\u003eRAG: retrieve(case_id, query)\r\n  RAG--\u003e\u003eAgent: chunks + citações\r\n  Agent-\u003e\u003eVault: resolve credentials(tenant)\r\n  Vault-\u003e\u003eLLM: completion(prompt, chunks)\r\n  LLM--\u003e\u003eAgent: resposta bruta\r\n  Agent-\u003e\u003eAgent: Harness + Claim model\r\n  Agent--\u003e\u003eCopilot: proposta estruturada\r\n  Copilot--\u003e\u003eWeb: rascunho (fato/inferência marcados)\r\n\r\n  Note over Adv,Copilot: Human-in-the-loop obrigatório\r\n\r\n  Adv-\u003e\u003eWeb: Revisa rascunho\r\n  alt Aprova\r\n    Web-\u003e\u003eAPI: POST /drafts/{id}/approve\r\n    API-\u003e\u003eCase: write 04_ ou 05_\r\n    Case--\u003e\u003eWeb: OK + audit event\r\n  else Rejeita / edita\r\n    Adv-\u003e\u003eWeb: Edita ou descarta\r\n    Web-\u003e\u003eAPI: POST /drafts/{id}/reject\r\n  end\r\n```\r\n\r\n## Guardrails visíveis\r\n\r\n- Citações rastreáveis na UI (RF-006)\r\n- Claim model na proposta (RF-007)\r\n- Escrita só após aprovação explícita (RF-009)",
+                                               "type":  "sequence-diagram",
+                                               "filename":  "journey-caso-analise-rascunho.md"
+                                           },
+                                           {
+                                               "id":  "journey-onboarding-tenant",
+                                               "label":  "journey onboarding tenant",
+                                               "available":  true,
+                                               "content":  "# Jornada: Onboarding de tenant\r\n\r\n**RFs:** RF-001, RF-010, RF-011, RF-012  \r\n**Atores:** Admin tenant, Web App, API, Tenant Service, AI Vault, Site Generator\r\n\r\n```mermaid\r\nsequenceDiagram\r\n  actor Admin as Admin tenant\r\n  participant Web as Web App\r\n  participant API as API Gateway\r\n  participant Tenant as Tenant / Brand Service\r\n  participant Vault as AI Vault\r\n  participant Site as Site institucional\r\n  participant Audit as Audit \u0026 LGPD\r\n\r\n  Admin-\u003e\u003eWeb: Primeiro login pós-provision\r\n  Web-\u003e\u003eAPI: GET /tenant/settings\r\n  API-\u003e\u003eTenant: load tenant config\r\n  Tenant--\u003e\u003eWeb: tema default + checklist onboarding\r\n\r\n  Admin-\u003e\u003eWeb: Configura marca (tokens, logo)\r\n  Web-\u003e\u003eAPI: PATCH /tenant/brand\r\n  API-\u003e\u003eTenant: persist theme tokens\r\n  Tenant-\u003e\u003eSite: regenerate static preview\r\n  Site--\u003e\u003eWeb: preview URL\r\n\r\n  Admin-\u003e\u003eWeb: Conecta IA (BYOK ou gerenciado)\r\n  Web-\u003e\u003eAPI: POST /tenant/ai/connect\r\n  API-\u003e\u003eVault: store credentials (encrypted)\r\n  Vault-\u003e\u003eAudit: log config change (sem segredo)\r\n  Vault--\u003e\u003eWeb: status connected\r\n\r\n  Admin-\u003e\u003eWeb: Revisa painel LGPD\r\n  Web-\u003e\u003eAPI: GET /compliance/dashboard\r\n  API-\u003e\u003eAudit: policies + retention summary\r\n  Audit--\u003e\u003eWeb: checklist conformidade\r\n\r\n  Note over Admin,Audit: Tenant Bonomi = instância inaugural MVP\r\n```\r\n\r\n## Critérios de aceite\r\n\r\n- Domínio white-label resolvido (RF-001)\r\n- Chaves IA isoladas por tenant (RF-010)\r\n- Painel LGPD acessível antes de uso produtivo (RF-011)",
+                                               "type":  "sequence-diagram",
+                                               "filename":  "journey-onboarding-tenant.md"
+                                           },
+                                           {
+                                               "id":  "journey-upload-ingestao",
+                                               "label":  "journey upload ingestao",
+                                               "available":  true,
+                                               "content":  "# Jornada: Upload e ingestão de documentos\r\n\r\n**RFs:** RF-004, RF-003  \r\n**Atores:** Equipe admin, Web App, Document Service, OCR Worker, RAG Engine\r\n\r\n```mermaid\r\nsequenceDiagram\r\n  actor Staff as Equipe administrativa\r\n  participant Web as Web App\r\n  participant API as API Gateway\r\n  participant Doc as Document Service\r\n  participant OCR as OCR Worker\r\n  participant Store as Object Storage\r\n  participant RAG as RAG Engine\r\n  participant Guard as GoldRuleGuard\r\n\r\n  Staff-\u003e\u003eWeb: Upload PDF/imagem em 01_fontes\r\n  Web-\u003e\u003eAPI: POST /cases/{id}/documents\r\n  API-\u003e\u003eDoc: create upload job\r\n  Doc-\u003e\u003eStore: put object (immutable 01_)\r\n  Doc-\u003e\u003eGuard: validate path 01_ only\r\n  Guard--\u003e\u003eDoc: allowed (human upload)\r\n\r\n  Doc-\u003e\u003eOCR: enqueue OCR\r\n  OCR-\u003e\u003eStore: read original\r\n  OCR-\u003e\u003eDoc: persist OCR text metadata\r\n  Doc-\u003e\u003eRAG: index case_id, doc_id\r\n  RAG--\u003e\u003eDoc: indexed\r\n\r\n  Doc--\u003e\u003eWeb: status complete + citation refs\r\n  Staff-\u003e\u003eWeb: Visualiza documento original\r\n  Note over Staff,Guard: IA nunca sobrescreve 01_\r\n```\r\n\r\n## Invariante\r\n\r\nWrite-once em `01_fontes/` — reforçado por GoldRuleGuard (RF-003).",
+                                               "type":  "sequence-diagram",
+                                               "filename":  "journey-upload-ingestao.md"
+                                           }
+                                       ]
+                      },
+                      {
+                          "stage":  "architecture",
+                          "content_format":  "markdown",
+                          "available":  true,
+                          "id":  "craft-review",
+                          "type":  "markdown",
+                          "description":  "Revisão Uncle Bob — SOLID, boundaries, smells (consultivo)",
+                          "summary":  "Agente: clean-craft-advisor · Inspiração: uncle-bob-craft Escopo: C4 L2/L3 + domínios · `ai_suggested: true` - Tenant boundary — OK com RLS + JWT",
+                          "label":  "Craft review",
+                          "path":  "architecture/craft-review.md",
+                          "content":  "# Craft Review · IAutos\r\n\r\n**Agente:** clean-craft-advisor · **Inspiração:** uncle-bob-craft  \r\n**Escopo:** C4 L2/L3 + domínios · `ai_suggested: true`\r\n\r\n## Dependency Rule\r\n\r\n| Avaliação | Notas |\r\n|-----------|-------|\r\n| ✅ Direção geral correta | Domínio Case não importa LLM; Copilot depende de Agent, não de Vault diretamente na UI |\r\n| ⚠️ Atenção | Document Service não deve chamar RAG síncrono no upload — preferir eventos (evitar acoplamento) |\r\n| Sugestão | Introduzir `CaseEvents` (domain) consumidos por RAG async |\r\n\r\n## SOLID (contextual)\r\n\r\n| Princípio | Achado | Ação sugerida |\r\n|-----------|--------|---------------|\r\n| SRP | GoldRuleGuard separado do CaseRepository | Manter; não fundir com OCR |\r\n| OCP | Novos agentes via RosterRegistry | OK para RF-008 |\r\n| DIP | Vault como adapter de LLM | Interface `LLMPort` estável |\r\n| ISP | API Gateway não expor endpoints internos RAG | BFF fino |\r\n\r\n## Boundaries\r\n\r\n- **Tenant boundary** — OK com RLS + JWT\r\n- **Case boundary** — OK; reforçar testes cross-folder negados\r\n- **IA boundary** — Harness obrigatório; nunca bypass para 01_\r\n\r\n## Code smells (arquitetura)\r\n\r\n| Smell | Onde | Mitigação |\r\n|-------|------|-----------|\r\n| God API | API Gateway faz tudo | Split handlers por bounded context |\r\n| Anemic Case | Só CRUD sem regras | GoldRuleGuard + domain services |\r\n| Leaky RAG | Chunks sem citation_id | Enforce no RAG Engine |\r\n\r\n## Checklist Uncle Bob (resumo)\r\n\r\n- [x] Nomes de containers expressam responsabilidade\r\n- [x] Human-in-the-loop explícito nas jornadas\r\n- [x] ADRs para decisões estruturais (001, 002)\r\n- [ ] Testes de contrato entre Case ↔ Document (repo-scaffolder)\r\n- [ ] Runbook RLS produção (sustentação — gap conhecido)\r\n\r\n## Prioridade de refino\r\n\r\n1. **Must:** eventos async Document → RAG\r\n2. **Should:** portas/adapters para Vault e LLM\r\n3. **Could:** extrair Compliance como sidecar audit shared kernel\r\n\r\n---\r\n\r\nRevisão consultiva — criador confirma antes de implementação."
+                      },
+                      {
+                          "stage":  "architecture",
+                          "available":  true,
+                          "id":  "adrs",
+                          "type":  "markdown",
+                          "description":  "Architecture Decision Records",
+                          "summary":  "2 decisões registradas",
+                          "label":  "ADRs",
+                          "path":  "architecture/adrs/",
+                          "children":  [
+                                           {
+                                               "id":  "ADR-001-multi-tenant-rls",
+                                               "label":  "ADR 001 multi tenant rls",
+                                               "available":  true,
+                                               "content":  "# ADR-001 — Multi-tenant com RLS PostgreSQL\r\n\r\n**Status:** aceito · **Data:** 2026-07-04 · **Épico:** E1\r\n\r\n## Contexto\r\n\r\nIAutos é SaaS white-label; cada escritório exige isolamento forte (LGPD, sigilo OAB).\r\n\r\n## Decisão\r\n\r\nUsar **PostgreSQL RLS** com `tenant_id` em todas as tabelas de domínio; JWT inclui `tenant_id` validado no API Gateway.\r\n\r\n## Consequências\r\n\r\n- (+) Enforcement no banco, não só na app\r\n- (+) Alinha com stack Growth open-source\r\n- (−) Migrations e testes devem sempre setar `tenant_id`\r\n- (−) RLS em produção exige runbook ops (gap sustentação)\r\n\r\n## Alternativas consideradas\r\n\r\n- Schema por tenant — descartado (custo operacional)\r\n- Filtro só na app — descartado (risco vazamento)",
+                                               "type":  "adr",
+                                               "filename":  "ADR-001-multi-tenant-rls.md"
+                                           },
+                                           {
+                                               "id":  "ADR-002-case-folder-gold-rule",
+                                               "label":  "ADR 002 case folder gold rule",
+                                               "available":  true,
+                                               "content":  "# ADR-002 — Regra ouro: pastas Obsidian e GoldRuleGuard\r\n\r\n**Status:** aceito · **Data:** 2026-07-04 · **Épico:** E2\r\n\r\n## Contexto\r\n\r\nMetodologia validada separa original (01_) de interpretação (04_/05_) e racionalização proposta (03_).\r\n\r\n## Decisão\r\n\r\nImplementar **GoldRuleGuard** no Case Service — única porta de escrita na árvore; IA só via Agent/Copilot com destinos permitidos.\r\n\r\n## Consequências\r\n\r\n- (+) Invariante de domínio, não convenção de prompt\r\n- (+) Auditável e testável\r\n- (−) Toda nova feature de escrita passa pelo guard\r\n\r\n## Referências\r\n\r\n- `instrucoes_para_ia.md` (zip brownfield)\r\n- RF-003, RF-009",
+                                               "type":  "adr",
+                                               "filename":  "ADR-002-case-folder-gold-rule.md"
+                                           }
+                                       ]
                       },
                       {
                           "stage":  "brief",
+                          "content_format":  "markdown",
                           "available":  true,
                           "id":  "maturity",
                           "type":  "yaml",
                           "description":  "Readiness por dimensão e gates do pipeline Sky-Forge",
                           "summary":  "Readiness geral: 80%",
                           "label":  "Maturidade",
-                          "path":  "maturity.yaml"
+                          "path":  "maturity.yaml",
+                          "content":  "# Maturidade\n\n**Readiness geral:** 80%\n\n- **business:** 88%\n- **product:** 82%\n- **ux_design:** 85%\n- **technical:** 85%\n- **sustainability:** 62%\n- **elevation:** 72%"
                       },
                       {
                           "stage":  "requirements",
+                          "content_format":  "markdown",
                           "available":  true,
                           "id":  "roadmap",
                           "type":  "yaml",
                           "description":  "Épicos E1–E6, dependências e próximo passo imediato",
                           "summary":  "6 épicos no roadmap",
                           "label":  "Roadmap",
-                          "path":  "roadmap/phases.yaml"
+                          "path":  "roadmap/phases.yaml",
+                          "content":  "# Roadmap\n\n## E1 — Fundação\n\n*Status:* next\n\n## E2 — Casos \u0026 documentos\n\n*Status:* pending\n\n## E3 — Núcleo de IA\n\n*Status:* pending\n\n## E4 — Multi-agente\n\n*Status:* pending\n\n## E5 — Config \u0026 conformidade\n\n*Status:* pending\n\n## E6 — Colaboração \u0026 integrações\n\n*Status:* post_mvp"
                       },
                       {
                           "stage":  "prompts",
+                          "content_format":  "markdown",
                           "available":  true,
                           "id":  "prompts",
                           "type":  "markdown",
                           "description":  "Instruções de implementação para agentes de código",
                           "summary":  "Slug: iautos | Tier: growth | Modo: brownfield continue Você implementa o IAutos — legaltech SaaS white-label brasileira. O escritório Bonomi Almeida Advogados é tenant inaugural. O zip `Iautos.zip` já contém: - Mockup navegável (`IAutos - Aplicação.dc.html`)",
                           "label":  "Prompts avançados",
-                          "path":  "prompts/iautos-advanced.md"
+                          "path":  "prompts/iautos-advanced.md",
+                          "content":  "# IAutos — Prompt avançado para implementação (Cursor / Claude Code)\n\n**Slug:** iautos | **Tier:** growth | **Modo:** brownfield continue\n\n## Contexto\n\nVocê implementa o **IAutos** — legaltech SaaS white-label brasileira. O escritório **Bonomi Almeida Advogados** é tenant inaugural. O zip `Iautos.zip` já contém:\n- Mockup navegável (`IAutos - Aplicação.dc.html`)\n- Arquitetura (`IAutos - Arquitetura de Solução.dc.html`)\n- Handoff completo (`IAutos - Handoff de Desenvolvimento.dc.html`)\n- Site institucional (`Bonomi Almeida Advogados.dc.html`)\n- Template Obsidian validado (`Processo_Obsidian_IA_Template/`)\n\n**Não recomece do zero.** Reutilize handoff §03–§11 como fonte de verdade.\n\n## Princípios não negociáveis\n\n1. Pastas de caso = template Obsidian (00_config .. 06_modelos + .index + .audit)\n2. Regra de ouro: original ≠ interpretação\n3. Multi-tenant RLS — zero cross-tenant\n4. Claim model: fato/inferência/hipótese/dúvida + citação\n5. Human-in-the-loop em ações externas e peças finais\n6. LGPD + sigilo OAB\n7. Design tokens por tenant — sem cores hardcoded\n\n## Monorepo (handoff §03)\n\n```\niautos/\n├─ apps/web/           # Next.js + middleware tenant + theme/tokens.css\n├─ packages/\n│  ├─ core-cases/\n│  ├─ core-documents/\n│  ├─ ai-orchestrator/ # harness, agents/, RAG\n│  ├─ audit/ auth/ db/ ui/\n├─ templates/caso/    # seed Obsidian\n├─ infra/  AGENTS.md  pnpm-workspace.yaml\n```\n\n## Ordem de implementação\n\n1. **E1** IA-01..03: Docker, Prisma/RLS, auth, white-label Bonomi\n2. **E2** IA-04..06: seed caso, upload/OCR, UI explorador\n3. **E3** IA-07..10: pgvector RAG, harness, Claim, audit\n4. **E4** IA-11..14: roster, orquestrador, factory, chat/editor\n5. **E5** IA-15..16: BYOK + painel LGPD\n6. **E6** (pós-MVP) IA-17..20: equipe, chat, integrações\n\n## Agentes a registrar (packages/ai-orchestrator/agents/)\n\n| Agente | Autonomia | Escreve em |\n|--------|-----------|------------|\n| Intake | auto | 04_, 00_config |\n| Cronologia | auto | propõe 03_ |\n| Provas \u0026 Fatos | auto | propõe 03_ |\n| Contradições | auto | propõe 03_ |\n| Argumentos | sugere | 04_ |\n| Redator | humano | 05_dossie rascunho |\n| Dossiê | sugere | 05_dossie |\n| Orquestrador | auto | roteamento |\n| Especialista/caso | sugere | factory |\n\n## UX\n\nTipografia: Cormorant Garamond + Mulish. Paleta Bonomi: `#6E2024`, `#A98247`. WCAG AA. Mockup = referência visual.\n\n## DoD\n\nIsolamento tenant testado · guardrails por agente · audit imutável · typecheck+lint+testes verdes.\n\n## Próximo comando sugerido\n\n```bash\n# Após scaffold IA-01\ndocker compose up -d \u0026\u0026 pnpm install \u0026\u0026 pnpm db:push \u0026\u0026 pnpm dev\n# http://bonomi.localhost:3000\n```"
                       },
                       {
                           "stage":  "scaffold",
+                          "content_format":  "markdown",
                           "available":  true,
                           "id":  "scaffold",
                           "type":  "markdown",
                           "description":  "AGENTS.md inicial e convenções do app a implementar",
                           "summary":  "Projeto gerado por Sky-Forge. Humanos aprovam merge; agentes executam via PR. Ver `docs/specs/phase-0.spec.yaml` e prompts em `prompts/`. - Spec-before-code",
                           "label":  "Scaffold do repositório",
-                          "path":  "scaffold/AGENTS.md"
+                          "path":  "scaffold/AGENTS.md",
+                          "content":  "# AGENTS.md — {ProjectTitle}\r\n\r\nProjeto gerado por Sky-Forge. Humanos aprovam merge; agentes executam via PR.\r\n\r\n## Stack (do pacote forge)\r\n\r\nVer `docs/specs/phase-0.spec.yaml` e prompts em `prompts/`.\r\n\r\n## Agentes\r\n\r\n| ID | Função |\r\n|----|--------|\r\n| orchestrator | Roteamento |\r\n| backend / flutter / web | Implementação por área |\r\n\r\n## Princípios\r\n\r\n- Spec-before-code\r\n- Testes em todo PR\r\n- Documentação no mesmo PR que código\r\n\r\n## Referências do pacote\r\n\r\n- Brief: importado de Sky-Forge `outputs/{slug}/`\r\n- Arquitetura: `architecture/`"
                       },
                       {
                           "stage":  "cloud-design",
@@ -493,7 +806,7 @@
                           "id":  "cloud-design",
                           "type":  "cloud-design",
                           "description":  "Protótipos visuais proprietários — apenas metadados no showcase público",
-                          "summary":  "5 protótipos visuais (resumo sanitizado)",
+                          "summary":  "5 protótipos Sky Cloud Design (metadados)",
                           "label":  "Cloud Design",
                           "path":  "cloud-design/",
                           "children":  [
@@ -536,6 +849,6 @@
                       }
                   ],
     "public":  true,
-    "published_at":  "2026-07-04T17:14:16.5365172Z",
+    "published_at":  "2026-07-04T17:46:57.1366924Z",
     "outputs_dir":  "C:\\Users\\rapha\\CursorRepos\\sky-forge\\outputs\\iautos"
 }

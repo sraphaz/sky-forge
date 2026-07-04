@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import HubHeader from "../components/HubHeader.astro";
 import { loadIndex, loadAgentsView } from "../lib/registry";
 import { withBase } from "../lib/paths";
 
@@ -14,25 +15,17 @@ const agentSnapshots = await Promise.all(
 );
 ---
 
-<BaseLayout title="Como foi produzido" description="Trilha Sky-Forge por projeto">
-  <header class="site-header">
-    <div class="container">
-      <a class="back-link" href={withBase("/")} style="color: var(--color-sky-glow);">← Sky-Forge</a>
-      <span class="badge">Sky-Forge · meta</span>
-      <h1>Como foi produzido</h1>
-      <p>
-        Auditoria e coreografia dos agentes que geraram cada output — separado da visão do aplicativo.
-      </p>
-      <nav class="hub-nav" aria-label="Navegação principal">
-        <a href={withBase("/")} class="hub-nav-link">Projetos</a>
-        <a href={withBase("/agentes/")} class="hub-nav-link hub-nav-active">Agentes</a>
-        <a href={withBase("/metodo/")} class="hub-nav-link">Método</a>
-        <a href={withBase("/sobre/")} class="hub-nav-link">Sobre</a>
-      </nav>
-    </div>
-  </header>
+<BaseLayout title="Como foi produzido" description="Trilha Sky-Forge por projeto" navActive="agentes">
+  <HubHeader
+    kicker="PROVENIÊNCIA · AGENTES"
+    title="Como foi produzido"
+    subtitle="Auditoria e coreografia dos agentes — separado da visão de cada aplicativo."
+    showBack
+    backHref={withBase("/")}
+    backLabel="← Hub de projetos"
+  />
 
-  <main class="container">
+  <main id="main-content" class="container">
     {agentSnapshots.filter((s) => s.agents).length === 0 ? (
       <div class="panel empty-state">
         <p>Nenhum snapshot de agentes publicado.</p>

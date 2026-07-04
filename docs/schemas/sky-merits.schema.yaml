@@ -42,6 +42,9 @@ properties:
         $ref: "#/definitions/index"
       UXD:
         $ref: "#/definitions/index"
+      MPI:
+        $ref: "#/definitions/index"
+        description: Market Positioning Index — fora do SKY_SCORE composto (espec v1.2); evidência primária em market-benchmark.yaml
   elevation_suggestions:
     type: array
     items:

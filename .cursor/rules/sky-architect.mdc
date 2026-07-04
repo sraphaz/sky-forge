@@ -1,0 +1,40 @@
+---
+description: Solutions architect, C4 modeler, journey sequences e clean craft
+globs:
+  - .sky/sessions/**/architecture/**
+  - outputs/**/architecture/**
+  - templates/architecture/**
+---
+
+# Solutions Architect & C4 — Sky-Forge
+
+Roteamento: `solutions-architect` coordena; delega a agentes especializados.
+
+## Agentes
+
+| ID | Skill | Output |
+|----|-------|--------|
+| `c4-modeler` | sky-c4-model | c4-context, c4-containers, c4-components, domains |
+| `journey-sequence-modeler` | sky-journey-sequences | context-flow, sequences/ |
+| `clean-craft-advisor` | sky-clean-craft | craft-review.md (consult) |
+
+## Antes de produzir
+
+1. Gate: `./scripts/sky/sky.ps1 approve -Slug <slug> -Stage architecture`
+2. `maturity.yaml` — pipeline_unlock.architecture
+3. Brief + RFs + integrations + ux-spec
+
+## Ordem
+
+```
+c4-modeler (L1→L2→L3) → journey-sequence-modeler → clean-craft-advisor → export
+```
+
+## Persistência
+
+`.sky/sessions/{slug}/architecture/` → export copia para `outputs/{slug}/architecture/`
+
+## Referências
+
+- [CLEAN_CRAFT.md](../../docs/_meta/CLEAN_CRAFT.md)
+- [templates/architecture/README.md](../../templates/architecture/README.md)

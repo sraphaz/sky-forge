@@ -1,5 +1,15 @@
 # Changelog — Sky-Forge
 
+## [1.4.0] — 2026-07-04
+
+### Consciência de mercado — agente market-benchmark e índice MPI
+
+- **Espec SKY v1.2** — novo índice **MPI (Market Positioning Index)** com rubrica ancorada 0–100 ([SKY_INDICES_METHOD.md](_meta/SKY_INDICES_METHOD.md) §2): novidade vs. soluções existentes (comerciais + open-source), qualidade de diferenciação e cobertura consciente das lacunas do segmento; **fora do SKY_SCORE composto** para não invalidar scores v1.0/v1.1 (governança §6)
+- **Agente `market-benchmark`** (consultivo) — benchmark real com fontes, veredito por eixo (novo/melhor/paridade/atrás), sugestões de lacuna sempre `ai_suggested`; regra [sky-benchmark.mdc](../.cursor/rules/sky-benchmark.mdc); separado do `market-scout` (research de stack) por ter output e momento distintos — paridade consciente > novidade ignorante
+- **CLI** — `sky.ps1 benchmark -Slug <slug>`: explica o agente, valida presença do artefato e registra evento de auditoria
+- **Pipeline** — `publish-preview.ps1` lê `market-benchmark.yaml` e publica resumo sanitizado (MPI + nomes/URLs + vereditos, sem notas internas); showcase ganha painel "Posicionamento de mercado" na página do projeto e MPI na seção de índices
+- **iautos** — benchmark executado: 15 iniciativas (Astrea, ADVBOX, Projuris, EasyJur, Locus.IA, OpenSpecter, Judicex, LexNebulis…), MPI 66 ±8 (medium), 6 lacunas de mercado registradas como RF-014..RF-019 (`ai_suggested`, aguardando decisão do criador)
+
 ## [1.3.0] — 2026-07-04
 
 ### Roadmap consolidado, export para IA e trilha de evidências

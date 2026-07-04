@@ -1,32 +1,24 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import HubHeader from "../components/HubHeader.astro";
 import { withBase } from "../lib/paths";
 ---
 
 <BaseLayout
   title="Sobre a plataforma"
   description="Como o Sky-Forge funciona — navegador, instalação local, export para IA e privacidade"
+  navActive="sobre"
 >
-  <header class="site-header">
-    <div class="container">
-      <a class="back-link" href={withBase("/")} style="color: var(--color-sky-glow);">← Sky-Forge</a>
-      <span class="badge">Plataforma · MIT</span>
-      <h1>Sobre o Sky-Forge</h1>
-      <p>
-        Funil conversacional que transforma uma ideia em especificação verificável — com maturidade,
-        índices SKY, UX digna e pacote exportável. Cada projeto na galeria é <em>output</em> de um intake;
-        a página do projeto fala do <strong>aplicativo</strong>, não da ferramenta.
-      </p>
-      <nav class="hub-nav" aria-label="Navegação principal">
-        <a href={withBase("/")} class="hub-nav-link">Projetos</a>
-        <a href={withBase("/agentes/")} class="hub-nav-link">Agentes</a>
-        <a href={withBase("/metodo/")} class="hub-nav-link">Método</a>
-        <a href={withBase("/sobre/")} class="hub-nav-link hub-nav-active">Sobre</a>
-      </nav>
-    </div>
-  </header>
+  <HubHeader
+    kicker="PLATAFORMA · MIT"
+    title="Sobre o Sky-Forge"
+    subtitle="Funil conversacional que transforma ideias em especificação verificável — maturidade, índices SKY e pacote exportável."
+    showBack
+    backHref={withBase("/")}
+    backLabel="← Hub de projetos"
+  />
 
-  <main class="container">
+  <main id="main-content" class="container">
     <section class="panel">
       <h3>O que é</h3>
       <p>
@@ -61,9 +53,8 @@ import { withBase } from "../lib/paths";
             </li>
           </ul>
         </div>
-        <div>
-          <h4 class="subheading">Instalação local</h4>
-          <p>
+        <div id="instalacao-local">
+          <h4 class="subheading">Instalação local</h4>          <p>
             CLI <code>sky.ps1</code> no clone do repo. Sessões em
             <code>.sky/sessions/</code>; pacotes em pasta externa
             (<code>SKY_OUTPUTS_DIR</code>).
@@ -120,7 +111,7 @@ import { withBase } from "../lib/paths";
       </div>
     </section>
 
-    <section class="panel">
+    <section class="panel" id="export-ia">
       <h3>Exportar para IA</h3>
       <p>
         Escolha escopo (essencial, especificação ou completo) e gere um
@@ -131,7 +122,7 @@ import { withBase } from "../lib/paths";
       <pre class="code-block"><code>./scripts/sky/sky.ps1 export -Slug meu-projeto -ForAI -Scope essential</code></pre>
     </section>
 
-    <section class="panel">
+    <section class="panel" id="repositorio-git">
       <h3>Repositório Git</h3>
       <p>
         Abordagem <strong>local-first</strong>: aponte a pasta de trabalho; detectamos

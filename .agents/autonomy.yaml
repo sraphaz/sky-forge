@@ -36,6 +36,9 @@ agent_defaults:
   ux-design-specialist: activate
   market-scout: activate
   solutions-architect: activate
+  c4-modeler: activate
+  journey-sequence-modeler: activate
+  clean-craft-advisor: consult
   prompt-assembler: invoke_skill
   repo-scaffolder: side_effect
   orchestrator: route

@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  html, body { margin: 0; padding: 0; background: var(--bg0); }
+  body {
+    --bg0: #060913; --bg1: #0A1124; --bg2: #0E1830;
+    --surface: rgba(148,178,255,0.05); --line: rgba(148,178,255,0.13);
+    --text: #EAF0FC; --text2: #9DA9C9; --text3: #6B7694;
+    --acc1: #7FB8FF; --acc2: #5FE3C4;
+    --grad: linear-gradient(120deg, #7FB8FF 0%, #5FE3C4 100%);
+    --glow1: rgba(78,124,224,0.22); --glow2: rgba(46,180,150,0.13);
+    --navbg: rgba(6,9,19,0.72);
+  }
+  body[data-theme="light"] {
+    --bg0: #F4F7FD; --bg1: #EAF0FA; --bg2: #FFFFFF;
+    --surface: rgba(28,58,120,0.045); --line: rgba(28,58,120,0.14);
+    --text: #0F1626; --text2: #46536F; --text3: #7A86A0;
+    --acc1: #2E6FE0; --acc2: #0FA98B;
+    --grad: linear-gradient(120deg, #2E6FE0 0%, #0FA98B 100%);
+    --glow1: rgba(46,111,224,0.14); --glow2: rgba(15,169,139,0.10);
+    --navbg: rgba(244,247,253,0.78);
+  }
+  ::selection { background: rgba(127,184,255,0.3); }
+  @keyframes sfSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+</style>
+</helmet>
+
+<div style="font-family: Manrope, sans-serif; color: var(--text); background: var(--bg0); min-height: 100vh; transition: background 0.4s, color 0.4s;">
+
+  <nav data-screen-label="Nav" style="position: fixed; top: 0; left: 0; right: 0; z-index: 50; display: flex; align-items: center; justify-content: space-between; padding: 18px 48px; background: var(--navbg); backdrop-filter: blur(18px); border-bottom: 1px solid var(--line);">
+    <a href="Sky Forge Landing.dc.html" style="display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--text);">
+      <div style="width: 30px; height: 30px; border-radius: 50%; background: conic-gradient(from 220deg, var(--acc1), var(--acc2) 55%, transparent 78%); display: grid; place-items: center; animation: sfSpin 24s linear infinite;">
+        <div style="width: 18px; height: 18px; border-radius: 50%; background: var(--bg0); transition: background 0.4s;"></div>
+      </div>
+      <span style="font-family: Sora, sans-serif; font-weight: 600; letter-spacing: 0.14em; font-size: 14px;">SKY-FORGE</span>
+      <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text3); letter-spacing: 0.15em; margin-left: 6px;">SHOWCASE</span>
+    </a>
+    <div style="display: flex; align-items: center; gap: 28px; font-size: 13.5px; font-weight: 500;">
+      <a href="Sky Forge Landing.dc.html" style="color: var(--text2); text-decoration: none;" style-hover="color: var(--text)">Landing</a>
+      <a href="Sky Forge Produto.dc.html" style="color: var(--text2); text-decoration: none;" style-hover="color: var(--text)">Produto</a>
+      <a href="Sky Forge Design System.dc.html" style="color: var(--text2); text-decoration: none;" style-hover="color: var(--text)">Design System</a>
+      <a href="Sky Forge Evolucao.dc.html" style="color: var(--text2); text-decoration: none;" style-hover="color: var(--text)">Evolução</a>
+      <button onClick="{{ toggleTheme }}" style="display: flex; align-items: center; gap: 8px; background: var(--surface); border: 1px solid var(--line); color: var(--text2); border-radius: 999px; padding: 7px 14px; font-family: Manrope, sans-serif; font-size: 12.5px; font-weight: 600; cursor: pointer;" style-hover="color: var(--text); border-color: var(--acc1)">◐ {{ themeLabel }}</button>
+    </div>
+  </nav>
+
+  <!-- HEADER -->
+  <header data-screen-label="Showcase Header" style="background: radial-gradient(ellipse 80% 70% at 50% -20%, var(--glow1), transparent 65%), linear-gradient(180deg, var(--bg0), var(--bg1)); padding: 160px 32px 70px; border-bottom: 1px solid var(--line);">
+    <div style="max-width: 1100px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px;">
+      <div style="font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.26em; color: var(--acc2);">GALERIA DE PROPOSTAS ELEVADAS</div>
+      <h1 style="font-family: Sora, sans-serif; font-size: 52px; font-weight: 600; margin: 0; letter-spacing: -0.02em; text-wrap: balance;">O que o funil já elevou.</h1>
+      <p style="font-size: 17px; line-height: 1.7; color: var(--text2); max-width: 680px; margin: 0; text-wrap: pretty;">Cada projeto aqui atravessou o funil Sky-Forge — intake, elevação e pipeline de maturidade — e foi publicado com consentimento explícito do criador. Só números, resumos sanitizados e fases: brief completo e artefatos proprietários ficam privados.</p>
+      <div style="display: flex; gap: 12px; margin-top: 6px;">
+        <sc-for list="{{ funnelStages }}" as="fs" hint-placeholder-count="4">
+          <div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 8px;">
+            <div style="width: {{ fs.w }}; height: 40px; border-radius: 8px; background: var(--grad); opacity: {{ fs.op }};"></div>
+            <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.1em; color: var(--text3);">{{ fs.label }}</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </header>
+
+  <div style="max-width: 1100px; margin: 0 auto; padding: 60px 32px 120px; display: flex; flex-direction: column; gap: 72px;">
+
+    <!-- GALERIA -->
+    <section data-screen-label="Galeria" style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 16px;">
+      <div style="background: var(--bg2); border: 1px solid var(--acc1); border-radius: 20px; padding: 34px; display: flex; flex-direction: column; gap: 18px; box-shadow: 0 16px 48px var(--glow1);">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 16px;">
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <sc-for list="{{ tags }}" as="tg" hint-placeholder-count="4">
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: var(--text3); border: 1px solid var(--line); border-radius: 999px; padding: 4px 12px;">{{ tg }}</span>
+            </sc-for>
+          </div>
+          <span style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: var(--acc2); border: 1px solid var(--acc2); border-radius: 999px; padding: 4px 12px; flex-shrink: 0;">tier growth</span>
+        </div>
+        <h2 style="font-family: Sora, sans-serif; font-size: 26px; font-weight: 600; margin: 0; letter-spacing: -0.01em; text-wrap: balance;">IAutos — Legaltech white-label para escritórios de advocacia</h2>
+        <p style="font-size: 14.5px; line-height: 1.65; color: var(--text2); margin: 0; text-wrap: pretty;">Casos como pastas versionadas, copiloto com RAG por caso, multi-agente com guardrails, site institucional por tenant e conformidade LGPD/OAB.</p>
+        <div style="display: flex; gap: 28px; margin-top: 4px; align-items: center; flex-wrap: wrap;">
+          <div>
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.18em; color: var(--text3); margin-bottom: 4px;">SKY_SCORE</div>
+            <div style="font-family: Sora, sans-serif; font-size: 30px; font-weight: 700; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent;">71</div>
+          </div>
+          <div>
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.18em; color: var(--text3); margin-bottom: 4px;">NÍVEL</div>
+            <div style="font-family: Sora, sans-serif; font-size: 17px; font-weight: 600; padding-top: 6px;">Horizon</div>
+          </div>
+          <div>
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.18em; color: var(--text3); margin-bottom: 4px;">READINESS</div>
+            <div style="font-family: Sora, sans-serif; font-size: 17px; font-weight: 600; padding-top: 6px;">78%</div>
+          </div>
+          <div>
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.18em; color: var(--text3); margin-bottom: 4px;">SUSTENTAB. NEGÓCIO</div>
+            <div style="font-family: Sora, sans-serif; font-size: 17px; font-weight: 600; padding-top: 6px;">B+</div>
+          </div>
+        </div>
+      </div>
+      <div style="background: var(--surface); border: 1px dashed var(--line); border-radius: 20px; padding: 34px; display: flex; flex-direction: column; justify-content: center; gap: 14px;">
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.2em; color: var(--text3);">PRÓXIMO PROJETO</div>
+        <h3 style="font-family: Sora, sans-serif; font-size: 19px; font-weight: 600; margin: 0; line-height: 1.35;">O seu — quando você disser sim.</h3>
+        <p style="font-size: 13.5px; line-height: 1.65; color: var(--text2); margin: 0; text-wrap: pretty;">O showcase-curator só publica com opt-in explícito: título e resumo sanitizados, índices e fases. Nada de dados de clientes.</p>
+        <a href="Sky Forge Produto.dc.html" style="text-decoration: none; color: var(--acc1); font-weight: 700; font-size: 13.5px;" style-hover="color: var(--acc2)">Entrar no funil →</a>
+      </div>
+    </section>
+
+    <!-- DOSSIE -->
+    <section data-screen-label="Dossie IAutos" style="display: flex; flex-direction: column; gap: 44px;">
+      <div style="display: flex; align-items: baseline; gap: 16px; border-bottom: 1px solid var(--line); padding-bottom: 18px; flex-wrap: wrap;">
+        <span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.24em; color: var(--acc1);">DOSSIÊ PÚBLICO</span>
+        <span style="font-family: 'JetBrains Mono', monospace; font-size: 11.5px; color: var(--text3);">iautos · publicado 04/07/2026 · fonte: artefatos do output</span>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 16px; align-items: start;">
+        <div style="display: flex; flex-direction: column; gap: 14px;">
+          <div style="background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 26px 30px;">
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: 0.18em; color: var(--acc2); margin-bottom: 10px;">PROBLEMA</div>
+            <p style="font-size: 14.5px; line-height: 1.7; color: var(--text2); margin: 0; text-wrap: pretty;">Escritórios pequenos e médios no Brasil carecem de uma plataforma marca-própria que una gestão de casos e copiloto jurídico com governança, LGPD, citações rastreáveis e human-in-the-loop — sem depender de ferramentas estrangeiras desconectadas da realidade local.</p>
+          </div>
+          <div style="background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 26px 30px;">
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: 0.18em; color: var(--acc2); margin-bottom: 10px;">FORA DE ESCOPO — POR PRINCÍPIO</div>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <sc-for list="{{ outOfScope }}" as="os" hint-placeholder-count="4">
+                <div style="display: flex; gap: 10px; font-size: 13.5px; line-height: 1.55; color: var(--text2);"><span style="color: var(--text3);">✕</span><span>{{ os }}</span></div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+        <div style="background: var(--bg2); border: 1px solid var(--line); border-radius: 16px; padding: 26px; display: flex; flex-direction: column; gap: 16px;">
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: 0.18em; color: var(--text3);">ÍNDICES SKY</div>
+          <sc-for list="{{ indices }}" as="ix" hint-placeholder-count="5">
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                <span style="font-size: 12.5px; font-weight: 700;">{{ ix.sigla }} <span style="font-weight: 500; color: var(--text3); font-size: 11px;">{{ ix.name }}</span></span>
+                <span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--acc2);">{{ ix.score }}</span>
+              </div>
+              <div style="height: 5px; border-radius: 3px; background: var(--surface); overflow: hidden;"><div style="height: 100%; width: {{ ix.pct }}; background: var(--grad); border-radius: 3px;"></div></div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+      <!-- MATURIDADE + PIPELINE -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start;">
+        <div style="background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 26px 30px; display: flex; flex-direction: column; gap: 14px;">
+          <div style="display: flex; justify-content: space-between; align-items: baseline;">
+            <span style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: 0.18em; color: var(--text3);">MATURIDADE POR DIMENSÃO</span>
+            <span style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: var(--text3);">base: maturity.yaml</span>
+          </div>
+          <sc-for list="{{ dimensions }}" as="d" hint-placeholder-count="6">
+            <div style="display: grid; grid-template-columns: 110px 1fr 44px; gap: 12px; align-items: center;">
+              <span style="font-size: 13px; font-weight: 600;">{{ d.name }}</span>
+              <div style="height: 5px; border-radius: 3px; background: var(--bg0); overflow: hidden;"><div style="height: 100%; width: {{ d.pct }}; background: var(--grad); border-radius: 3px;"></div></div>
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 11.5px; color: var(--text2); text-align: right;">{{ d.pct }}</span>
+            </div>
+          </sc-for>
+        </div>
+        <div style="background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 26px 30px; display: flex; flex-direction: column; gap: 11px;">
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: 0.18em; color: var(--text3);">PIPELINE DO FUNIL</div>
+          <sc-for list="{{ pipeline }}" as="pp" hint-placeholder-count="8">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <span style="width: 18px; height: 18px; border-radius: 50%; flex-shrink: 0; background: {{ pp.dot }}; border: 1px solid {{ pp.dotBorder }};"></span>
+              <span style="font-size: 13.5px; font-weight: 600; flex: 1;">{{ pp.name }}</span>
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: {{ pp.stColor }};">{{ pp.st }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+      <!-- ARTEFATOS POR AGENTES -->
+      <div data-screen-label="Artefatos por agentes" style="display: flex; flex-direction: column; gap: 22px;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: 0.18em; color: var(--acc2); margin-bottom: 8px;">ARTEFATOS DE ARQUITETURA & NEGÓCIO</div>
+            <h3 style="font-family: Sora, sans-serif; font-size: 24px; font-weight: 600; margin: 0; letter-spacing: -0.01em;">Diagramas gerados por agentes especialistas, sob demanda</h3>
+          </div>
+          <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text3); white-space: nowrap;">fonte: outputs/iautos/</span>
+        </div>
+
+        <!-- C4 CONTAINER -->
+        <div style="background: var(--bg2); border: 1px solid var(--line); border-radius: 18px; padding: 28px 30px; display: flex; flex-direction: column; gap: 20px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 14px; flex-wrap: wrap;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <span style="font-family: Sora, sans-serif; font-size: 16px; font-weight: 700;">C4 — Container</span>
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--acc2); border: 1px solid var(--acc2); border-radius: 999px; padding: 3px 10px;">gerado</span>
+            </div>
+            <span style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: var(--text3);">agente: solutions-architect</span>
+          </div>
+          <div style="display: grid; grid-template-columns: 150px 1fr 150px; gap: 18px; align-items: center;">
+            <div style="border: 1px solid var(--acc1); border-radius: 12px; padding: 16px 14px; text-align: center;">
+              <div style="font-size: 13px; font-weight: 700;">Advogado(a)</div>
+              <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text3); margin-top: 4px;">pessoa</div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; border: 1px dashed var(--line); border-radius: 14px; padding: 14px;">
+              <div style="background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px; text-align: center;">
+                <div style="font-size: 12.5px; font-weight: 700;">Web App tenant</div>
+                <div style="font-family: 'JetBrains Mono', monospace; font-size: 9.5px; color: var(--text3); margin-top: 3px;">Next.js · tokens/tenant</div>
+              </div>
+              <div style="background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px; text-align: center;">
+                <div style="font-size: 12.5px; font-weight: 700;">API + Orquestrador</div>
+                <div style="font-family: 'JetBrains Mono', monospace; font-size: 9.5px; color: var(--text3); margin-top: 3px;">RBAC · guardrails</div>
+              </div>
+              <div style="background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px; text-align: center;">
+                <div style="font-size: 12.5px; font-weight: 700;">Núcleo RAG</div>
+                <div style="font-family: 'JetBrains Mono', monospace; font-size: 9.5px; color: var(--text3); margin-top: 3px;">por caso · citações</div>
+              </div>
+              <div style="background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px; text-align: center;">
+                <div style="font-size: 12.5px; font-weight: 700;">Fila multi-agente</div>
+                <div style="font-family: 'JetBrains Mono', monospace; font-size: 9.5px; color: var(--text3); margin-top: 3px;">human-in-the-loop</div>
+              </div>
+            </div>
+            <div style="border: 1px solid var(--line); border-radius: 12px; padding: 16px 14px; text-align: center;">
+              <div style="font-size: 13px; font-weight: 700;">Postgres + Vetor</div>
+              <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text3); margin-top: 4px;">isolado por tenant</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- BMC + ADRs -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start;">
+          <div style="background: var(--bg2); border: 1px solid var(--line); border-radius: 18px; padding: 26px 30px; display: flex; flex-direction: column; gap: 14px;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <span style="font-family: Sora, sans-serif; font-size: 15px; font-weight: 700;">Modelo de negócio</span>
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--acc2); border: 1px solid var(--acc2); border-radius: 999px; padding: 3px 10px;">gerado</span>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+              <sc-for list="{{ bmc }}" as="b" hint-placeholder-count="6">
+                <div style="background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px;">
+                  <div style="font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.1em; color: var(--text3); margin-bottom: 5px;">{{ b.k }}</div>
+                  <div style="font-size: 12.5px; line-height: 1.5; color: var(--text2);">{{ b.v }}</div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+          <div style="background: var(--bg2); border: 1px solid var(--line); border-radius: 18px; padding: 26px 30px; display: flex; flex-direction: column; gap: 14px;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <span style="font-family: Sora, sans-serif; font-size: 15px; font-weight: 700;">Decisões de arquitetura</span>
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text3); border: 1px solid var(--line); border-radius: 999px; padding: 3px 10px;">ADR</span>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+              <sc-for list="{{ adrs }}" as="a" hint-placeholder-count="4">
+                <div style="display: flex; gap: 12px; align-items: baseline;">
+                  <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--acc1); flex-shrink: 0;">{{ a.id }}</span>
+                  <div>
+                    <div style="font-size: 13px; font-weight: 600;">{{ a.t }}</div>
+                    <div style="font-size: 12px; color: var(--text2); line-height: 1.5;">{{ a.d }}</div>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CONSENTIMENTO -->
+      <div style="background: radial-gradient(ellipse 90% 120% at 50% 0%, var(--glow2), transparent 70%), var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 28px 32px; display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
+        <div style="width: 44px; height: 44px; border-radius: 12px; background: var(--surface); border: 1px solid var(--acc2); display: grid; place-items: center; color: var(--acc2); font-size: 20px; flex-shrink: 0;">✓</div>
+        <div style="flex: 1; min-width: 260px;">
+          <div style="font-family: Sora, sans-serif; font-size: 15px; font-weight: 700; margin-bottom: 4px;">Publicado com consentimento explícito</div>
+          <div style="font-size: 13px; color: var(--text2); line-height: 1.6;">O criador aprovou este dossiê público. Dados sensíveis, código e brief completo permanecem privados — o showcase-curator sanitiza tudo antes de publicar.</div>
+        </div>
+        <span style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: var(--text3);">showcase_optin: true</span>
+      </div>
+    </section>
+  </div>
+
+  <footer style="border-top: 1px solid var(--line); padding: 36px 48px; display: flex; justify-content: space-between; align-items: center; font-size: 12.5px; color: var(--text3); flex-wrap: wrap; gap: 12px;">
+    <span style="font-family: Sora, sans-serif; letter-spacing: 0.14em; font-weight: 600;">SKY-FORGE · SHOWCASE</span>
+    <span>publicação só com opt-in · resumos sanitizados · o funil eleva, você decide</span>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { theme: (typeof localStorage !== 'undefined' && localStorage.getItem('sf-theme')) || 'dark' };
+
+  componentDidMount() {
+    document.body.setAttribute('data-theme', this.state.theme);
+  }
+
+  renderVals() {
+    const t = this.state.theme;
+    return {
+      themeLabel: t === 'dark' ? 'Escuro' : 'Claro',
+      toggleTheme: () => {
+        const next = t === 'dark' ? 'light' : 'dark';
+        localStorage.setItem('sf-theme', next);
+        this.setState({ theme: next }, () => document.body.setAttribute('data-theme', next));
+      },
+      funnelStages: [
+        { label: 'INTENÇÃO', w: '100%', op: '0.9' },
+        { label: 'INTAKE', w: '78%', op: '0.7' },
+        { label: 'ELEVAÇÃO', w: '56%', op: '0.55' },
+        { label: 'EXPORT', w: '34%', op: '0.4' }
+      ],
+      tags: ['legaltech', 'multi-tenant', 'RAG', 'LGPD'],
+      outOfScope: [
+        'Conselho jurídico automatizado sem revisão humana',
+        'Treino de modelos com dados de clientes sem consentimento',
+        'Métricas de vaidade ou dark patterns de engajamento',
+        'Peticionamento autônomo end-to-end sem advogado responsável'
+      ],
+      indices: [
+        { sigla: 'SPI', name: 'Prosperity', score: 74, pct: '74%' },
+        { sigla: 'HCE', name: 'Consciousness', score: 61, pct: '61%' },
+        { sigla: 'GAP', name: 'Global Align.', score: 66, pct: '66%' },
+        { sigla: 'CWB', name: 'Wellbeing', score: 70, pct: '70%' },
+        { sigla: 'UXD', name: 'UX Dignity', score: 82, pct: '82%' }
+      ],
+      dimensions: [
+        { name: 'business', pct: '88%' },
+        { name: 'product', pct: '81%' },
+        { name: 'ux', pct: '82%' },
+        { name: 'technical', pct: '76%' },
+        { name: 'sustentab.', pct: '68%' },
+        { name: 'elevation', pct: '64%' }
+      ],
+      pipeline: [
+        { name: 'Intake', st: 'done', done: true },
+        { name: 'Brief', st: 'done', done: true },
+        { name: 'Market research', st: 'done', done: true },
+        { name: 'Elevação SKY', st: 'done', done: true },
+        { name: 'UX review', st: 'done', done: true },
+        { name: 'Arquitetura', st: 'done', done: true },
+        { name: 'Roadmap', st: 'in progress', done: false },
+        { name: 'Export Cloud Design', st: 'queued', done: false }
+      ].map((p) => ({
+        name: p.name,
+        st: p.st,
+        dot: p.done ? 'var(--acc2)' : 'transparent',
+        dotBorder: p.done ? 'var(--acc2)' : 'var(--line)',
+        stColor: p.done ? 'var(--acc2)' : 'var(--text3)'
+      })),
+      bmc: [
+        { k: 'PROPOSTA DE VALOR', v: 'Copiloto jurídico marca-própria, com governança e citações rastreáveis.' },
+        { k: 'SEGMENTO', v: 'Escritórios pequenos e médios no Brasil.' },
+        { k: 'RECEITA', v: 'SaaS por assento + tier white-label.' },
+        { k: 'CANAIS', v: 'Parcerias com OAB seccionais e integradores.' },
+        { k: 'CUSTO-CHAVE', v: 'Inferência LLM + isolamento multi-tenant.' },
+        { k: 'MÉTRICA-NORTE', v: 'Horas devolvidas ao advogado por semana.' }
+      ],
+      adrs: [
+        { id: 'ADR-01', t: 'Isolamento por tenant no nível de schema', d: 'Postgres com schema por tenant + RLS; simplicidade > sharding precoce.' },
+        { id: 'ADR-02', t: 'RAG por caso, não global', d: 'Contexto restrito à pasta do caso reduz vazamento e melhora citações.' },
+        { id: 'ADR-03', t: 'Human-in-the-loop obrigatório', d: 'Nenhuma saída jurídica é publicada sem confirmação do responsável.' },
+        { id: 'ADR-04', t: 'Guardrails antes de features', d: 'Camada de política roda antes de qualquer ação de agente.' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

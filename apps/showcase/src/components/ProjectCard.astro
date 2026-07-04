@@ -1,31 +1,54 @@
 ---
 import type { ProjectIndexEntry } from "../lib/registry";
-import { formatPercent } from "../lib/registry";
+import MaturityBar from "./MaturityBar.astro";
 import { withBase } from "../lib/paths";
+import { formatPercent } from "../lib/registry";
 
 interface Props {
   project: ProjectIndexEntry;
+  featured?: boolean;
 }
 
-const { project } = Astro.props;
+const { project, featured = false } = Astro.props;
 const href = withBase(`/projects/${project.slug}/`);
+const isPrivate = project.public === false;
+const skyScore = project.sky_score != null ? Math.round(project.sky_score) : null;
 ---
 
-<article class="card">
+<article class:list={["card", "sf-card", featured && "sf-card-featured"]}>
   <div class="meta-row">
-    {project.tier && <span class="chip">{project.tier}</span>}
+    {project.tier && <span class="chip chip-tier">{project.tier}</span>}
     {project.elevation_level && <span class="chip">{project.elevation_level}</span>}
-    {project.tags?.slice(0, 2).map((tag) => <span class="chip">{tag}</span>)}
+    {isPrivate && <span class="chip chip-private">Privado</span>}
+    {project.tags?.slice(0, 3).map((tag) => <span class="chip chip-tag">{tag}</span>)}
   </div>
-  <h2><a href={href}>{project.title}</a></h2>
-  {project.excerpt && <p>{project.excerpt}</p>}
-  <div class="meta-row">
-    {project.sky_score != null && (
-      <span class="score-pill">SKY {project.sky_score}</span>
+  <h2 class="sf-card-title"><a href={href}>{project.title}</a></h2>
+  {project.excerpt && <p class="sf-card-excerpt">{project.excerpt}</p>}
+
+  <div class="sf-card-metrics">
+    {skyScore != null && (
+      <div class="sf-metric">
+        <span class="sf-metric-label">SKY_SCORE</span>
+        <span class="sf-metric-value sf-grad-text">{skyScore}</span>
+      </div>
+    )}
+    {project.elevation_level && (
+      <div class="sf-metric">
+        <span class="sf-metric-label">NÍVEL</span>
+        <span class="sf-metric-value">{project.elevation_level}</span>
+      </div>
     )}
     {project.readiness != null && (
-      <span class="chip">Maturidade {formatPercent(project.readiness)}</span>
+      <div class="sf-metric">
+        <span class="sf-metric-label">READINESS</span>
+        <span class="sf-metric-value">{formatPercent(project.readiness)}</span>
+      </div>
     )}
   </div>
-  <a href={href}>Ver visão completa →</a>
+
+  {project.readiness != null && !featured && (
+    <MaturityBar value={project.readiness} variant="card" id={`maturity-${project.slug}`} />
+  )}
+
+  <a href={href} class="sf-card-cta">Ver dossiê público →</a>
 </article>

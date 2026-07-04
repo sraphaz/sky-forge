@@ -1,12 +1,15 @@
 ---
-import { stageLabel, type PackageArtifact } from "../lib/registry";
+import { stageLabel, type CloudDesignEntry, type PackageArtifact } from "../lib/registry";
 
 interface Props {
   artifacts: PackageArtifact[];
-  compact?: boolean;
+  slug?: string;
+  /** Só metadados + botão — sem grid pesado na página do projeto */
+  listOnly?: boolean;
 }
 
-const { artifacts, compact = false } = Astro.props;
+const { artifacts, slug = "iautos", listOnly = false } = Astro.props;
+const baseUrl = import.meta.env.BASE_URL;
 
 const available = artifacts.filter((a) => a.available !== false);
 const stages = [...new Set(available.map((a) => a.stage))];
@@ -18,6 +21,88 @@ const typeIcons: Record<string, string> = {
   markdown: "MD",
   "cloud-design": "CD",
 };
+
+const likec4Views: Record<string, string> = {
+  "c4-context": "context",
+  "c4-containers": "containers",
+  "c4-components": "components",
+};
+
+const cloudDesignDescriptions: Record<string, string> = {
+  "aplicacao-mockup": "Mockup navegável da aplicação principal (dashboard, casos, copiloto).",
+  "arquitetura": "Diagramas C4 e decisões arquiteturais em formato interativo.",
+  "handoff-desenvolvimento": "Handoff completo de desenvolvimento com telas e fluxos.",
+  "handoff": "Handoff resumido do projeto.",
+  "site-bonomi": "Site institucional white-label — referência Bonomi Almeida Advogados.",
+};
+
+function childHasBody(child: CloudDesignEntry, parentType?: string): boolean {
+  if (parentType === "cloud-design") return true;
+  return Boolean(child.content || child.content_html);
+}
+
+type CatalogEntry = {
+  label: string;
+  path: string;
+  content?: string;
+  contentHtml?: string;
+  likec4View?: string;
+  cloudDesign?: boolean;
+  cloudDesignChild?: { label: string; filename?: string; description?: string };
+};
+
+const catalog: Record<string, CatalogEntry> = {};
+
+for (const artifact of available) {
+  const likec4View = likec4Views[artifact.id];
+
+  if (artifact.type === "cloud-design") {
+    catalog[artifact.id] = {
+      label: artifact.label,
+      path: artifact.path,
+      cloudDesign: true,
+    };
+    if (artifact.children) {
+      for (const child of artifact.children) {
+        const id = `${artifact.id}--${child.id}`;
+        catalog[id] = {
+          label: child.label,
+          path: child.filename ?? artifact.path,
+          cloudDesign: true,
+          cloudDesignChild: {
+            label: child.label,
+            filename: child.filename,
+            description: cloudDesignDescriptions[child.id],
+          },
+        };
+      }
+    }
+    continue;
+  }
+
+  if (artifact.content || likec4View) {
+    catalog[artifact.id] = {
+      label: artifact.label,
+      path: artifact.path,
+      content: artifact.content,
+      likec4View,
+    };
+  }
+
+  if (artifact.children) {
+    for (const child of artifact.children) {
+      if (!childHasBody(child, artifact.type)) continue;
+      const id = `${artifact.id}--${child.id}`;
+      catalog[id] = {
+        label: child.label,
+        path: child.filename ?? artifact.path,
+        content: child.content,
+      };
+    }
+  }
+}
+
+const catalogJson = JSON.stringify(catalog).replace(/<\//g, "<\\/");
 ---
 
 {available.length === 0 ? (
@@ -25,9 +110,31 @@ const typeIcons: Record<string, string> = {
     <p>Nenhum artefato publicado ainda.</p>
     <p class="panel-hint">Exporte o pacote e rode <code>sky publish -Slug …</code>.</p>
   </div>
+) : listOnly ? (
+  <ul class="artifact-list-only">
+    {available.map((artifact) => {
+      const hasMain = Boolean(catalog[artifact.id]);
+      const childIds = Object.keys(catalog).filter((k) => k.startsWith(`${artifact.id}--`));
+      return (
+        <li class="artifact-list-item">
+          <span class="artifact-list-label">{artifact.label}</span>
+          {hasMain && (
+            <button type="button" class="artifact-open-btn artifact-open-btn-sm" data-viewer-id={artifact.id}>
+              Abrir
+            </button>
+          )}
+          {childIds.map((id) => (
+            <button type="button" class="artifact-child-link" data-viewer-id={id}>
+              {catalog[id].label}
+            </button>
+          ))}
+        </li>
+      );
+    })}
+  </ul>
 ) : (
-  <div class={`artifact-explorer ${compact ? "artifact-explorer-compact" : ""}`}>
-    {!compact && sortedStages.length > 1 && (
+  <div class="artifact-explorer">
+    {sortedStages.length > 1 && (
       <nav class="artifact-stage-nav" aria-label="Filtrar por etapa">
         <button type="button" class="stage-filter stage-filter-active" data-stage="all">
           Todos ({available.length})
@@ -44,71 +151,199 @@ const typeIcons: Record<string, string> = {
     )}
 
     <div class="artifact-grid">
-      {available.map((artifact) => (
-        <article
-          class="artifact-card"
-          data-stage={artifact.stage}
-          id={`artifact-${artifact.id}`}
-        >
-          <div class="artifact-card-top">
-            <span class="artifact-type" aria-hidden="true">
-              {typeIcons[artifact.type] ?? artifact.type.slice(0, 3).toUpperCase()}
-            </span>
-            <span class="artifact-stage-chip">{stageLabel(artifact.stage)}</span>
-          </div>
-          <h3 class="artifact-card-title">{artifact.label}</h3>
-          {artifact.description && (
-            <p class="artifact-card-desc">{artifact.description}</p>
-          )}
-          {artifact.summary && (
-            <blockquote class="artifact-snippet">{artifact.summary}</blockquote>
-          )}
-          <footer class="artifact-card-footer">
-            <code class="artifact-path">{artifact.path}</code>
-          </footer>
+      {available.map((artifact) => {
+        const hasMain = Boolean(catalog[artifact.id]);
+        const childIds = Object.keys(catalog).filter((k) => k.startsWith(`${artifact.id}--`));
+        const openable = hasMain || childIds.length > 0;
+        return (
+          <article
+            class:list={["artifact-card", "artifact-card-preview", openable && "artifact-card-clickable"]}
+            data-stage={artifact.stage}
+            data-viewer-id={hasMain ? artifact.id : childIds[0] ?? undefined}
+            id={`artifact-${artifact.id}`}
+            tabindex={openable ? 0 : undefined}
+            role={openable ? "button" : undefined}
+          >
+            <div class="artifact-card-top">
+              <span class="artifact-type" aria-hidden="true">
+                {typeIcons[artifact.type] ?? artifact.type.slice(0, 3).toUpperCase()}
+              </span>
+              <span class="artifact-stage-chip">{stageLabel(artifact.stage)}</span>
+            </div>
+            <h3 class="artifact-card-title">{artifact.label}</h3>
+            {artifact.description && (
+              <p class="artifact-card-desc">{artifact.description}</p>
+            )}
 
-          {artifact.children && artifact.children.length > 0 && (
-            <details class="artifact-children">
-              <summary>
-                {artifact.children.length} protótipo{artifact.children.length !== 1 ? "s" : ""} visual
-                {artifact.children.length !== 1 ? "is" : ""} (resumo sanitizado)
-              </summary>
-              <ul class="cloud-design-list">
-                {artifact.children.map((child) => (
-                  <li class="cloud-design-item">
-                    <strong>{child.label}</strong>
-                    {child.filename && (
-                      <span class="panel-hint cloud-design-file">{child.filename}</span>
-                    )}
-                  </li>
-                ))}
-              </ul>
-              <p class="privacy-note">
-                Conteúdo proprietário não incluído no showcase — apenas metadados.
-              </p>
-            </details>
-          )}
-        </article>
-      ))}
+            {openable ? (
+              <div class="artifact-open-actions">
+                {hasMain && (
+                  <span class="artifact-open-hint">Clique para abrir visualização</span>
+                )}
+                {childIds.length > 0 && (
+                  <div class="artifact-child-links">
+                    {childIds.map((id) => (
+                      <button
+                        type="button"
+                        class="artifact-child-link"
+                        data-viewer-id={id}
+                      >
+                        {catalog[id].label}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ) : (
+              <p class="panel-hint">Sem preview — reexporte o pacote.</p>
+            )}
+          </article>
+        );
+      })}
     </div>
   </div>
 )}
 
+<script id="artifact-viewer-catalog" type="application/json" set:html={catalogJson}></script>
+
+<div
+  id="artifact-viewer"
+  class="artifact-viewer"
+  data-slug={slug}
+  data-base={baseUrl}
+  hidden
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="artifact-viewer-title"
+>
+  <div class="artifact-viewer-backdrop" data-viewer-close tabindex="-1" />
+  <div class="artifact-viewer-window" id="artifact-viewer-window">
+    <header class="artifact-viewer-toolbar">
+      <div class="artifact-viewer-toolbar-main">
+        <span class="artifact-viewer-dot" aria-hidden="true" />
+        <span class="artifact-viewer-dot" aria-hidden="true" />
+        <span class="artifact-viewer-dot" aria-hidden="true" />
+        <h2 class="artifact-viewer-title" id="artifact-viewer-title" />
+        <code class="artifact-viewer-path" id="artifact-viewer-path" />
+      </div>
+      <div class="artifact-viewer-toolbar-actions">
+        <button type="button" class="viewer-btn" id="artifact-viewer-fullscreen" title="Tela cheia">
+          Tela cheia
+        </button>
+        <button type="button" class="viewer-btn viewer-btn-close" data-viewer-close title="Fechar (Esc)">
+          Fechar
+        </button>
+      </div>
+    </header>
+    <div class="artifact-viewer-body" id="artifact-viewer-body" tabindex="0" />
+  </div>
+</div>
+
 <script>
-  document.querySelectorAll(".artifact-stage-nav").forEach((nav) => {
-    nav.querySelectorAll(".stage-filter").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const stage = btn.getAttribute("data-stage");
-        nav.querySelectorAll(".stage-filter").forEach((b) =>
-          b.classList.toggle("stage-filter-active", b === btn),
-        );
-        const grid = nav.parentElement?.querySelector(".artifact-grid");
-        grid?.querySelectorAll(".artifact-card").forEach((card) => {
-          const cardStage = card.getAttribute("data-stage");
-          const show = stage === "all" || cardStage === stage;
-          card.classList.toggle("artifact-card-hidden", !show);
+  import { readViewerCatalog, renderArtifactInto } from "../scripts/artifact-viewer";
+
+  let lastFocus: HTMLElement | null = null;
+  let bound = false;
+
+  function getViewer() {
+    return document.getElementById("artifact-viewer");
+  }
+
+  async function openViewer(id: string, label: string, path: string) {
+    const catalog = readViewerCatalog();
+    const data = catalog[id];
+    const viewer = getViewer();
+    const body = document.getElementById("artifact-viewer-body");
+    const title = document.getElementById("artifact-viewer-title");
+    const pathEl = document.getElementById("artifact-viewer-path");
+    if (!viewer || !body || !title || !pathEl) return;
+    if (!data) {
+      body.innerHTML = '<p class="panel-hint">Conteúdo não encontrado no catálogo. Recarregue a página.</p>';
+      viewer.hidden = false;
+      return;
+    }
+
+    lastFocus = document.activeElement as HTMLElement;
+    title.textContent = label;
+    pathEl.textContent = path;
+    body.innerHTML = '<p class="state-loading">Carregando visualização…</p>';
+
+    viewer.hidden = false;
+    document.body.classList.add("artifact-viewer-open");
+    document.getElementById("artifact-viewer-window")?.classList.remove("is-fullscreen");
+
+    await renderArtifactInto(body, data);
+    body.focus();
+  }
+
+  function closeViewer() {
+    const viewer = getViewer();
+    if (!viewer || viewer.hidden) return;
+    viewer.hidden = true;
+    document.body.classList.remove("artifact-viewer-open");
+    document.getElementById("artifact-viewer-body")!.innerHTML = "";
+    document.getElementById("artifact-viewer-window")?.classList.remove("is-fullscreen");
+    lastFocus?.focus();
+  }
+
+  function toggleFullscreen() {
+    document.getElementById("artifact-viewer-window")?.classList.toggle("is-fullscreen");
+  }
+
+  function bindViewer() {
+    if (bound) return;
+    bound = true;
+
+    document.addEventListener("click", (e) => {
+      const target = e.target as HTMLElement;
+      const btn = target.closest("[data-viewer-id]") as HTMLElement | null;
+      if (!btn) return;
+
+      if (btn.classList.contains("artifact-card") && target.closest(".artifact-child-link")) return;
+
+      e.preventDefault();
+      e.stopPropagation();
+      const id = btn.getAttribute("data-viewer-id");
+      if (!id) return;
+
+      const catalog = readViewerCatalog();
+      const entry = catalog[id];
+      const card = btn.closest(".artifact-card");
+      const label = entry?.label ?? card?.querySelector(".artifact-card-title")?.textContent?.trim() ?? id;
+      const path = entry?.path ?? id;
+      void openViewer(id, label, path);
+    });
+
+    document.querySelectorAll("[data-viewer-close]").forEach((el) => {
+      el.addEventListener("click", closeViewer);
+    });
+
+    document.getElementById("artifact-viewer-fullscreen")?.addEventListener("click", toggleFullscreen);
+
+    document.addEventListener("keydown", (e) => {
+      const viewer = getViewer();
+      if (!viewer || viewer.hidden) return;
+      if (e.key === "Escape") closeViewer();
+    });
+
+    document.querySelectorAll(".artifact-stage-nav").forEach((nav) => {
+      nav.querySelectorAll(".stage-filter").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const stage = btn.getAttribute("data-stage");
+          nav.querySelectorAll(".stage-filter").forEach((b) =>
+            b.classList.toggle("stage-filter-active", b === btn),
+          );
+          const grid = nav.parentElement?.querySelector(".artifact-grid");
+          grid?.querySelectorAll(".artifact-card").forEach((card) => {
+            const cardStage = card.getAttribute("data-stage");
+            const show = stage === "all" || cardStage === stage;
+            card.classList.toggle("artifact-card-hidden", !show);
+          });
         });
       });
     });
-  });
+  }
+
+  bindViewer();
+  document.addEventListener("astro:page-load", bindViewer);
 </script>

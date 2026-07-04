@@ -1,0 +1,56 @@
+---
+import SkyLogo from "./SkyLogo.astro";
+import { withBase } from "../lib/paths";
+
+export type HubNavId = "projetos" | "agentes" | "metodo" | "sobre";
+
+interface Props {
+  active?: HubNavId;
+}
+
+const { active } = Astro.props;
+
+const path = Astro.url.pathname.replace(/\/$/, "") || "/";
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+
+function navActive(id: HubNavId, href: string): boolean {
+  if (active) return active === id;
+  const full = `${base}${href}`.replace(/\/$/, "") || "/";
+  if (href === "/") return path === full || path === base;
+  return path.startsWith(full);
+}
+
+const links: { id: HubNavId; href: string; label: string }[] = [
+  { id: "projetos", href: "/", label: "Projetos" },
+  { id: "agentes", href: "/agentes/", label: "Agentes" },
+  { id: "metodo", href: "/metodo/", label: "Método" },
+  { id: "sobre", href: "/sobre/", label: "Sobre" },
+];
+---
+
+<nav class="platform-nav" aria-label="Navegação principal">
+  <a href={withBase("/")} class="platform-nav-brand">
+    <SkyLogo size={30} />
+  </a>
+  <div class="platform-nav-links">
+    {links.map((item) => (
+      <a
+        href={withBase(item.href)}
+        class:list={["platform-nav-link", navActive(item.id, item.href) && "platform-nav-active"]}
+        aria-current={navActive(item.id, item.href) ? "page" : undefined}
+      >
+        {item.label}
+      </a>
+    ))}
+    <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Alternar tema claro/escuro">
+      <span class="theme-toggle-icon" aria-hidden="true">◐</span>
+      <span class="theme-toggle-label" id="theme-toggle-label">Escuro</span>
+    </button>
+  </div>
+</nav>
+
+<script>
+  import { initThemeToggle } from "../scripts/theme-toggle";
+  initThemeToggle();
+  document.addEventListener("astro:page-load", initThemeToggle);
+</script>

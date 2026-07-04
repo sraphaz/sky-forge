@@ -1,0 +1,71 @@
+version: "1.0"
+product: sky-forge
+title: Sky-Forge — UX da plataforma
+updated_at: "2026-07-04"
+
+principles:
+  - one_decision_per_turn
+  - progress_always_visible
+  - privacy_by_default
+  - calm_tone_low_excitation
+  - typography_dignified_wcag_aa
+  - breathable_layout_tokens_only
+
+design_tokens:
+  source: apps/showcase/src/styles/global.css
+  reference: docs/design/high-premium/Sky Forge Design System.dc.html
+  theme: dark_default_with_light_toggle
+  fonts:
+    display: Sora
+    body: Manrope
+    mono: JetBrains Mono
+  colors:
+    - --color-sky-deep
+    - --color-sky-mid
+    - --color-sky-accent
+    - --color-sky-glow
+    - --color-surface
+    - --color-on-accent
+    - --color-warn
+    - --color-attention
+  motion:
+    - --motion-theme
+    - --motion-bars
+    - --motion-hover
+  breakpoints:
+    - --breakpoint-sm
+    - --breakpoint-md
+    - --breakpoint-lg
+  typography_min: 11.5px
+
+key_screens:
+  - id: hub
+    title: Hub de projetos
+    path: /
+    primary_action: Ver visão completa
+  - id: project
+    title: Visão do projeto
+    path: /projects/{slug}/
+  - id: artifacts
+    title: Artefatos do pacote
+    path: /projects/{slug}/artefatos/
+  - id: agents
+    title: Como foi produzido
+    path: /projects/{slug}/agentes/
+  - id: method
+    title: Método SKY
+    path: /metodo/
+  - id: about
+    title: Sobre a plataforma
+    path: /sobre/
+
+ux_states:
+  empty: empty-state panel com orientação calma
+  loading: state-loading com aria-live polite
+  error: state-error sem urgência artificial
+  focus: :focus-visible com outline tokenizado
+
+references:
+  - docs/_meta/SKY_APP_UX.md
+  - docs/_meta/EVOLUTION_AUDIT.md
+  - docs/_meta/USER_JOURNEY.md

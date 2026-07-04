@@ -1,6 +1,6 @@
 # Índices SKY de mérito
 
-**Versão**: 1.0 | **Data**: 2026-07-04  
+**Versão**: 1.1 | **Data**: 2026-07-04  
 **Marca**: Sky-Forge — elevar o que está sendo proposto
 
 Os **Índices SKY** são métricas **abertas e versionadas** que medem como uma
@@ -30,7 +30,7 @@ digna, acessível e de baixa excitação manipulativa.
 
 ---
 
-## Os cinco índices (0–100 cada)
+## Os seis índices (0–100 cada)
 
 | Sigla | Nome | O que mede |
 |-------|------|------------|
@@ -39,6 +39,7 @@ digna, acessível e de baixa excitação manipulativa.
 | **GAP** | Global Alignment Potential | Alinhamento com desafios planetários urgentes (ver catálogo `docs/humanity/`) |
 | **CWB** | Collective Wellbeing Contribution | Bem-estar coletivo, saúde comunitária, cuidado, coesão social |
 | **UXD** | UX Dignity Score | Qualidade de experiência: acessibilidade, calma, clareza, WCAG, mobile-first |
+| **MPI** | Market Positioning Index | Consciência de posicionamento: novidade vs. soluções existentes, qualidade de diferenciação, cobertura consciente das lacunas do segmento |
 
 ### Score composto
 
@@ -46,8 +47,24 @@ digna, acessível e de baixa excitação manipulativa.
 SKY_SCORE = 0.25×SPI + 0.20×HCE + 0.20×GAP + 0.20×CWB + 0.15×UXD
 ```
 
+O **MPI não entra no composto** (espec v1.2): alterar a fórmula invalidaria os
+scores medidos sob v1.0/v1.1 (governança §6 do método). Ele é publicado **ao
+lado** do SKY_SCORE como lente de consciência de mercado — a proposta sabe onde
+está no mundo antes de prometer o que entrega.
+
 Pesos ajustáveis por sessão em `sky-merits.yaml` → `weights` — mas todo dossiê
 publicado carimba `spec_version` e os pesos usados.
+
+### MPI — expansão da consciência sobre a proposição
+
+O MPI operacionaliza, na dimensão de mercado, o mesmo ethos do HCE: **ampliar a
+consciência do criador** sobre o que está propondo. Um MPI alto não significa
+"ideia inédita" — significa que a proposta **conhece** o mercado, as iniciativas
+open-source e as lacunas do segmento, e escolheu seu posicionamento de forma
+informada. O agente `market-benchmark` produz o artefato
+`.sky/sessions/{slug}/market-benchmark.yaml` com concorrentes, veredito de
+novidade por eixo (novo / melhor / paridade) e sugestões de lacuna — sempre
+`ai_suggested: true`, nunca pressão para mudar o escopo.
 
 ### Evidência e confiança
 
@@ -76,7 +93,7 @@ Detalhes: [SKY_INDICES_METHOD.md](SKY_INDICES_METHOD.md) §3.
 
 Campos principais:
 
-- `indices` — SPI, HCE, GAP, CWB, UXD com score e rationale
+- `indices` — SPI, HCE, GAP, CWB, UXD, MPI com score e rationale
 - `elevation_suggestions[]` — sugestões da IA (`ai_suggested: true`)
 - `humanity_connections[]` — ligação explícita problema global ↔ feature do produto
 - `policies.open_to_elevation` — cliente aceita sugestões de expansão?
@@ -99,6 +116,7 @@ Campos principais:
 |--------|-------|
 | `sky-elevator` | Consultivo — índices, conexões humanidade, expansão de consciência |
 | `ux-design-specialist` | Operacional — UX spec, acessibilidade, design calmo |
+| `market-benchmark` | Consultivo — MPI, benchmark mercado + open-source, sugestões de lacuna |
 | `intake-conductor` | Coreografa quando convidar elevação na conversa |
 
 ## Referências

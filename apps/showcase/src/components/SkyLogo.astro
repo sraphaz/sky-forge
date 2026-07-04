@@ -1,0 +1,22 @@
+---
+interface Props {
+  size?: number;
+  showLabel?: boolean;
+  labelExtra?: string;
+}
+
+const { size = 30, showLabel = true, labelExtra } = Astro.props;
+const inner = Math.round(size * 0.6);
+---
+
+<div class="sky-logo" style={`--logo-size: ${size}px; --logo-inner: ${inner}px`}>
+  <div class="sky-logo-ring" aria-hidden="true">
+    <div class="sky-logo-core" />
+  </div>
+  {showLabel && (
+    <span class="sky-logo-text">
+      SKY-FORGE
+      {labelExtra && <span class="sky-logo-extra">{labelExtra}</span>}
+    </span>
+  )}
+</div>

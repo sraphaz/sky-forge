@@ -85,6 +85,8 @@ export type CloudDesignEntry = {
   label: string;
   type?: string;
   available?: boolean;
+  content?: string;
+  content_html?: string;
 };
 
 export type PackageArtifact = {
@@ -96,6 +98,9 @@ export type PackageArtifact = {
   description?: string;
   summary?: string;
   available?: boolean;
+  content?: string;
+  content_format?: "markdown" | "html";
+  content_html?: string;
   children?: CloudDesignEntry[];
 };
 
@@ -111,6 +116,25 @@ export type IntegrationChoice = {
   provider?: string;
   required?: boolean;
   reason?: string;
+};
+
+export type MarketCompetitor = {
+  name: string;
+  type?: string;
+  url?: string;
+};
+
+export type MarketVerdict = {
+  axis: string;
+  verdict: string;
+};
+
+export type MarketBenchmark = {
+  mpi?: number;
+  confidence?: string;
+  band?: number;
+  competitors?: MarketCompetitor[];
+  verdicts?: MarketVerdict[];
 };
 
 export type ProjectPreview = ProjectIndexEntry & {
@@ -129,6 +153,7 @@ export type ProjectPreview = ProjectIndexEntry & {
   };
   indices?: Record<string, number>;
   indices_meta?: Record<string, { evidence_count?: number; confidence?: string }>;
+  market?: MarketBenchmark;
   spec_version?: string;
   score_kind?: string;
   dimensions?: Record<string, number>;
@@ -179,10 +204,38 @@ const indexLabels: Record<string, string> = {
   GAP: "Alinhamento planetário",
   CWB: "Bem-estar coletivo",
   UXD: "Dignidade UX",
+  MPI: "Posicionamento de mercado",
 };
 
 export function indexLabel(key: string): string {
   return indexLabels[key] ?? key;
+}
+
+const verdictLabels: Record<string, string> = {
+  new: "novo",
+  better: "melhor",
+  parity: "paridade",
+  behind: "atrás",
+};
+
+export function verdictLabel(key: string): string {
+  return verdictLabels[key] ?? key;
+}
+
+export function verdictClass(key: string): string {
+  if (key === "new" || key === "better") return "verdict-ahead";
+  if (key === "parity") return "verdict-parity";
+  return "verdict-behind";
+}
+
+const competitorTypeLabels: Record<string, string> = {
+  commercial: "comercial",
+  open_source: "open-source",
+};
+
+export function competitorTypeLabel(key: string | undefined): string | null {
+  if (!key) return null;
+  return competitorTypeLabels[key] ?? key;
 }
 
 const confidenceLabels: Record<string, string> = {
@@ -231,8 +284,24 @@ const stageLabels: Record<string, string> = {
   "cloud-design": "Cloud Design",
 };
 
-export function stageLabel(stage: string): string {
+export function stageLabel(stage: string | undefined): string {
+  if (!stage) return "—";
   return stageLabels[stage] ?? stage.replace(/-/g, " ");
+}
+
+const journeyPhaseLabels: Record<string, string> = {
+  arrival: "Chegada",
+  shape: "Dar forma à ideia",
+  elevate: "Elevar & UX",
+  specify: "Especificar",
+  deliver: "Entregar pacote",
+  showcase: "Apresentar visualmente",
+  implement: "Implementar",
+};
+
+export function journeyPhaseLabel(phase: string | undefined): string {
+  if (!phase) return "—";
+  return journeyPhaseLabels[phase] ?? phase.replace(/_/g, " ");
 }
 
 const priorityLabels: Record<string, string> = {

@@ -33,6 +33,7 @@ Use quando `technical.score >= 0.6` e gate `architecture` aprovado.
 
 ```powershell
 ./scripts/sky/sky.ps1 approve -Slug <slug> -Stage architecture
+./scripts/sky/sky.ps1 architect -Slug <slug> -Force
 ```
 
 Persistir em `.sky/sessions/{slug}/architecture/` antes do export.

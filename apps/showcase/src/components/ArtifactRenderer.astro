@@ -1,0 +1,133 @@
+---
+import { marked } from "marked";
+
+interface RenderBlock {
+  kind: "html" | "mermaid";
+  value: string;
+}
+
+interface Props {
+  content?: string;
+  contentHtml?: string;
+  label?: string;
+  compact?: boolean;
+  lazyDiagrams?: boolean;
+  viewerMode?: boolean;
+}
+
+const {
+  content,
+  contentHtml,
+  label,
+  compact = false,
+  lazyDiagrams = true,
+  viewerMode = false,
+} = Astro.props;
+
+function splitMarkdownBlocks(md: string): RenderBlock[] {
+  const blocks: RenderBlock[] = [];
+  const re = /```mermaid\r?\n([\s\S]*?)```/g;
+  let last = 0;
+  let match: RegExpExecArray | null;
+  while ((match = re.exec(md)) !== null) {
+    if (match.index > last) {
+      const chunk = md.slice(last, match.index);
+      if (chunk.trim()) {
+        blocks.push({ kind: "html", value: marked.parse(chunk, { async: false }) as string });
+      }
+    }
+    blocks.push({ kind: "mermaid", value: match[1].trim() });
+    last = match.index + match[0].length;
+  }
+  if (last < md.length) {
+    const tail = md.slice(last);
+    if (tail.trim()) {
+      blocks.push({ kind: "html", value: marked.parse(tail, { async: false }) as string });
+    }
+  }
+  if (blocks.length === 0 && md.trim()) {
+    blocks.push({ kind: "html", value: marked.parse(md, { async: false }) as string });
+  }
+  return blocks;
+}
+
+const blocks = content ? splitMarkdownBlocks(content) : [];
+const hasBody = Boolean(contentHtml || blocks.length > 0);
+const mermaidCount = blocks.filter((b) => b.kind === "mermaid").length;
+---
+
+{contentHtml ? (
+  <div class:list={["artifact-render", compact && "artifact-render-compact", viewerMode && "artifact-render-viewer"]}>
+    <iframe
+      class="artifact-preview-frame"
+      title={label ?? "Preview visual"}
+      srcdoc={contentHtml}
+      sandbox="allow-same-origin"
+      loading={viewerMode ? "eager" : "lazy"}
+    />
+  </div>
+) : hasBody ? (
+  <div
+    class:list={[
+      "artifact-render",
+      "artifact-body",
+      compact && "artifact-render-compact",
+      viewerMode && "artifact-render-viewer",
+    ]}
+    data-lazy-mermaid={lazyDiagrams && !viewerMode ? "true" : "false"}
+  >
+    {mermaidCount > 0 && lazyDiagrams && !viewerMode && (
+      <p class="diagram-hint" aria-live="polite">
+        {mermaidCount} diagrama{mermaidCount !== 1 ? "s" : ""} — renderiza ao rolar até a área
+      </p>
+    )}
+    {blocks.map((block, i) =>
+      block.kind === "mermaid" ? (
+        <pre class="mermaid-source" data-mermaid={String(i)}>{block.value}</pre>
+      ) : (
+        <div class="markdown-body" set:html={block.value} />
+      ),
+    )}
+  </div>
+) : null}
+
+{hasBody && !contentHtml && lazyDiagrams && (
+  <script>
+    import { initLazyMermaid } from "../scripts/mermaid-lazy";
+
+    initLazyMermaid();
+    document.addEventListener("astro:page-load", () => initLazyMermaid());
+  </script>
+)}
+
+{hasBody && !contentHtml && !lazyDiagrams && (
+  <script>
+    import { initLazyMermaid } from "../scripts/mermaid-lazy";
+
+    async function renderAll() {
+      const mermaid = (await import("mermaid")).default;
+      mermaid.initialize({
+        startOnLoad: false,
+        theme: "neutral",
+        securityLevel: "strict",
+        fontFamily: "Mulish, system-ui, sans-serif",
+      });
+      const nodes = document.querySelectorAll<HTMLElement>(".mermaid-source[data-mermaid]");
+      for (const node of nodes) {
+        const source = node.textContent?.trim();
+        if (!source) continue;
+        const id = `mmd-${Math.random().toString(36).slice(2, 10)}`;
+        try {
+          const { svg } = await mermaid.render(id, source);
+          const wrap = document.createElement("div");
+          wrap.className = "mermaid-diagram";
+          wrap.innerHTML = svg;
+          node.replaceWith(wrap);
+        } catch {
+          /* keep source */
+        }
+      }
+    }
+    renderAll();
+  </script>
+)}

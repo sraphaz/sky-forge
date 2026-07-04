@@ -1,0 +1,22 @@
+---
+import { withBase } from "../lib/paths";
+---
+
+<footer class="site-footer">
+  <div class="container site-footer-inner">
+    <div class="footer-brand">
+      <strong class="footer-title">SKY-FORGE</strong>
+      <p class="footer-tagline">Core MIT · sky-cloud-design proprietário · elevação sempre com permissão</p>
+    </div>
+    <nav class="footer-nav" aria-label="Links do rodapé">
+      <a href={withBase("/")}>Projetos</a>
+      <a href={withBase("/metodo/")}>Método SKY</a>
+      <a href={withBase("/sobre/")}>Sobre a plataforma</a>
+    </nav>
+    <p class="footer-meta">
+      <span>Índices abertos · espec v1.1</span>
+      <span aria-hidden="true">·</span>
+      <span>Modo navegador — read-only</span>
+    </p>
+  </div>
+</footer>

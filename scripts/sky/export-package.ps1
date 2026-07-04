@@ -14,8 +14,15 @@ New-Item -ItemType Directory -Path $OutputDir -Force | Out-Null
 New-Item -ItemType Directory -Path (Join-Path $OutputDir 'prompts') -Force | Out-Null
 New-Item -ItemType Directory -Path (Join-Path $OutputDir 'scaffold') -Force | Out-Null
 New-Item -ItemType Directory -Path (Join-Path $OutputDir 'cloud-design') -Force | Out-Null
+New-Item -ItemType Directory -Path (Join-Path $OutputDir 'architecture') -Force | Out-Null
+New-Item -ItemType Directory -Path (Join-Path $OutputDir 'architecture\sequences') -Force | Out-Null
+New-Item -ItemType Directory -Path (Join-Path $OutputDir 'architecture\adrs') -Force | Out-Null
 
-# Copiar artefatos da sessao
+# Copiar arquitetura da sessao (C4, jornadas, craft)
+$archSrc = Join-Path $SessionDir 'architecture'
+if (Test-Path $archSrc) {
+    Copy-Item -Path (Join-Path $archSrc '*') -Destination (Join-Path $OutputDir 'architecture') -Recurse -Force
+}
 $copyFiles = @('brief-draft.yaml', 'functional-requirements.yaml', 'nfr.yaml', 'integrations.yaml', 'maturity.yaml', 'sky-merits.yaml', 'ux-spec.yaml')
 foreach ($f in $copyFiles) {
     $src = Join-Path $SessionDir $f
@@ -65,6 +72,7 @@ artifacts:
   - ux-spec.yaml
   - tier-matrix.yaml
   - scaffold/AGENTS.md
+  - architecture/
   - cloud-design/
 next_step: ./scripts/sky/sky.ps1 publish -Slug $Slug -Public
 "@

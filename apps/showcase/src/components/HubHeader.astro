@@ -1,0 +1,37 @@
+---
+interface Props {
+  /** Título principal */
+  title?: string;
+  /** Subtítulo / lead */
+  subtitle?: string;
+  /** Label mono acima do título */
+  kicker?: string;
+  badge?: string;
+  showBack?: boolean;
+  backHref?: string;
+  backLabel?: string;
+  compact?: boolean;
+}
+
+const {
+  title = "Hub de projetos",
+  subtitle,
+  kicker,
+  badge,
+  showBack = false,
+  backHref = "/",
+  backLabel = "← Voltar",
+  compact = false,
+} = Astro.props;
+---
+
+<header class:list={["sf-hero", compact && "sf-hero-compact"]}>
+  <div class="container sf-hero-inner">
+    {showBack && <a class="back-link sf-back-link" href={backHref}>{backLabel}</a>}
+    {kicker && <p class="sf-kicker">{kicker}</p>}
+    {badge && !kicker && <span class="sf-badge">{badge}</span>}
+    <h1 class="sf-hero-title">{title}</h1>
+    {subtitle && <p class="sf-hero-lead">{subtitle}</p>}
+    <slot />
+  </div>
+</header>

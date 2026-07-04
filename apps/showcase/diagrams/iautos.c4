@@ -1,0 +1,109 @@
+// IAutos — modelo C4 (LikeC4)
+// Views: context, containers, components
+
+specification {
+  element person {
+    style { shape person }
+  }
+  element softwareSystem
+  element container
+  element component
+  element externalSystem {
+    style { shape browser }
+  }
+}
+
+model {
+  advogado = person 'Advogado(a)'
+  admin = person 'Admin do tenant'
+  staff = person 'Equipe administrativa'
+  cliente = person 'Cliente do escritório' '(indireto)'
+
+  iautos = softwareSystem 'IAutos Platform' 'Legaltech white-label SaaS' {
+    web = container 'Web App' 'Next.js white-label'
+    site = container 'Site institucional' 'Por tenant'
+    api = container 'API Gateway / BFF' 'RBAC JWT'
+    caseSvc = container 'Case Service' 'Pastas versionadas 00..06'
+    docSvc = container 'Document Service' 'Upload, OCR, versionamento'
+    rag = container 'RAG Engine' 'Embeddings por caso'
+    agent = container 'Agent Orchestrator' 'Roster + harness'
+    copilot = container 'Copilot Service' 'Chat + editor'
+    vault = container 'AI Vault' 'Gerenciado + BYOK'
+    audit = container 'Audit & LGPD' 'Trilha + painel'
+  }
+
+  llm = externalSystem 'Provedores LLM' 'Anthropic / OpenAI BYOK'
+  storage = externalSystem 'Object Storage' 'MinIO / S3'
+  email = externalSystem 'E-mail' 'Resend — E6'
+  compliance = externalSystem 'OAB / LGPD' 'Conformidade'
+
+  advogado -> iautos.web 'Opera casos'
+  admin -> iautos.web 'Configura tenant'
+  staff -> iautos.web 'Upload documentos'
+  cliente -> iautos 'Beneficia indiretamente'
+
+  iautos.web -> iautos.api
+  iautos.site -> iautos.api
+  iautos.api -> iautos.caseSvc
+  iautos.api -> iautos.copilot
+  iautos.copilot -> iautos.agent
+  iautos.agent -> iautos.rag
+  iautos.caseSvc -> iautos.docSvc
+  iautos.docSvc -> iautos.rag
+  iautos.agent -> iautos.vault
+  iautos.vault -> llm
+  iautos.docSvc -> storage
+  iautos -> compliance
+  iautos -> email 'E6 pós-MVP'
+
+  // Componentes — Case Service
+  iautos.caseSvc {
+    seeder = component 'CaseFolderSeeder' 'Template Obsidian'
+    guard = component 'GoldRuleGuard' '01_ write-once'
+    index = component 'IndexBuilder' '.index metadata'
+    repo = component 'CaseRepository' 'RLS scoped'
+    seeder -> repo
+    guard -> repo
+    index -> repo
+  }
+
+  // Componentes — Agent Orchestrator
+  iautos.agent {
+    roster = component 'RosterRegistry' 'Agentes por tenant'
+    harness = component 'HarnessRunner' 'Guardrails'
+    claim = component 'ClaimModel' 'Fato/inferência/hipótese'
+    roster -> harness
+    harness -> claim
+  }
+
+  // Componentes — Copilot
+  iautos.copilot {
+    chat = component 'ChatSession' 'Histórico por caso'
+    draft = component 'DraftWorkflow' 'HITL 04_/05_'
+    chat -> draft
+    draft -> iautos.agent.harness
+  }
+}
+
+views {
+  view context {
+    title 'C4 L1 — Contexto'
+    include advogado, admin, staff, cliente, iautos, llm, storage, email, compliance
+  }
+
+  view containers {
+    title 'C4 L2 — Containers'
+    include iautos, iautos._, llm, storage, email, compliance
+  }
+
+  view components {
+    title 'C4 L3 — Componentes críticos'
+    include
+      iautos.caseSvc,
+      iautos.caseSvc._,
+      iautos.agent,
+      iautos.agent._,
+      iautos.copilot,
+      iautos.copilot._
+  }
+}

@@ -1,51 +1,64 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import HubHeader from "../components/HubHeader.astro";
 import ProjectCard from "../components/ProjectCard.astro";
 import { loadIndex } from "../lib/registry";
 import { withBase } from "../lib/paths";
 
 const { projects } = loadIndex();
 const visible = projects.filter((p) => p.public !== false);
+const featured = visible[0];
+const rest = visible.slice(1);
 ---
 
-<BaseLayout title="Projetos" description="Seus projetos elevados — visão clara de cada aplicativo, passo a passo">
-  <header class="site-header">
-    <div class="container">
-      <span class="badge">Open source · MIT</span>
-      <h1>Sky-Forge</h1>
-      <p class="hero-lead">Seus projetos elevados — visão clara de cada aplicativo, passo a passo.</p>
-      <p>
-        Registre ideias localmente e acompanhe o que cada intake produziu. Cada card é a
-        <strong>visão de um aplicativo</strong> — problema, requisitos, arquitetura e prontidão.
-        A plataforma em si está em
-        <a href={withBase("/sobre/")} style="color: var(--color-sky-glow);">sobre o Sky-Forge</a>.
-      </p>
-      <nav class="hub-nav" aria-label="Navegação principal">
-        <a href={withBase("/")} class="hub-nav-link hub-nav-active">Projetos</a>
-        <a href={withBase("/agentes/")} class="hub-nav-link">Agentes</a>
-        <a href={withBase("/metodo/")} class="hub-nav-link">Método</a>
-        <a href={withBase("/sobre/")} class="hub-nav-link">Sobre</a>
-      </nav>
-    </div>
-  </header>
+<BaseLayout
+  title="Hub de projetos"
+  description="Galeria de propostas elevadas pelo Sky-Forge — resumos sanitizados, índices SKY e maturidade."
+  navActive="projetos"
+>
+  <HubHeader
+    kicker="GALERIA DE PROPOSTAS ELEVADAS"
+    title="O que o funil já elevou."
+    subtitle="Cada projeto aqui atravessou intake, elevação e pipeline de maturidade — publicado com consentimento explícito. Brief completo e artefatos proprietários ficam privados."
+  />
 
-  <main class="container">
+  <main id="main-content" class="container sf-page">
+    <div class="hub-actions">
+      <a href={withBase("/sobre/#instalacao-local")} class="btn-primary">+ Novo projeto</a>
+      <span class="btn-secondary btn-ghost" title="Intake local — privacidade por padrão">
+        <code class="sf-code-inline">./scripts/sky/sky.ps1 intake -Slug meu-projeto</code>
+      </span>
+    </div>
+
     {visible.length === 0 ? (
-      <div class="empty-state panel">
-        <p>Nenhum projeto publicado ainda.</p>
-        <p>
-          Comece com intake local; publique um preview quando quiser compartilhar:
-        </p>
-        <p>
-          <code>./scripts/sky/sky.ps1 intake -Slug meu-projeto</code><br />
-          <code>./scripts/sky/sky.ps1 publish -Slug meu-projeto -Public</code>
-        </p>
-        <p><a href={withBase("/sobre/")}>Como a plataforma funciona →</a></p>
+      <div class="empty-state panel sf-panel" role="status">
+        <p class="sf-kicker">SEM PROJETOS PUBLICADOS</p>
+        <p><strong>Comece pela intenção.</strong></p>
+        <p class="panel-hint">Uma conversa em linguagem natural é suficiente. O funil organiza brief, UX, arquitetura e elevação — privacidade por padrão até você optar por publicar.</p>
+        <ol class="flow-list">
+          <li>Intake local: <code>./scripts/sky/sky.ps1 intake -Slug meu-projeto</code></li>
+          <li>Export quando estiver pronto (pasta externa)</li>
+          <li>Publish só com opt-in: <code>-Public</code></li>
+        </ol>
+        <p><a href={withBase("/sobre/")} class="sf-card-cta">Como a plataforma funciona →</a></p>
       </div>
     ) : (
-      <div class="grid">
-        {visible.map((project) => <ProjectCard project={project} />)}
-      </div>
+      <>
+        <div class="showcase-gallery">
+          {featured && <ProjectCard project={featured} featured />}
+          <aside class="showcase-next-slot sf-panel">
+            <p class="sf-kicker">PRÓXIMO PROJETO</p>
+            <h3 class="showcase-next-title">O seu — quando você disser sim.</h3>
+            <p class="panel-hint">O showcase-curator só publica com opt-in explícito: título e resumo sanitizados, índices e fases. Nada de dados de clientes.</p>
+            <a href={withBase("/sobre/#instalacao-local")} class="sf-card-cta">Entrar no funil →</a>
+          </aside>
+        </div>
+        {rest.length > 0 && (
+          <div class="grid sf-grid-secondary">
+            {rest.map((project) => <ProjectCard project={project} />)}
+          </div>
+        )}
+      </>
     )}
   </main>
 </BaseLayout>

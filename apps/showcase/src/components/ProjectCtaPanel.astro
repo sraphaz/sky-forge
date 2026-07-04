@@ -1,0 +1,55 @@
+---
+import { withBase } from "../lib/paths";
+
+interface Props {
+  slug: string;
+  browserMode?: boolean;
+}
+
+const { slug, browserMode = true } = Astro.props;
+---
+
+<section class="panel project-cta-panel" aria-labelledby="project-cta-title">
+  <h2 class="section-title" id="project-cta-title">Próximos passos</h2>
+  <p class="panel-hint">
+    Uma decisão por vez — escolha o que fazer agora com este pacote.
+  </p>
+  <ol class="cta-list">
+    <li class="cta-item">
+      <span class="cta-number" aria-hidden="true">1</span>
+      <div class="cta-body">
+        <strong>Retomar conversa no Cursor</strong>
+        <p>Continue intake, elevação ou lacunas na sessão <code>.sky/sessions/{slug}/</code>.</p>
+        <code class="cta-code">./scripts/sky/sky.ps1 status -Slug {slug}</code>
+      </div>
+    </li>
+    <li class="cta-item">
+      <span class="cta-number" aria-hidden="true">2</span>
+      <div class="cta-body">
+        <strong>Exportar para IA</strong>
+        <p>Gere contexto sanitizado para agentes de código — sem publish no mesmo passo.</p>
+        {browserMode ? (
+          <p class="cta-browser-note">
+            Disponível na <a href={withBase("/sobre/#export-ia")}>instalação local</a>.
+          </p>
+        ) : (
+          <code class="cta-code">./scripts/sky/sky.ps1 export -Slug {slug} -ForAI -Scope essential</code>
+        )}
+      </div>
+    </li>
+    <li class="cta-item">
+      <span class="cta-number" aria-hidden="true">3</span>
+      <div class="cta-body">
+        <strong>Configurar repositório</strong>
+        <p>Aponte a pasta de trabalho do app; Git local-first, remoto opcional.</p>
+        {browserMode ? (
+          <p class="cta-browser-note">
+            Disponível na <a href={withBase("/sobre/#repositorio-git")}>instalação local</a>.
+          </p>
+        ) : (
+          <span class="chip">git.yaml — fase C do roadmap</span>
+        )}
+      </div>
+    </li>
+  </ol>
+</section>

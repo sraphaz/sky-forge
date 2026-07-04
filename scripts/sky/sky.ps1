@@ -9,7 +9,7 @@
 [CmdletBinding()]
 param(
     [Parameter(Position = 0, Mandatory = $true)]
-    [ValidateSet('intake', 'status', 'approve', 'run', 'validate', 'export', 'elevate', 'publish', 'showcase', 'agents', 'audit', 'choreograph')]
+    [ValidateSet('intake', 'status', 'approve', 'run', 'validate', 'export', 'elevate', 'benchmark', 'publish', 'showcase', 'agents', 'audit', 'choreograph', 'architect')]
     [string]$Command,
 
     [Parameter()]
@@ -95,6 +95,28 @@ switch ($Command) {
             Copy-Item (Join-Path $RepoRoot 'templates\sessions\example-horta\sky-merits.yaml') $merits -Force
             (Get-Content $merits -Raw) -replace 'example-horta', $Slug | Set-Content $merits -Encoding UTF8
         }
+    }
+    'benchmark' {
+        if (-not $Slug) { throw 'benchmark requires -Slug' }
+        if (-not (Test-Path (Get-SessionDir $Slug))) { throw "Sessao nao encontrada: $Slug" }
+        Write-Host "sky benchmark — agente market-benchmark (conversacional, no Cursor)." -ForegroundColor Cyan
+        Write-Host ""
+        Write-Host "O que ele faz:"
+        Write-Host "  1. Pesquisa mercado + iniciativas open-source (GitHub) que atacam o mesmo problema"
+        Write-Host "  2. Veredito de novidade por eixo: novo / melhor / paridade / atras"
+        Write-Host "  3. Calcula o indice MPI (rubrica em docs/_meta/SKY_INDICES_METHOD.md, espec v1.2)"
+        Write-Host "  4. Sugere lacunas do segmento como RFs ai_suggested — voce decide, nada muda sozinho"
+        Write-Host ""
+        $bench = Join-Path (Get-SessionDir $Slug) 'market-benchmark.yaml'
+        if (Test-Path $bench) {
+            Write-Host "Artefato existente: .sky/sessions/$Slug/market-benchmark.yaml" -ForegroundColor Green
+            if ((Get-Content $bench -Raw) -match '(?ms)^mpi:\s*\r?\n\s+score:\s*(\d+)') {
+                Write-Host "MPI atual: $($Matches[1])"
+            }
+        } else {
+            Write-Host "Artefato ainda nao gerado — converse com o agente (regra sky-benchmark.mdc)." -ForegroundColor Yellow
+        }
+        Invoke-AgentAudit $Slug 'market-benchmark' 'benchmark.review' 'consult' $(if (Test-Path $bench) { 'ok' } else { 'pending' })
     }
     'run' {
         if (-not $Slug) { throw 'run requires -Slug' }
@@ -189,5 +211,11 @@ switch ($Command) {
         if ($Intent) { $cargs.Intent = $Intent }
         if ($ChangedFiles) { $cargs.ChangedFiles = $ChangedFiles }
         & $choreo @cargs
+    }
+    'architect' {
+        if (-not $Slug) { throw 'architect requires -Slug' }
+        $acArgs = @{ Slug = $Slug }
+        if ($Force) { $acArgs.Force = $true }
+        & (Join-Path $PSScriptRoot 'architecture-cycle.ps1') @acArgs
     }
 }

@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import HubHeader from "../components/HubHeader.astro";
 import { withBase } from "../lib/paths";
 
 const SPEC_VERSION = "1.1";
@@ -88,26 +89,18 @@ const confiancas = [
 <BaseLayout
   title="Método dos índices SKY"
   description="Rubricas abertas 0–100, evidência, confiança e governança — a régua que qualquer pessoa pode auditar"
+  navActive="metodo"
 >
-  <header class="site-header">
-    <div class="container">
-      <a class="back-link" href={withBase("/")} style="color: var(--color-sky-glow);">← Sky-Forge</a>
-      <span class="badge">Espec SKY v{SPEC_VERSION} · CC BY-SA</span>
-      <h1>Método dos índices SKY</h1>
-      <p class="hero-lead">
-        A régua é aberta: o que separa um 60 de um 80, que evidências valem e como a espec evolui.
-        Score sem rubrica é opinião com casas decimais.
-      </p>
-      <nav class="hub-nav" aria-label="Navegação principal">
-        <a href={withBase("/")} class="hub-nav-link">Projetos</a>
-        <a href={withBase("/agentes/")} class="hub-nav-link">Agentes</a>
-        <a href={withBase("/metodo/")} class="hub-nav-link hub-nav-active">Método</a>
-        <a href={withBase("/sobre/")} class="hub-nav-link">Sobre</a>
-      </nav>
-    </div>
-  </header>
+  <HubHeader
+    kicker={`ESPEC SKY v${SPEC_VERSION} · CC BY-SA`}
+    title="Método dos índices SKY"
+    subtitle="A régua é aberta: o que separa um 60 de um 80, que evidências valem e como a espec evolui."
+    showBack
+    backHref={withBase("/")}
+    backLabel="← Hub de projetos"
+  />
 
-  <main class="container">
+  <main id="main-content" class="container">
     <section class="panel">
       <h3>Score composto</h3>
       <p class="formula"><code>SKY_SCORE = 0.25×SPI + 0.20×HCE + 0.20×GAP + 0.20×CWB + 0.15×UXD</code></p>

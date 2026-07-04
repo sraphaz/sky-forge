@@ -22,7 +22,8 @@ Manual de operação. Sky-Forge **eleva** propostas: especifica software e conec
 ```
 Chegada (sky-host) → intake-conductor (conversa)
     → sky-elevator + ux-design-specialist (elevação & UX)
-    → market-scout / architect (batch)
+    → market-scout / solutions-architect + c4-modeler + journey-sequence-modeler
+    → clean-craft-advisor (consult)
     → delivery-steward (export → pasta externa)
     → showcase-curator (preview visual, opt-in)
     → repo-scaffolder / prompt-assembler (implementar)
@@ -47,7 +48,9 @@ Chegada (sky-host) → intake-conductor (conversa)
 | `intake-conductor` | Conversa; maturity; coreografia de lacunas |
 | `ux-design-specialist` | **UX spec, acessibilidade, UXD** |
 | `market-scout` | Pesquisa mercado/stack |
-| `solutions-architect` | C4, domínios, ADRs |
+| `solutions-architect` | Coordena C4, domínios, ADRs, jornadas |
+| `c4-modeler` | **C4 L1/L2/L3** + domains + resumo |
+| `journey-sequence-modeler` | **Sequências** + fluxograma de contexto |
 | `prompt-assembler` | Prompts avançados + export |
 | `repo-scaffolder` | Scaffold `AGENTS.md` do app novo |
 
@@ -56,10 +59,12 @@ Chegada (sky-host) → intake-conductor (conversa)
 | ID | Função |
 |----|--------|
 | `sky-elevator` | **Índices SKY, prosperidade humana, expansão de consciência** |
+| `market-benchmark` | **Posicionamento de mercado — MPI, benchmark comercial + open-source, sugestões de lacuna** |
 | `cost-tier-advisor` | MVP / Growth / Enterprise |
 | `ux-product` | Personas, jornadas, site institucional |
 | `stack-curator` | Stack e integrações |
 | `security-compliance` | LGPD, auth — Enterprise |
+| `clean-craft-advisor` | **Craft Uncle Bob** — SOLID, boundaries (consultivo) |
 
 ## Skills
 
@@ -68,7 +73,10 @@ Chegada (sky-host) → intake-conductor (conversa)
 | `sky-intake` | Sessão conversacional |
 | `sky-elevate` | Índices SKY + UX + humanity_connections |
 | `sky-approve` | Human gates |
-| `sky-plan` | Pipeline batch |
+| `sky-plan` | Pipeline batch (C4 + jornadas + craft) |
+| `sky-c4-model` | C4 três níveis + domínios |
+| `sky-journey-sequences` | Sequências + context-flow |
+| `sky-clean-craft` | Revisão craftsmanship (Uncle Bob) |
 | `sky-validate` | Valida pacote |
 | `sky-export` | Empacota + Cloud Design |
 | `sky-deliver` | Entrega guiada (delivery-steward) |
@@ -84,6 +92,7 @@ Chegada (sky-host) → intake-conductor (conversa)
 ```powershell
 ./scripts/sky/sky.ps1 intake -Slug <slug>
 ./scripts/sky/sky.ps1 elevate -Slug <slug>
+./scripts/sky/sky.ps1 benchmark -Slug <slug>
 ./scripts/sky/sky.ps1 status -Slug <slug>
 ./scripts/sky/sky.ps1 approve -Slug <slug> -Stage brief|elevation|architecture|package
 ./scripts/sky/sky.ps1 validate -Slug <slug>

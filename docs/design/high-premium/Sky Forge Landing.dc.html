@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  html, body { margin: 0; padding: 0; background: var(--bg0); }
+  body {
+    --bg0: #060913; --bg1: #0A1124; --bg2: #0E1830;
+    --surface: rgba(148,178,255,0.05); --line: rgba(148,178,255,0.13);
+    --text: #EAF0FC; --text2: #9DA9C9; --text3: #6B7694;
+    --acc1: #7FB8FF; --acc2: #5FE3C4;
+    --grad: linear-gradient(120deg, #7FB8FF 0%, #5FE3C4 100%);
+    --glow1: rgba(78,124,224,0.22); --glow2: rgba(46,180,150,0.13);
+    --navbg: rgba(6,9,19,0.72);
+  }
+  body[data-theme="light"] {
+    --bg0: #F4F7FD; --bg1: #EAF0FA; --bg2: #FFFFFF;
+    --surface: rgba(28,58,120,0.045); --line: rgba(28,58,120,0.14);
+    --text: #0F1626; --text2: #46536F; --text3: #7A86A0;
+    --acc1: #2E6FE0; --acc2: #0FA98B;
+    --grad: linear-gradient(120deg, #2E6FE0 0%, #0FA98B 100%);
+    --glow1: rgba(46,111,224,0.14); --glow2: rgba(15,169,139,0.10);
+    --navbg: rgba(244,247,253,0.78);
+  }
+  ::selection { background: rgba(127,184,255,0.3); }
+  @keyframes sfSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+</style>
+</helmet>
+
+<div style="font-family: Manrope, sans-serif; color: var(--text); background: var(--bg0); min-height: 100vh; transition: background 0.4s, color 0.4s;">
+
+  <!-- NAV -->
+  <nav data-screen-label="Nav" style="position: fixed; top: 0; left: 0; right: 0; z-index: 50; display: flex; align-items: center; justify-content: space-between; padding: 18px 48px; background: var(--navbg); backdrop-filter: blur(18px); border-bottom: 1px solid var(--line);">
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <div style="width: 30px; height: 30px; border-radius: 50%; background: conic-gradient(from 220deg, var(--acc1), var(--acc2) 55%, transparent 78%); display: grid; place-items: center; animation: sfSpin 24s linear infinite;">
+        <div style="width: 18px; height: 18px; border-radius: 50%; background: var(--bg0); transition: background 0.4s;"></div>
+      </div>
+      <span style="font-family: Sora, sans-serif; font-weight: 600; letter-spacing: 0.14em; font-size: 14px;">SKY-FORGE</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 28px; font-size: 13.5px; font-weight: 500;">
+      <a href="#manifesto" style="color: var(--text2); text-decoration: none;" style-hover="color: var(--text)">Manifesto</a>
+      <a href="#fluxo" style="color: var(--text2); text-decoration: none;" style-hover="color: var(--text)">Fluxo</a>
+      <a href="#indices" style="color: var(--text2); text-decoration: none;" style-hover="color: var(--text)">Índices SKY</a>
+      <a href="Sky Forge Produto.dc.html" style="color: var(--text2); text-decoration: none;" style-hover="color: var(--text)">Produto</a>
+      <a href="Sky Forge Showcase.dc.html" style="color: var(--text2); text-decoration: none;" style-hover="color: var(--text)">Showcase</a>
+      <a href="Sky Forge Design System.dc.html" style="color: var(--text2); text-decoration: none;" style-hover="color: var(--text)">Design System</a>
+      <a href="Sky Forge Evolucao.dc.html" style="color: var(--text2); text-decoration: none;" style-hover="color: var(--text)">Evolução</a>
+      <button onClick="{{ toggleTheme }}" style="display: flex; align-items: center; gap: 8px; background: var(--surface); border: 1px solid var(--line); color: var(--text2); border-radius: 999px; padding: 7px 14px; font-family: Manrope, sans-serif; font-size: 12.5px; font-weight: 600; cursor: pointer;" style-hover="color: var(--text); border-color: var(--acc1)">
+        <span style="font-size: 13px;">◐</span> {{ themeLabel }}
+      </button>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <header data-screen-label="Hero" style="position: relative; min-height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; background: radial-gradient(ellipse 90% 60% at 50% -10%, var(--glow1), transparent 60%), radial-gradient(ellipse 70% 50% at 50% 115%, var(--glow2), transparent 65%), linear-gradient(180deg, var(--bg0) 0%, var(--bg1) 100%);">
+    <canvas ref="{{ canvasRef }}" style="position: absolute; inset: 0; width: 100%; height: 100%;"></canvas>
+    <div style="position: relative; z-index: 2; text-align: center; max-width: 880px; padding: 140px 32px 100px; display: flex; flex-direction: column; align-items: center; gap: 28px;">
+      <div style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px; letter-spacing: 0.28em; color: var(--acc2); border: 1px solid var(--line); border-radius: 999px; padding: 8px 20px; background: var(--surface);">SINTROPIA TECNOLÓGICA</div>
+      <h1 style="font-family: Sora, sans-serif; font-weight: 600; font-size: 68px; line-height: 1.08; margin: 0; letter-spacing: -0.02em; text-wrap: balance;">Eleve o que está<br>sendo <span style="background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent;">proposto</span>.</h1>
+      <p style="font-size: 19px; line-height: 1.65; color: var(--text2); margin: 0; max-width: 640px; text-wrap: pretty;">Sky-Forge é a camada de inteligência entre a sua intenção e a produção de software. Cada ciclo deixa o sistema mais organizado do que o encontrou — especificação, UX digna e prosperidade humana medidas em índices, não em promessas.</p>
+      <div style="display: flex; gap: 16px; margin-top: 8px;">
+        <a href="Sky Forge Produto.dc.html" style="text-decoration: none; background: var(--grad); color: #06131A; font-weight: 700; font-size: 15px; padding: 15px 32px; border-radius: 12px; box-shadow: 0 8px 32px var(--glow1);" style-hover="filter: brightness(1.08)">Iniciar intake</a>
+        <a href="#indices" style="text-decoration: none; color: var(--text); font-weight: 600; font-size: 15px; padding: 15px 32px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface);" style-hover="border-color: var(--acc1)">Ver índices SKY</a>
+      </div>
+      <div style="display: flex; gap: 32px; margin-top: 28px; font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: var(--text3); letter-spacing: 0.04em;">
+        <span>5 índices proprietários</span><span style="color: var(--line);">·</span>
+        <span>6 dimensões de maturidade</span><span style="color: var(--line);">·</span>
+        <span>export Cloud Design</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- MANIFESTO -->
+  <section id="manifesto" data-screen-label="Manifesto" style="max-width: 1160px; margin: 0 auto; padding: 130px 32px 60px;">
+    <div style="display: grid; grid-template-columns: 1fr 1.6fr; gap: 64px; align-items: start;">
+      <div style="position: sticky; top: 120px;">
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.24em; color: var(--acc1); margin-bottom: 18px;">MANIFESTO</div>
+        <h2 style="font-family: Sora, sans-serif; font-size: 38px; font-weight: 600; line-height: 1.18; margin: 0; letter-spacing: -0.015em; text-wrap: balance;">Um sistema que prospera com a inteligência da vida.</h2>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 20px;">
+        <sc-for list="{{ principles }}" as="p" hint-placeholder-count="3">
+          <div style="background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 32px 36px; display: flex; gap: 28px; align-items: flex-start;" style-hover="border-color: var(--acc1)">
+            <span style="font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--acc2); margin-top: 5px;">{{ p.num }}</span>
+            <div>
+              <h3 style="font-family: Sora, sans-serif; font-size: 20px; font-weight: 600; margin: 0 0 10px;">{{ p.title }}</h3>
+              <p style="font-size: 15.5px; line-height: 1.7; color: var(--text2); margin: 0; text-wrap: pretty;">{{ p.body }}</p>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <!-- FLUXO -->
+  <section id="fluxo" data-screen-label="Fluxo" style="max-width: 1160px; margin: 0 auto; padding: 110px 32px;">
+    <div style="text-align: center; margin-bottom: 72px;">
+      <div style="font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.24em; color: var(--acc1); margin-bottom: 16px;">FLUXO ASCENDENTE</div>
+      <h2 style="font-family: Sora, sans-serif; font-size: 38px; font-weight: 600; margin: 0; letter-spacing: -0.015em;">Da intenção ao pacote verificável</h2>
+    </div>
+    <div style="display: flex; align-items: flex-end; gap: 14px;">
+      <sc-for list="{{ steps }}" as="s" hint-placeholder-count="5">
+        <div style="flex: 1; display: flex; flex-direction: column; gap: 0; padding-bottom: {{ s.lift }};">
+          <div style="background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 26px 24px; min-height: 150px;" style-hover="border-color: var(--acc2)">
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--acc2); margin-bottom: 12px;">{{ s.num }}</div>
+            <div style="font-family: Sora, sans-serif; font-size: 16.5px; font-weight: 600; margin-bottom: 8px;">{{ s.title }}</div>
+            <div style="font-size: 13.5px; line-height: 1.6; color: var(--text2); text-wrap: pretty;">{{ s.body }}</div>
+          </div>
+          <div style="height: 3px; margin: 14px 8px 0; border-radius: 2px; background: var(--grad); opacity: {{ s.op }};"></div>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <!-- INDICES -->
+  <section id="indices" data-screen-label="Indices SKY" style="background: linear-gradient(180deg, transparent, var(--bg1) 20%, var(--bg1) 80%, transparent); padding: 110px 0;">
+    <div style="max-width: 1160px; margin: 0 auto; padding: 0 32px;">
+      <div style="text-align: center; margin-bottom: 64px;">
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.24em; color: var(--acc1); margin-bottom: 16px;">ÍNDICES SKY</div>
+        <h2 style="font-family: Sora, sans-serif; font-size: 38px; font-weight: 600; margin: 0 0 16px; letter-spacing: -0.015em;">Prosperidade, medida.</h2>
+        <p style="font-size: 16.5px; color: var(--text2); max-width: 620px; margin: 0 auto; line-height: 1.65; text-wrap: pretty;">Cinco métricas proprietárias avaliam como uma aplicação contribui para a prosperidade humana — sugestões conscientes, opcionais e sempre confirmadas pelo criador.</p>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; margin-bottom: 36px;">
+        <sc-for list="{{ indices }}" as="ix" hint-placeholder-count="5">
+          <div style="background: var(--bg2); border: 1px solid var(--line); border-radius: 18px; padding: 28px 22px; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 12px 40px rgba(3,6,16,0.18);" style-hover="border-color: var(--acc1); transform: translateY(-4px)">
+            <div style="display: flex; align-items: baseline; justify-content: space-between;">
+              <span style="font-family: Sora, sans-serif; font-size: 26px; font-weight: 700; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent;">{{ ix.sigla }}</span>
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 11.5px; color: var(--text3);">{{ ix.weight }}</span>
+            </div>
+            <div style="font-size: 14px; font-weight: 700;">{{ ix.name }}</div>
+            <div style="font-size: 13px; line-height: 1.6; color: var(--text2); text-wrap: pretty;">{{ ix.desc }}</div>
+          </div>
+        </sc-for>
+      </div>
+      <div style="text-align: center; font-family: 'JetBrains Mono', monospace; font-size: 14px; color: var(--text2); background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 18px; letter-spacing: 0.02em;">SKY_SCORE = 0.25×SPI + 0.20×HCE + 0.20×GAP + 0.20×CWB + 0.15×UXD</div>
+    </div>
+  </section>
+
+  <!-- NIVEIS -->
+  <section id="niveis" data-screen-label="Niveis" style="max-width: 1160px; margin: 0 auto; padding: 110px 32px;">
+    <div style="text-align: center; margin-bottom: 64px;">
+      <div style="font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.24em; color: var(--acc1); margin-bottom: 16px;">NÍVEIS DE ELEVAÇÃO</div>
+      <h2 style="font-family: Sora, sans-serif; font-size: 38px; font-weight: 600; margin: 0; letter-spacing: -0.015em;">Do chão ao céu</h2>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; align-items: end;">
+      <sc-for list="{{ levels }}" as="lv" hint-placeholder-count="4">
+        <div style="display: flex; flex-direction: column; gap: 16px;">
+          <div style="height: {{ lv.h }}; border-radius: 14px; background: linear-gradient(180deg, var(--acc1), var(--acc2)); opacity: {{ lv.op }}; box-shadow: 0 10px 36px var(--glow1);"></div>
+          <div>
+            <div style="display: flex; align-items: baseline; gap: 10px;">
+              <span style="font-family: Sora, sans-serif; font-size: 19px; font-weight: 700;">{{ lv.name }}</span>
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text3);">{{ lv.range }}</span>
+            </div>
+            <p style="font-size: 13.5px; line-height: 1.6; color: var(--text2); margin: 8px 0 0; text-wrap: pretty;">{{ lv.desc }}</p>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section data-screen-label="CTA" style="max-width: 860px; margin: 0 auto; padding: 60px 32px 140px; text-align: center;">
+    <div style="background: radial-gradient(ellipse 80% 100% at 50% 0%, var(--glow1), transparent 70%), var(--bg2); border: 1px solid var(--line); border-radius: 24px; padding: 72px 48px; display: flex; flex-direction: column; align-items: center; gap: 24px;">
+      <h2 style="font-family: Sora, sans-serif; font-size: 34px; font-weight: 600; margin: 0; letter-spacing: -0.015em;">Comece pela intenção.</h2>
+      <p style="font-size: 16px; color: var(--text2); margin: 0; max-width: 480px; line-height: 1.65; text-wrap: pretty;">Uma conversa em linguagem natural é suficiente. O resto — brief, UX, arquitetura, elevação — o funil organiza.</p>
+      <code style="font-family: 'JetBrains Mono', monospace; font-size: 14px; color: var(--acc2); background: var(--bg0); border: 1px solid var(--line); border-radius: 10px; padding: 16px 28px;">./sky.ps1 intake -Slug minha-ideia</code>
+      <a href="Sky Forge Produto.dc.html" style="text-decoration: none; background: var(--grad); color: #06131A; font-weight: 700; font-size: 15px; padding: 15px 36px; border-radius: 12px; margin-top: 4px;" style-hover="filter: brightness(1.08)">Abrir o produto</a>
+    </div>
+  </section>
+
+  <footer style="border-top: 1px solid var(--line); padding: 36px 48px; display: flex; justify-content: space-between; align-items: center; font-size: 12.5px; color: var(--text3);">
+    <span style="font-family: Sora, sans-serif; letter-spacing: 0.14em; font-weight: 600;">SKY-FORGE</span>
+    <span>Core MIT · sky-cloud-design proprietário · elevação sempre com permissão</span>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;particleDensity&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:90,&quot;min&quot;:0,&quot;max&quot;:220,&quot;step&quot;:10,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Movimento&quot;},&quot;funnelSpeed&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:1,&quot;min&quot;:0.2,&quot;max&quot;:3,&quot;step&quot;:0.1,&quot;unit&quot;:&quot;×&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Movimento&quot;}}">
+class Component extends DCLogic {
+  canvasRef = React.createRef();
+  state = { theme: (typeof localStorage !== 'undefined' && localStorage.getItem('sf-theme')) || 'dark' };
+
+  componentDidMount() {
+    this.applyTheme();
+    this.startParticles();
+  }
+
+  componentWillUnmount() {
+    cancelAnimationFrame(this.raf);
+    window.removeEventListener('resize', this.onResize);
+  }
+
+  applyTheme() {
+    document.body.setAttribute('data-theme', this.state.theme);
+  }
+
+  startParticles() {
+    const c = this.canvasRef.current;
+    if (!c) return;
+    const ctx = c.getContext('2d');
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    this.onResize = () => {
+      c.width = c.offsetWidth * dpr;
+      c.height = c.offsetHeight * dpr;
+    };
+    window.addEventListener('resize', this.onResize);
+    this.onResize();
+
+    const N = this.props.particleDensity ?? 90;
+    const speedMul = this.props.funnelSpeed ?? 1;
+    const rand = (a, b) => a + Math.random() * (b - a);
+    const spawn = (y) => ({
+      a: rand(0, Math.PI * 2),
+      r: rand(0.06, 0.46),
+      y: y,
+      sp: rand(0.00035, 0.0011) * speedMul,
+      rot: rand(0.0015, 0.005),
+      sz: rand(0.7, 2.2),
+      teal: Math.random() < 0.35
+    });
+    const ps = Array.from({ length: N }, () => spawn(Math.random()));
+
+    const tick = () => {
+      const W = c.width, H = c.height;
+      ctx.clearRect(0, 0, W, H);
+      const dark = this.state.theme !== 'light';
+      const blue = dark ? '150,195,255' : '46,111,224';
+      const teal = dark ? '110,230,200' : '15,169,139';
+      for (const p of ps) {
+        p.y += p.sp;
+        p.a += p.rot + (0.5 - p.r) * 0.002;
+        if (p.y > 1.05) Object.assign(p, spawn(0), { y: -0.02 });
+        const cone = 1 - p.y * 0.6;
+        const x = W / 2 + Math.cos(p.a) * p.r * W * cone;
+        const py = H - p.y * H;
+        const depth = 0.35 + 0.65 * ((Math.sin(p.a) + 1) / 2);
+        const alpha = Math.sin(Math.PI * Math.min(Math.max(p.y, 0), 1)) * (dark ? 0.55 : 0.4) * depth;
+        ctx.beginPath();
+        ctx.arc(x, py, p.sz * dpr * depth, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(' + (p.teal ? teal : blue) + ',' + alpha.toFixed(3) + ')';
+        ctx.fill();
+      }
+      this.raf = requestAnimationFrame(tick);
+    };
+    tick();
+  }
+
+  renderVals() {
+    const t = this.state.theme;
+    return {
+      canvasRef: this.canvasRef,
+      themeLabel: t === 'dark' ? 'Escuro' : 'Claro',
+      toggleTheme: () => {
+        const next = t === 'dark' ? 'light' : 'dark';
+        localStorage.setItem('sf-theme', next);
+        this.setState({ theme: next }, () => this.applyTheme());
+      },
+      principles: [
+        { num: '01', title: 'Energia que organiza', body: 'Entropia dissipa; sintropia concentra. Cada intake converte intenção difusa em estrutura viva: brief, requisitos, arquitetura, pacote verificável. O sistema termina cada ciclo mais ordenado do que começou.' },
+        { num: '02', title: 'Consciência do que se produz', body: 'Todo software ocupa atenção humana. O Sky-Forge mede o que essa atenção gera — dignidade, clareza, benefício coletivo — antes da primeira linha de código.' },
+        { num: '03', title: 'Prosperidade como métrica', body: 'SPI, HCE, GAP, CWB e UXD tornam mensurável o que costuma ficar no discurso. Elevação é sugerida, nunca imposta: o criador confirma cada conexão.' }
+      ],
+      steps: [
+        { num: '01', title: 'Intenção', body: 'Uma ideia em linguagem natural. Nenhum formulário, nenhuma barreira.', lift: '0px', op: '0.35' },
+        { num: '02', title: 'Intake conversacional', body: 'O intake-conductor conduz a conversa e mapeia a maturidade por dimensão.', lift: '26px', op: '0.5' },
+        { num: '03', title: 'Elevação & UX', body: 'sky-elevator e ux-design-specialist: índices SKY, conexões de humanidade, UX digna.', lift: '52px', op: '0.65' },
+        { num: '04', title: 'Arquitetura', body: 'C4, domínios, ADRs, roadmap — o desenho técnico que sustenta a proposta.', lift: '78px', op: '0.8' },
+        { num: '05', title: 'Export Cloud Design', body: 'Pacote de maturidade completo, verificado no harness antes de sair.', lift: '104px', op: '1' }
+      ],
+      indices: [
+        { sigla: 'SPI', weight: '0.25', name: 'Sky Prosperity Impact', desc: 'Contribuição para prosperidade material e dignidade: acesso, renda local, autonomia.' },
+        { sigla: 'HCE', weight: '0.20', name: 'Human Consciousness Expansion', desc: 'Amplia consciência, educação, reflexão e conexão significativa — sem manipulação.' },
+        { sigla: 'GAP', weight: '0.20', name: 'Global Alignment Potential', desc: 'Alinhamento com desafios planetários urgentes, via catálogo neutro.' },
+        { sigla: 'CWB', weight: '0.20', name: 'Collective Wellbeing', desc: 'Bem-estar coletivo, saúde comunitária, cuidado e coesão social.' },
+        { sigla: 'UXD', weight: '0.15', name: 'UX Dignity Score', desc: 'Acessibilidade, calma e clareza: WCAG AA, mobile-first, baixa excitação.' }
+      ],
+      levels: [
+        { name: 'Ground', range: '0–39', h: '70px', op: '0.35', desc: 'Foco local válido; elevação opcional.' },
+        { name: 'Rise', range: '40–59', h: '130px', op: '0.55', desc: 'Conexões moderadas com o bem coletivo.' },
+        { name: 'Horizon', range: '60–79', h: '190px', op: '0.78', desc: 'Proposta explicitamente alinhada a impacto ampliado.' },
+        { name: 'Sky', range: '80–100', h: '250px', op: '1', desc: 'Prosperidade humana como eixo co-criador do produto.' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

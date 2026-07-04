@@ -5,19 +5,27 @@ interface Props {
   slug: string;
   hasProduction?: boolean;
   hasProcess?: boolean;
+  hasMarket?: boolean;
   activeSection?: "overview" | "artefatos" | "agentes";
 }
 
-const { slug, hasProduction = true, hasProcess = true, activeSection = "overview" } = Astro.props;
+const {
+  slug,
+  hasProduction = true,
+  hasProcess = true,
+  hasMarket = false,
+  activeSection = "overview",
+} = Astro.props;
 
 const anchorSections = [
+  { id: "indices", label: "Índices" },
+  ...(hasMarket ? [{ id: "mercado", label: "Mercado" }] : []),
   { id: "visao", label: "Visão" },
   { id: "funcionalidades", label: "Funcionalidades" },
   { id: "requisitos", label: "Requisitos" },
   { id: "arquitetura", label: "Arquitetura" },
-  { id: "roadmap", label: "Roadmap" },
-  ...(hasProduction ? [{ id: "producao", label: "Produção" }] : []),
-  ...(hasProcess ? [{ id: "como-foi-produzido", label: "Como foi produzido" }] : []),
+  { id: "producao", label: "Roadmap" },
+  ...(hasProcess ? [{ id: "como-foi-produzido", label: "Produção" }] : []),
 ];
 ---
 

@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  html, body { margin: 0; padding: 0; background: var(--bg0); }
+  body {
+    --bg0: #060913; --bg1: #0A1124; --bg2: #0E1830;
+    --surface: rgba(148,178,255,0.05); --line: rgba(148,178,255,0.13);
+    --text: #EAF0FC; --text2: #9DA9C9; --text3: #6B7694;
+    --acc1: #7FB8FF; --acc2: #5FE3C4; --warn: #F2C283;
+    --grad: linear-gradient(120deg, #7FB8FF 0%, #5FE3C4 100%);
+    --glow1: rgba(78,124,224,0.22); --glow2: rgba(46,180,150,0.13);
+    --navbg: rgba(6,9,19,0.72);
+  }
+  body[data-theme="light"] {
+    --bg0: #F4F7FD; --bg1: #EAF0FA; --bg2: #FFFFFF;
+    --surface: rgba(28,58,120,0.045); --line: rgba(28,58,120,0.14);
+    --text: #0F1626; --text2: #46536F; --text3: #7A86A0;
+    --acc1: #2E6FE0; --acc2: #0FA98B; --warn: #B0761A;
+    --grad: linear-gradient(120deg, #2E6FE0 0%, #0FA98B 100%);
+    --glow1: rgba(46,111,224,0.14); --glow2: rgba(15,169,139,0.10);
+    --navbg: rgba(244,247,253,0.78);
+  }
+  ::selection { background: rgba(127,184,255,0.3); }
+  @keyframes sfSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+</style>
+</helmet>
+
+<div style="font-family: Manrope, sans-serif; color: var(--text); background: var(--bg0); min-height: 100vh; transition: background 0.4s, color 0.4s;">
+
+  <nav data-screen-label="Nav" style="position: fixed; top: 0; left: 0; right: 0; z-index: 50; display: flex; align-items: center; justify-content: space-between; padding: 18px 48px; background: var(--navbg); backdrop-filter: blur(18px); border-bottom: 1px solid var(--line);">
+    <a href="Sky Forge Landing.dc.html" style="display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--text);">
+      <div style="width: 30px; height: 30px; border-radius: 50%; background: conic-gradient(from 220deg, var(--acc1), var(--acc2) 55%, transparent 78%); display: grid; place-items: center; animation: sfSpin 24s linear infinite;">
+        <div style="width: 18px; height: 18px; border-radius: 50%; background: var(--bg0); transition: background 0.4s;"></div>
+      </div>
+      <span style="font-family: Sora, sans-serif; font-weight: 600; letter-spacing: 0.14em; font-size: 14px;">SKY-FORGE</span>
+      <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text3); letter-spacing: 0.15em; margin-left: 6px;">EVOLUÇÃO</span>
+    </a>
+    <div style="display: flex; align-items: center; gap: 28px; font-size: 13.5px; font-weight: 500;">
+      <a href="Sky Forge Landing.dc.html" style="color: var(--text2); text-decoration: none;" style-hover="color: var(--text)">Landing</a>
+      <a href="Sky Forge Produto.dc.html" style="color: var(--text2); text-decoration: none;" style-hover="color: var(--text)">Produto</a>
+      <a href="Sky Forge Showcase.dc.html" style="color: var(--text2); text-decoration: none;" style-hover="color: var(--text)">Showcase</a>
+      <a href="Sky Forge Design System.dc.html" style="color: var(--text2); text-decoration: none;" style-hover="color: var(--text)">Design System</a>
+      <button onClick="{{ toggleTheme }}" style="display: flex; align-items: center; gap: 8px; background: var(--surface); border: 1px solid var(--line); color: var(--text2); border-radius: 999px; padding: 7px 14px; font-family: Manrope, sans-serif; font-size: 12.5px; font-weight: 600; cursor: pointer;" style-hover="color: var(--text); border-color: var(--acc1)">◐ {{ themeLabel }}</button>
+    </div>
+  </nav>
+
+  <header data-screen-label="Header Auditoria" style="background: radial-gradient(ellipse 80% 70% at 50% -20%, var(--glow1), transparent 65%), linear-gradient(180deg, var(--bg0), var(--bg1)); padding: 160px 32px 60px; border-bottom: 1px solid var(--line);">
+    <div style="max-width: 980px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px;">
+      <div style="font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.26em; color: var(--acc2);">AUDITORIA · PROPOSTA DE EVOLUÇÃO</div>
+      <h1 style="font-family: Sora, sans-serif; font-size: 52px; font-weight: 600; margin: 0; letter-spacing: -0.02em; text-wrap: balance;">Do discurso ao método.</h1>
+      <p style="font-size: 17px; line-height: 1.7; color: var(--text2); max-width: 740px; margin: 0; text-wrap: pretty;">A estética é coerente e a promessa é ambiciosa — e o material é frágil exatamente onde a promessa encosta na prova. O tema do Sky-Forge é medir; hoje quase nada é auditável, reprodutível ou verificado na realidade. Os 23 achados abaixo convertem narrativa em método, seguindo o princípio do próprio sistema: cada ciclo deixa tudo mais organizado do que encontrou.</p>
+      <div style="display: flex; align-items: center; gap: 34px; flex-wrap: wrap; margin-top: 12px;">
+        <div>
+          <div style="font-family: Sora, sans-serif; font-size: 34px; font-weight: 700; color: var(--warn); line-height: 1;">5</div>
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: 0.14em; color: var(--text3); margin-top: 6px;">CRÍTICOS</div>
+        </div>
+        <div>
+          <div style="font-family: Sora, sans-serif; font-size: 34px; font-weight: 700; color: var(--acc1); line-height: 1;">16</div>
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: 0.14em; color: var(--text3); margin-top: 6px;">ESTRUTURAIS</div>
+        </div>
+        <div>
+          <div style="font-family: Sora, sans-serif; font-size: 34px; font-weight: 700; color: var(--text2); line-height: 1;">2</div>
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: 0.14em; color: var(--text3); margin-top: 6px;">REFINAMENTOS</div>
+        </div>
+        <div style="width: 1px; align-self: stretch; background: var(--line);"></div>
+        <p style="flex: 1; min-width: 280px; font-size: 13.5px; line-height: 1.65; color: var(--text2); margin: 0; text-wrap: pretty;"><strong style="color: var(--text);">Princípio da proposta</strong> — toda mudança deve deixar o Sky-Forge mais aberto, mais evidenciado ou mais verificado. Sintropia aplicada a si mesmo.</p>
+      </div>
+    </div>
+  </header>
+
+  <div data-screen-label="Achados" style="max-width: 880px; margin: 0 auto; padding: 20px 32px 40px; display: flex; flex-direction: column; gap: 16px;">
+    <sc-for list="{{ items }}" as="it" hint-placeholder-count="8">
+      <sc-if value="{{ it.isHeader }}" hint-placeholder-val="{{ false }}">
+        <div style="padding: 48px 0 10px; display: flex; flex-direction: column; gap: 10px;">
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.22em; color: var(--acc1);">{{ it.kicker }}</div>
+          <h2 style="font-family: Sora, sans-serif; font-size: 27px; font-weight: 600; margin: 0; letter-spacing: -0.015em;">{{ it.title }}</h2>
+          <p style="font-size: 14.5px; line-height: 1.65; color: var(--text2); margin: 0; max-width: 680px; text-wrap: pretty;">{{ it.sub }}</p>
+        </div>
+      </sc-if>
+      <sc-if value="{{ it.isFinding }}" hint-placeholder-val="{{ true }}">
+        <div style="background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 26px 30px; display: flex; flex-direction: column; gap: 13px;" style-hover="border-color: var(--acc1)">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--acc2);">{{ it.num }}</span>
+            <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.1em; color: {{ it.chipColor }}; border: 1px solid {{ it.chipColor }}; border-radius: 999px; padding: 3px 11px;">{{ it.sev }}</span>
+          </div>
+          <h3 style="font-family: Sora, sans-serif; font-size: 18px; font-weight: 600; margin: 0; letter-spacing: -0.01em;">{{ it.title }}</h3>
+          <p style="font-size: 14px; line-height: 1.7; color: var(--text2); margin: 0; text-wrap: pretty;">{{ it.body }}</p>
+          <sc-if value="{{ it.showEv }}" hint-placeholder-val="{{ true }}">
+            <div style="border: 1px dashed var(--line); border-radius: 10px; padding: 10px 14px; display: flex; gap: 12px; align-items: baseline;">
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.14em; color: var(--text3); flex-shrink: 0;">EVIDÊNCIA</span>
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 11.5px; line-height: 1.6; color: var(--text3);">{{ it.ev }}</span>
+            </div>
+          </sc-if>
+          <div style="display: flex; gap: 14px; align-items: baseline;">
+            <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.14em; color: var(--acc2); flex-shrink: 0;">PROPOSTA</span>
+            <p style="font-size: 14px; line-height: 1.65; color: var(--text); margin: 0; text-wrap: pretty;">{{ it.prop }}</p>
+          </div>
+        </div>
+      </sc-if>
+    </sc-for>
+  </div>
+
+  <section data-screen-label="Priorizacao" style="max-width: 1100px; margin: 0 auto; padding: 60px 32px 120px;">
+    <div style="text-align: center; margin-bottom: 48px;">
+      <div style="font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.24em; color: var(--acc1); margin-bottom: 16px;">PRIORIZAÇÃO</div>
+      <h2 style="font-family: Sora, sans-serif; font-size: 34px; font-weight: 600; margin: 0; letter-spacing: -0.015em;">Três horizontes, um princípio</h2>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; align-items: start;">
+      <div style="background: var(--bg2); border: 1px solid var(--line); border-radius: 18px; padding: 26px; display: flex; flex-direction: column; gap: 14px;">
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.18em; color: var(--warn);">AGORA — COERÊNCIA</div>
+        <p style="font-size: 13px; line-height: 1.6; color: var(--text2); margin: 0;">O que o material afirma e ainda não cumpre.</p>
+        <div style="display: flex; flex-direction: column; gap: 9px;">
+          <sc-for list="{{ roadNow }}" as="r" hint-placeholder-count="5">
+            <div style="display: flex; gap: 10px; align-items: baseline;">
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text3); flex-shrink: 0;">{{ r.num }}</span>
+              <span style="font-size: 13.5px; font-weight: 600;">{{ r.label }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      <div style="background: var(--bg2); border: 1px solid var(--line); border-radius: 18px; padding: 26px; display: flex; flex-direction: column; gap: 14px;">
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.18em; color: var(--acc1);">PRÓXIMO CICLO — CONFIANÇA</div>
+        <p style="font-size: 13px; line-height: 1.6; color: var(--text2); margin: 0;">O que transforma score em coisa crível.</p>
+        <div style="display: flex; flex-direction: column; gap: 9px;">
+          <sc-for list="{{ roadNext }}" as="r" hint-placeholder-count="6">
+            <div style="display: flex; gap: 10px; align-items: baseline;">
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text3); flex-shrink: 0;">{{ r.num }}</span>
+              <span style="font-size: 13.5px; font-weight: 600;">{{ r.label }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      <div style="background: var(--bg2); border: 1px solid var(--line); border-radius: 18px; padding: 26px; display: flex; flex-direction: column; gap: 14px;">
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.18em; color: var(--acc2);">HORIZONTE — VERDADE</div>
+        <p style="font-size: 13px; line-height: 1.6; color: var(--text2); margin: 0;">O que fecha o loop com a realidade.</p>
+        <div style="display: flex; flex-direction: column; gap: 9px;">
+          <sc-for list="{{ roadFar }}" as="r" hint-placeholder-count="6">
+            <div style="display: flex; gap: 10px; align-items: baseline;">
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text3); flex-shrink: 0;">{{ r.num }}</span>
+              <span style="font-size: 13.5px; font-weight: 600;">{{ r.label }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer style="border-top: 1px solid var(--line); padding: 36px 48px; display: flex; justify-content: space-between; align-items: center; font-size: 12.5px; color: var(--text3); flex-wrap: wrap; gap: 12px;">
+    <span style="font-family: Sora, sans-serif; letter-spacing: 0.14em; font-weight: 600;">SKY-FORGE · EVOLUÇÃO</span>
+    <span>abrir antes de prometer · evidenciar antes de pontuar · verificar antes de celebrar</span>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;somenteCriticos&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Leitura&quot;},&quot;mostrarEvidencias&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Leitura&quot;}}">
+class Component extends DCLogic {
+  state = { theme: (typeof localStorage !== 'undefined' && localStorage.getItem('sf-theme')) || 'dark' };
+
+  componentDidMount() {
+    document.body.setAttribute('data-theme', this.state.theme);
+  }
+
+  renderVals() {
+    const t = this.state.theme;
+    const somenteCriticos = this.props.somenteCriticos ?? false;
+    const mostrarEvidencias = this.props.mostrarEvidencias ?? true;
+
+    const groups = [
+      {
+        kicker: 'A · MÉTODO E PROFUNDIDADE',
+        title: 'Medir de verdade',
+        sub: 'O produto inteiro afirma que prosperidade é medida, não prometida. A medição ainda não existe como método.',
+        items: [
+          { sev: 'critico', title: 'Rubricas públicas por índice', body: 'SPI, HCE, GAP, CWB e UXD são apresentados com uma frase cada; nada define o que separa um 60 de um 80. Sem rubrica, o SKY_SCORE é opinião com casas decimais — exatamente a "promessa" que o hero diz recusar.', ev: 'landing · seção Índices: cinco descrições de uma linha; nenhuma página de método no material', prop: 'Criar a página Método: rubrica ancorada 0–100 por índice (cinco faixas com descritores e contra-exemplos), tipos de evidência aceitos e a razão de cada peso. É o artefato central que falta ao material.' },
+          { sev: 'critico', title: 'Score com evidência e confiança', body: 'Os números aparecem prontos (SPI 81, SKY 72) sem origem nem incerteza declarada. Um índice honesto diz de onde veio e quanto ainda não sabe.', ev: 'produto · painel SKY: intake com quatro mensagens já produz SKY 72, sem fonte visível', prop: 'Todo score carrega evidências vinculadas (trechos do intake, artefatos) e banda de confiança — "SPI 81 ±9 · 6 evidências". Abaixo da confiança mínima, exibir faixa provável em vez de número exato.' },
+          { sev: 'estrutural', title: 'Impacto verificado, não só previsto', body: 'O funil termina no export; a prosperidade prometida nunca reencontra a realidade. É o maior loop aberto da proposta.', ev: 'fluxo 01→05 encerra em "Export Cloud Design"; showcase publica score de intenção como se fosse resultado', prop: 'Etapa pós-lançamento aos 90 e 180 dias: previsto vs. observado (ex.: renda local gerada pela rede-hortas). O showcase passa a distinguir score de intenção de impacto verificado — e as rubricas são recalibradas com esses dados.' },
+          { sev: 'estrutural', title: 'Elevação sem atalho de pontos', body: 'Sugestões valem "+6 SPI" no ato do aceite — um incentivo a colecionar pontos sem mudar o produto.', ev: 'produto · sugestões de elevação creditam o ganho na confirmação', prop: 'Aceitar cria um requisito rastreado, não pontos: o índice só sobe quando a evidência aparece no artefato. Trilha completa: ai_suggested → user_confirmed → evidenced.' }
+        ]
+      },
+      {
+        kicker: 'B · MODELO ABERTO',
+        title: 'Abrir a régua, cobrar pela forja',
+        sub: 'A fronteira atual fecha o que gera confiança (a régua) e não explora o que gera receita (a execução).',
+        items: [
+          { sev: 'critico', title: 'Inverter a fronteira aberto/proprietário', body: 'Índices proprietários significam régua fechada: ninguém audita, ninguém reproduz, ninguém confia por mérito. Para um sistema cuja moeda é confiança, o segredo está no lugar errado.', ev: 'hero: "5 índices proprietários" · rodapé: "Core MIT · sky-cloud-design proprietário"', prop: 'Espec SKY aberta e versionada (rubricas, pesos, fórmula — CC BY-SA) e harness de verificação open source: qualquer terceiro reproduz um score. Comercial fica a execução: agentes, export Cloud Design, hosting, white-label.' },
+          { sev: 'estrutural', title: 'Governança dos índices', body: 'Não existe processo para mudar um peso ou contestar uma rubrica — mudanças silenciosas invalidariam todos os scores anteriores.', ev: 'nenhuma versão de índice declarada; o dossiê do showcase não diz contra qual régua foi medido', prop: 'RFCs públicos para alterar rubrica ou peso, changelog da espec (SKY v1.0 → v1.1), casos-benchmark de calibração e versão carimbada em cada dossiê publicado.' },
+          { sev: 'estrutural', title: 'Runtime agnóstico e modo local', body: 'O intake recebe a parte mais sensível de um projeto — a ideia. Depender de um único provedor de modelo é risco técnico e de confiança.', ev: 'o material não declara qual modelo conduz os agentes nem onde a conversa é processada', prop: 'Agentes agnósticos de modelo, com modo local via pesos abertos (Llama, Mistral) para intake privado. Cada artefato declara modelo e versão que o gerou — procedência faz parte do dossiê.' }
+        ]
+      },
+      {
+        kicker: 'C · FERRAMENTAS',
+        title: 'Do script ao protocolo',
+        sub: 'O ferramental mostrado é um script local; a proposta pede infraestrutura que outros sistemas consigam usar.',
+        items: [
+          { sev: 'estrutural', title: 'CLI multiplataforma', body: 'O único ponto de entrada técnico é um script PowerShell — invisível para quem vive em macOS ou Linux, onde está boa parte do público-alvo.', ev: 'landing · CTA: "./sky.ps1 intake -Slug minha-ideia"', prop: 'CLI "sky" multiplataforma (sky intake minha-ideia) distribuída via npm/brew; o .ps1 vira wrapper de compatibilidade.' },
+          { sev: 'estrutural', title: 'Dossiê git-friendly', body: 'Os artefatos já sugerem arquivos, mas o material não assume o repositório como casa do dossiê — e diff entre versões é a forma mais barata de auditoria.', ev: 'showcase · "base: maturity.yaml" e "fonte: outputs/iautos/"', prop: 'Todo o dossiê em texto versionável: brief.md, indices.yaml com evidências, adr/*.md, C4 em Mermaid ou Structurizr. O diff entre ciclos vira a história auditável do projeto.' },
+          { sev: 'estrutural', title: 'Funil como protocolo', body: 'Hoje o funil só existe dentro do app. Como protocolo, ele vira infraestrutura que agentes e editores de terceiros usam.', ev: 'nenhuma API, webhook ou integração citada no material', prop: 'Servidor MCP e API pública: qualquer agente conduz intake, consulta índices e assina decisões. O produto web passa a ser uma superfície do protocolo, não a única.' }
+        ]
+      },
+      {
+        kicker: 'D · CONCEPÇÃO E FUNCIONAMENTO',
+        title: 'Do funil à espiral',
+        sub: 'O manifesto descreve um ciclo; o desenho entrega uma esteira.',
+        items: [
+          { sev: 'critico', title: 'O funil linear contradiz a tese', body: 'O manifesto promete que cada ciclo deixa o sistema mais organizado, mas o fluxo desenhado é uma linha que termina no export. Sem retorno, não há ciclo — há esteira.', ev: 'landing · Fluxo Ascendente: 01 Intenção → 05 Export, sem seta de volta', prop: 'Espiral: o export abre o ciclo seguinte (re-intake sobre o que mudou na realidade). Sessões ganham linha do tempo de ciclos com delta de score — "rede-hortas: SKY 58 → 72".' },
+          { sev: 'estrutural', title: 'Ledger de decisões', body: 'Elevação sempre com permissão é a promessa central, mas o consentimento não deixa rastro verificável.', ev: 'produto · confirmar/só documentar vivem apenas no estado da tela', prop: 'Registro imutável anexado ao dossiê: o quê, quem, quando e com que resposta (confirmado, documentado, recusado). A permissão vira evidência, não rodapé.' }
+        ]
+      },
+      {
+        kicker: 'E · SUSTENTABILIDADE',
+        title: 'Quem sustenta o sistema',
+        sub: 'Sustentabilidade aparece como barra e nota — sem critério publicado, e sem olhar para a própria energia do sistema.',
+        items: [
+          { sev: 'estrutural', title: 'Rubrica da dimensão "sustent."', body: 'A dimensão aparece em barras e vira nota sem que o material diga o que está sendo avaliado.', ev: 'produto · dims "sustent. 30%" · showcase · "SUSTENTAB. NEGÓCIO B+" sem critério em lugar nenhum', prop: 'Rubrica dupla publicada: negócio (unit economics, dependências, concentração de receita) e operação (custo por sessão, resiliência). Nota sempre acompanhada da evidência que a gerou.' },
+          { sev: 'estrutural', title: 'Pegada regenerativa', body: 'Um sistema que se diz sintrópico não mede a própria energia: inferência LLM é citada como custo-chave, nunca como pegada.', ev: 'showcase · BMC: "custo-chave: inferência LLM" é a única menção a consumo', prop: 'Medir frugalidade dentro do GAP (ou sub-índice RSF): tokens por sessão, minimização de dados, funcionamento em aparelhos antigos e redes lentas — que também é acesso, e alimenta o SPI.' },
+          { sev: 'refinamento', title: 'Escada de valor explícita', body: 'O material se chama premium sem dizer o que paga a conta — sustentabilidade da plataforma também é sintropia.', ev: 'nenhum plano ou tier aparece no material', prop: 'Três degraus públicos: aberto (espec, harness, CLI de intake), pro (agentes completos, export, showcase), enterprise (white-label, na linha do caso IAutos).' }
+        ]
+      },
+      {
+        kicker: 'F · NARRATIVA',
+        title: 'Uma história que se sustenta',
+        sub: 'Pequenas palavras contradizem a história; um contraexemplo a fortaleceria.',
+        items: [
+          { sev: 'estrutural', title: 'Trocar "proprietários" por "abertos e versionados"', body: 'Para a audiência que o Sky-Forge quer atrair, proprietário na régua soa como aviso, não como valor. A diferenciação deve ser a execução, não o segredo.', ev: 'hero · "5 índices proprietários"', prop: 'Após abrir a espec (achado 05): "5 índices abertos e versionados". Uma frase que muda o contrato da marca inteira.' },
+          { sev: 'refinamento', title: 'Índices em português primeiro', body: 'Produto em PT-BR, índices em inglês (Human Consciousness Expansion). A distância de idioma enfraquece a apropriação do conceito.', ev: 'landing e produto · nomes dos cinco índices apenas em inglês', prop: 'Siglas mantidas; nome em português na frente (SPI — Prosperidade; HCE — Consciência), inglês na espec para citação internacional.' },
+          { sev: 'estrutural', title: 'Um caso Ground no showcase', body: 'Só existe um caso publicado, Horizon 71, tudo verde. Vitrine sem contraexemplo parece marketing; o método ganha credibilidade quando mostra onde disse não.', ev: 'showcase · único dossiê (IAutos), pipeline quase toda "done"', prop: 'Publicar um caso Ground/Rise com o que faltou e por quê — inclusive um intake honesto que não seguiu adiante. "O funil também recusa" é a melhor prova social.' }
+        ]
+      },
+      {
+        kicker: 'G · UX',
+        title: 'Dignidade aplicada a si mesma',
+        sub: 'O UXD é o índice mais fácil de auditar — e o material o descumpre dentro de casa.',
+        items: [
+          { sev: 'critico', title: 'Resolver as contradições com o UXD', body: 'O material promete WCAG AA, mobile-first e baixa excitação — e descumpre os três dentro do próprio produto.', ev: 'partículas ignoram prefers-reduced-motion · produto exige min-width 1180px · labels de 9.5–10.5px em --text-3 ficam abaixo de AA', prop: 'Fallback estático quando reduced-motion; produto responsivo (painel SKY colapsável, sidebar em gaveta); mínimo tipográfico 11.5px; contraste de --text-3 elevado. O UXD do próprio Sky-Forge deveria ser publicado no showcase.' },
+          { sev: 'estrutural', title: 'Estados ausentes', body: 'Não há foco visível de teclado, estado vazio de sessão nova, "pensando…" do conductor nem tratamento de erro — o protótipo só mostra o caminho feliz.', ev: 'produto · sem focus-visible, empty, loading ou error em nenhum painel', prop: 'Spec de estados no design system (foco, vazio, carregando, erro, offline) e aria-live para mudanças de score — a calma prometida depende mais disso do que do glow.' },
+          { sev: 'estrutural', title: 'O porquê de cada número', body: 'Barras e "+6 SPI" pedem confiança sem oferecer justificativa; explicar é o mínimo para um sistema que julga.', ev: 'produto · sugestões não citam a mensagem que as originou; índices não expandem', prop: 'Cada índice expande para critérios, evidências ligadas e "o que elevaria este número"; cada sugestão referencia o trecho da conversa de origem. Depende do popover (achado 23).' }
+        ]
+      },
+      {
+        kicker: 'H · SISTEMAS',
+        title: 'O sistema honra o guardrail',
+        sub: 'O design system precisa cumprir a própria regra e ganhar o vocabulário que as propostas acima exigem.',
+        items: [
+          { sev: 'estrutural', title: 'Token para texto sobre gradiente', body: 'O guardrail diz "nunca hardcoded"; todos os botões primários hardcodam #06131A.', ev: 'design system · "cores sempre via tokens" vs. #06131A nas ações primárias das quatro páginas', prop: 'Token --on-grad nos dois temas e varredura dos hardcodes. Guardrail que o próprio sistema viola não é guardrail — é decoração.' },
+          { sev: 'estrutural', title: 'Vocabulário que falta ao sistema', body: 'Um produto que avalia precisa dizer "isto desceu" — e o sistema não tem cor de atenção, tooltip, viz comparativa, tokens de movimento nem breakpoints.', ev: 'design system · sem cor semântica de risco, popover, radar de índices, durações nomeadas ou grade responsiva', prop: 'Adicionar: --warn (o âmbar usado nesta página), tooltip/popover, radar dos cinco índices com delta entre ciclos, tokens de movimento (24s símbolo, 0.4s tema, 0.8s barras) e breakpoints. Favicon e OG completam a identidade aplicável.' }
+        ]
+      }
+    ];
+
+    const sevMap = {
+      critico: { label: 'CRÍTICO', color: 'var(--warn)' },
+      estrutural: { label: 'ESTRUTURAL', color: 'var(--acc1)' },
+      refinamento: { label: 'REFINAMENTO', color: 'var(--text3)' }
+    };
+
+    let n = 0;
+    const items = [];
+    groups.forEach((g) => {
+      const numbered = g.items.map((it) => ({ ...it, num: ('0' + (++n)).slice(-2) }));
+      const visible = numbered.filter((it) => !somenteCriticos || it.sev === 'critico');
+      if (!visible.length) return;
+      items.push({ isHeader: true, isFinding: false, kicker: g.kicker, title: g.title, sub: g.sub });
+      visible.forEach((it) => items.push({
+        isHeader: false,
+        isFinding: true,
+        num: it.num,
+        sev: sevMap[it.sev].label,
+        chipColor: sevMap[it.sev].color,
+        title: it.title,
+        body: it.body,
+        ev: it.ev,
+        showEv: mostrarEvidencias && !!it.ev,
+        prop: it.prop
+      }));
+    });
+
+    return {
+      themeLabel: t === 'dark' ? 'Escuro' : 'Claro',
+      toggleTheme: () => {
+        const next = t === 'dark' ? 'light' : 'dark';
+        localStorage.setItem('sf-theme', next);
+        this.setState({ theme: next }, () => document.body.setAttribute('data-theme', next));
+      },
+      items,
+      roadNow: [
+        { num: '01', label: 'Rubricas públicas por índice' },
+        { num: '05', label: 'Espec SKY aberta e versionada' },
+        { num: '16', label: '"Abertos e versionados" no hero' },
+        { num: '19', label: 'Contradições com o UXD' },
+        { num: '22', label: 'Token --on-grad' },
+        { num: '08', label: 'CLI multiplataforma' }
+      ],
+      roadNext: [
+        { num: '02', label: 'Evidência e confiança no score' },
+        { num: '04', label: 'Elevação sem atalho de pontos' },
+        { num: '11', label: 'Espiral de ciclos' },
+        { num: '12', label: 'Ledger de decisões' },
+        { num: '09', label: 'Dossiê git-friendly' },
+        { num: '13', label: 'Rubrica da dimensão sustent.' },
+        { num: '18', label: 'Caso Ground no showcase' },
+        { num: '20', label: 'Estados: foco, vazio, erro' },
+        { num: '21', label: 'Explicabilidade dos números' },
+        { num: '23', label: 'Vocabulário do design system' }
+      ],
+      roadFar: [
+        { num: '03', label: 'Impacto verificado pós-lançamento' },
+        { num: '06', label: 'Governança e RFCs dos índices' },
+        { num: '07', label: 'Modo local com pesos abertos' },
+        { num: '10', label: 'Protocolo MCP e API' },
+        { num: '14', label: 'Pegada regenerativa' },
+        { num: '15', label: 'Escada de valor pública' },
+        { num: '17', label: 'Índices em português' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

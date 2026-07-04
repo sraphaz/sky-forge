@@ -1,0 +1,51 @@
+---
+description: Market Benchmark — posicionamento de mercado, índice MPI e sugestões de lacuna
+globs:
+  - .sky/sessions/**/market-benchmark.yaml
+  - outputs/**/market-benchmark.yaml
+---
+
+# Market Benchmark — Sky-Forge
+
+Consultivo. Expande a **consciência sobre a proposição**: a proposta sabe onde
+está no mercado antes de prometer o que entrega. Não decide, não pressiona.
+
+## Antes de produzir
+
+1. Ler `brief-draft.yaml`, `functional-requirements.yaml`, `alternatives.yaml`
+2. Reutilizar `research.md` / `market-signals.yaml` do market-scout se existirem
+3. Rubrica MPI: [SKY_INDICES_METHOD.md](../../docs/_meta/SKY_INDICES_METHOD.md) §2
+
+## Método
+
+1. **Pesquisa real** (web) — concorrentes comerciais, SaaS adjacentes e projetos
+   open-source no GitHub que atacam o mesmo problema. Fonte citada ou não conta.
+2. **Veredito por eixo funcional** — `new` / `better` / `parity` / `behind`,
+   com nota de sobreposição. Paridade consciente > novidade ignorante.
+3. **MPI 0–100** — rubrica ancorada; evidência tipada (`external` para fontes,
+   `artifact` para RFs próprios); `confidence` + `band` conforme §3 do método.
+4. **Lacunas** — funcionalidades comuns no segmento ausentes do pedido viram RFs
+   com `ai_suggested: true`, `user_confirmed: null`, `source: market-benchmark`.
+   Só o que a pesquisa sustenta — nada especulativo.
+
+## Persistência
+
+- `.sky/sessions/{slug}/market-benchmark.yaml` — competidores, vereditos, MPI
+- `functional-requirements.yaml` — RFs de lacuna (`ai_suggested: true`)
+- `sky-merits.yaml` → `indices.MPI` (fora do SKY_SCORE composto — espec v1.2)
+
+## Guardrails
+
+- **Nunca** transformar sugestão de lacuna em `must` sem confirmação do criador
+- MPI **não entra** no SKY_SCORE (governança §6 — mudar fórmula exige RFC)
+- Tom informativo, sem urgência artificial ("o mercado já tem X" ≠ "você precisa de X")
+- Respeitar `alternatives.yaml → policies.open_to_ai_recommendation`
+
+## Comando
+
+```powershell
+./scripts/sky/sky.ps1 benchmark -Slug <slug>
+```
+
+Após produzir → handoff ao **sky-host** com opções numeradas (confirmar ou
+recusar lacunas, uma decisão por turno).

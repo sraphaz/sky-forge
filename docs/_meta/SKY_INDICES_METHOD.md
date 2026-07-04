@@ -1,6 +1,6 @@
 # Método dos Índices SKY — rubricas, evidência e governança
 
-**Espec SKY**: v1.1 | **Data**: 2026-07-04 | **Licença da espec**: CC BY-SA 4.0
+**Espec SKY**: v1.2 | **Data**: 2026-07-04 | **Licença da espec**: CC BY-SA 4.0
 **Princípio**: abrir antes de prometer · evidenciar antes de pontuar · verificar antes de celebrar
 
 Este documento é a **régua aberta** do Sky-Forge. Sem rubrica, um score é opinião
@@ -20,6 +20,7 @@ Complementa [SKY_MERIT_INDICES.md](SKY_MERIT_INDICES.md) (visão geral e filosof
 | **GAP** | Alinhamento planetário | Global Alignment Potential | 0.20 |
 | **CWB** | Bem-estar coletivo | Collective Wellbeing | 0.20 |
 | **UXD** | Dignidade UX | UX Dignity Score | 0.15 |
+| **MPI** | Posicionamento de mercado | Market Positioning Index | fora do composto |
 
 ```
 SKY_SCORE = 0.25×SPI + 0.20×HCE + 0.20×GAP + 0.20×CWB + 0.15×UXD
@@ -30,6 +31,7 @@ SKY_SCORE = 0.25×SPI + 0.20×HCE + 0.20×GAP + 0.20×CWB + 0.15×UXD
 - **SPI 0.25** — prosperidade material é a promessa central da marca; recebe o maior peso.
 - **HCE / GAP / CWB 0.20** — três lentes complementares de benefício coletivo, sem hierarquia entre si.
 - **UXD 0.15** — condição de dignidade, não de impacto: um produto pode ser digno sem ser transformador. É o índice mais auditável e o piso de qualidade.
+- **MPI fora do composto** — adicionado na v1.2; incluí-lo na fórmula invalidaria scores medidos sob v1.0/v1.1 (§6). É publicado ao lado do SKY_SCORE como lente de consciência de mercado. Um RFC futuro pode propor sua entrada no composto com recalibração dos benchmarks.
 
 Pesos por sessão podem ser ajustados em `sky-merits.yaml → weights`, mas o dossiê
 publicado **sempre declara** a versão da espec e os pesos usados.
@@ -100,6 +102,28 @@ O índice mais auditável — critérios binários verificáveis no artefato:
 
 Checklist binário da faixa 60+: `contraste AA` · `reduced-motion` · `focus-visible` ·
 `estados especificados` · `sem dark patterns` · `tokens sem hardcode`.
+
+### MPI — Posicionamento de mercado
+
+Mede **consciência de posicionamento**, não ineditismo. Três eixos: novidade
+vs. soluções existentes (comerciais e open-source), qualidade da diferenciação
+declarada e cobertura consciente das lacunas do segmento. A evidência primária
+é o artefato `market-benchmark.yaml` (agente `market-benchmark`), com fontes
+citadas (`external`) e vereditos por eixo funcional (novo / melhor / paridade).
+
+| Faixa | Descritor | Contra-exemplo (não basta) |
+|-------|-----------|----------------------------|
+| 0–19 | Nenhum levantamento de mercado; proposta duplica solução existente sem saber. | "Não tem concorrente" declarado sem pesquisa. |
+| 20–39 | Concorrentes citados de memória, sem fontes; diferenciação declarada mas não comparada eixo a eixo. | Lista de nomes sem URL nem nota de sobreposição. |
+| 40–59 | Benchmark com fontes citadas (≥ 3 iniciativas, incluindo ≥ 1 open-source); veredito novo/melhor/paridade por eixo funcional principal. | Comparar só com players comerciais ignorando open-source. |
+| 60–79 | Benchmark cobre comercial + open-source + adjacentes; lacunas do segmento identificadas e registradas como sugestões `ai_suggested`; diferenciação sustentada por evidência (não adjetivo). | Lacunas identificadas mas não registradas como sugestão rastreável. |
+| 80–100 | Posicionamento revisitado por ciclo (espiral §7); lacunas decididas pelo criador (aceitas ou recusadas com registro); diferencial validado externamente (usuários, mercado, tração). | Benchmark feito uma vez e nunca reavaliado. |
+
+Guardrails próprios do MPI:
+
+- Veredito "paridade" **não é demérito** — paridade consciente pontua mais que "novidade" ignorante.
+- Sugestões de lacuna seguem a trilha `ai_suggested → user_confirmed → evidenced` (§4); registrar a lacuna **não** altera o escopo nem pressiona o criador.
+- Fontes sempre citadas; benchmark sem fonte é opinião, não evidência.
 
 ---
 
@@ -187,6 +211,7 @@ white-label) é o que se comercializa.
 |--------|------|---------|
 | v1.0 | 2026-07-04 | Cinco índices, pesos, níveis Ground/Rise/Horizon/Sky. |
 | v1.1 | 2026-07-04 | Rubricas ancoradas por índice; tipos de evidência e bandas de confiança; trilha `ai_suggested → user_confirmed → evidenced`; rubrica dupla de sustentação; nomes PT-primeiro; governança por RFC. |
+| v1.2 | 2026-07-04 | Índice **MPI** (Market Positioning Index) com rubrica ancorada — novidade vs. mercado/open-source, diferenciação e cobertura de lacunas; agente `market-benchmark` e artefato `market-benchmark.yaml`; MPI fica **fora do SKY_SCORE** para não invalidar scores v1.0/v1.1 (entrada no composto exigiria RFC com recalibração de benchmarks). |
 
 ---
 

@@ -40,7 +40,7 @@ const availableCount = artifacts.filter((a) => a.available !== false).length;
       <h1>Artefatos gerados</h1>
       <p class="hero-lead">
         Navegue pelo pacote exportado — resumos sanitizados para preview público.
-        Arquivos proprietários (Cloud Design) aparecem apenas como metadados.
+        Diagramas C4 usam LikeC4; sequências usam Mermaid. Cloud Design (extensão Sky-Forge) aparece só como metadados — não é Claude.
       </p>
     </div>
   </header>
@@ -49,7 +49,7 @@ const availableCount = artifacts.filter((a) => a.available !== false).length;
     <ProjectSectionNav slug={slug!} hasProcess={agents != null} activeSection="artefatos" />
   </div>
 
-  <main class="container project-sections">
+  <main id="main-content" class="container project-sections">
     <section class="panel project-section">
       <h2 class="section-title">Explorador de artefatos</h2>
       <p class="panel-hint">
@@ -59,9 +59,9 @@ const availableCount = artifacts.filter((a) => a.available !== false).length;
         ) : (
           " outputs/"
         )}.
-        Clique em Cloud Design para ver a lista de protótipos sem expor HTML proprietário.
+        Clique em um cartão para abrir a visualização em foco — o conteúdo não aparece inline na grade.
       </p>
-      <ArtifactExplorer artifacts={artifacts} />
+      <ArtifactExplorer artifacts={artifacts} slug={slug!} />
     </section>
   </main>
 </BaseLayout>

@@ -1,22 +1,43 @@
 id: solutions-architect
 name: Solutions Architect
-description: Produz arquitetura C4, domínios e ADRs iniciais a partir do brief maduro.
+description: |
+  Coordena especificação arquitetural — delega C4 (c4-modeler), jornadas
+  (journey-sequence-modeler) e revisão craft (clean-craft-advisor).
 triggers:
   - manual
+  - maturity_gate
 scope:
   paths:
-    - outputs/**
+    - .sky/sessions/**/architecture/**
+    - outputs/**/architecture/**
     - templates/architecture/**
   may_code: true
 skills:
-  - forge-plan
-  - forge-rag-query
+  - sky-plan
+  - sky-c4-model
+  - sky-journey-sequences
+  - sky-clean-craft
 domain_consults:
   - stack-curator
   - security-compliance
+  - clean-craft-advisor
+  - c4-modeler
+  - journey-sequence-modeler
+handoff_to:
+  - c4-modeler
+  - journey-sequence-modeler
+  - delivery-steward
 outputs:
   - architecture/c4-context.md
+  - architecture/c4-containers.md
+  - architecture/c4-components.md
+  - architecture/c4-summary.md
   - architecture/domains.md
+  - architecture/context-flow.md
+  - architecture/sequences/
+  - architecture/craft-review.md
   - architecture/adrs/
 guardrails:
   adr_required_for_structural_decisions: true
+  delegate_c4_to: c4-modeler
+  delegate_sequences_to: journey-sequence-modeler

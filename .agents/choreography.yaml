@@ -65,6 +65,10 @@ rules:
         type: domain
         autonomy: [observe, consult]
         max_autonomy: consult
+      - id: market-benchmark
+        type: domain
+        autonomy: [observe, consult]
+        max_autonomy: consult
       - id: ux-design-specialist
         type: operational
         autonomy: [observe, consult, activate]
@@ -154,6 +158,46 @@ rules:
         max_autonomy: activate
         skills: [sky-validate]
 
+  - id: architecture-spec
+    when: [manual, path_change, maturity_gate]
+    paths:
+      - .sky/sessions/**/architecture/**
+      - outputs/**/architecture/**
+      - templates/architecture/**
+    maturity_min: 0.55
+    agents:
+      - id: solutions-architect
+        type: operational
+        autonomy: [observe, activate]
+        max_autonomy: activate
+        skills: [sky-plan, sky-c4-model, sky-journey-sequences]
+        requires_gate: [architecture]
+      - id: c4-modeler
+        type: operational
+        autonomy: [observe, activate]
+        max_autonomy: activate
+        skills: [sky-c4-model]
+        requires_gate: [architecture]
+      - id: journey-sequence-modeler
+        type: operational
+        autonomy: [observe, activate]
+        max_autonomy: activate
+        skills: [sky-journey-sequences]
+        requires_gate: [architecture]
+      - id: clean-craft-advisor
+        type: domain
+        autonomy: [consult]
+        max_autonomy: consult
+        skills: [sky-clean-craft]
+      - id: stack-curator
+        type: domain
+        autonomy: [consult]
+        max_autonomy: consult
+      - id: security-compliance
+        type: domain
+        autonomy: [consult]
+        max_autonomy: consult
+
   - id: agent-ops
     when: [manual]
     paths:
@@ -177,3 +221,9 @@ co_activation:
   - primary: showcase-curator
     route_after: sky-host
     on_phase: [showcase]
+  - primary: solutions-architect
+    consult: [c4-modeler, journey-sequence-modeler, clean-craft-advisor, stack-curator, security-compliance]
+    on_phase: [specify, elevate]
+  - primary: c4-modeler
+    consult: [clean-craft-advisor, stack-curator]
+    on_phase: [specify]

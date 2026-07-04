@@ -94,7 +94,7 @@ function Read-DimensionScores([string]$Maturity) {
 
 function Read-Indices([string]$Merits) {
     $idx = @{}
-    foreach ($i in @('SPI', 'HCE', 'GAP', 'CWB', 'UXD')) {
+    foreach ($i in @('SPI', 'HCE', 'GAP', 'CWB', 'UXD', 'MPI')) {
         if ($Merits -match "(?ms)$i`:\s*\r?\n\s+score:\s*(\d+)") {
             $idx[$i] = [int]$Matches[1]
         }
@@ -105,7 +105,7 @@ function Read-Indices([string]$Merits) {
 function Read-IndicesMeta([string]$Merits) {
     # Evidência e confiança por índice — "SPI 81 · 6 evidências" (SKY_INDICES_METHOD.md §3)
     $meta = @{}
-    foreach ($i in @('SPI', 'HCE', 'GAP', 'CWB', 'UXD')) {
+    foreach ($i in @('SPI', 'HCE', 'GAP', 'CWB', 'UXD', 'MPI')) {
         if ($Merits -notmatch "(?m)^  $i`:\s*$\r?\n((?:[ \t]{4,}[^\r\n]*\r?\n?)*)") { continue }
         $block = $Matches[1]
         $entry = @{}
@@ -116,6 +116,38 @@ function Read-IndicesMeta([string]$Merits) {
         if ($entry.Count -gt 0) { $meta[$i] = $entry }
     }
     return $meta
+}
+
+function Read-MarketBenchmark([string]$Benchmark) {
+    # Resumo sanitizado do market-benchmark.yaml: MPI + nomes/urls e vereditos.
+    # Notas de sobreposição e método ficam no artefato privado da sessão.
+    if (-not $Benchmark) { return $null }
+    $market = [ordered]@{}
+    if ($Benchmark -match '(?ms)^mpi:\s*\r?\n\s+score:\s*(\d+)') { $market['mpi'] = [int]$Matches[1] }
+    if ($Benchmark -match '(?ms)^mpi:.*?confidence:\s*(\S+)') { $market['confidence'] = $Matches[1] }
+    if ($Benchmark -match '(?ms)^mpi:.*?band:\s*(\d+)') { $market['band'] = [int]$Matches[1] }
+
+    $competitors = @()
+    foreach ($m in [regex]::Matches($Benchmark, '(?ms)^  - name:\s*(.+?)\s*\r?\n\s+type:\s*(\S+)\s*\r?\n\s+url:\s*(\S+)')) {
+        $competitors += @{
+            name = $m.Groups[1].Value.Trim()
+            type = $m.Groups[2].Value
+            url = $m.Groups[3].Value
+        }
+    }
+    if ($competitors.Count -gt 0) { $market['competitors'] = @($competitors) }
+
+    $verdicts = @()
+    foreach ($m in [regex]::Matches($Benchmark, '(?ms)^  - axis:\s*(.+?)\s*\r?\n\s+verdict:\s*(\S+)')) {
+        $verdicts += @{
+            axis = $m.Groups[1].Value.Trim()
+            verdict = $m.Groups[2].Value
+        }
+    }
+    if ($verdicts.Count -gt 0) { $market['verdicts'] = @($verdicts) }
+
+    if ($market.Count -eq 0) { return $null }
+    return $market
 }
 
 function Read-Phases([string]$Roadmap) {
@@ -204,7 +236,183 @@ function Read-TextHead([string]$OutputDir, [string]$RelativePath, [int]$Lines = 
     return $null
 }
 
-function Get-CloudDesignEntries([string]$OutputDir) {
+function Read-ArtifactFile([string]$OutputDir, [string]$RelativePath) {
+    if (-not (Test-ArtifactPath $OutputDir $RelativePath)) { return $null }
+    $full = Join-Path $OutputDir $RelativePath
+    $raw = Get-Content $full -Raw -ErrorAction SilentlyContinue
+    if (-not $raw) { return $null }
+    $max = 80000
+    if ($raw.Length -gt $max) {
+        return ($raw.Substring(0, $max - 20) + "`n`n<!-- truncado -->")
+    }
+    return $raw.Trim()
+}
+
+function Sanitize-HtmlPreview([string]$Html) {
+    if (-not $Html) { return $null }
+    $clean = $Html -replace '(?is)<script[^>]*>.*?</script>', ''
+    $clean = $clean -replace '(?is)<script[^>]*/>', ''
+    $max = 150000
+    if ($clean.Length -gt $max) {
+        return ($clean.Substring(0, $max - 30) + '<!-- truncado -->')
+    }
+    return $clean
+}
+
+function Build-YamlArtifactMarkdown([string]$DefId, [string]$OutputDir, [hashtable]$Context) {
+    switch ($DefId) {
+        'brief' {
+            $raw = Resolve-SkyDataFile $Context.slug 'brief.yaml' 'brief-draft.yaml'
+            if (-not $raw) { $raw = Read-ArtifactFile $OutputDir 'brief.yaml' }
+            if (-not $raw) { return $null }
+            $title = Read-YamlField $raw 'title'
+            $lines = [System.Collections.Generic.List[string]]::new()
+            if ($title) { $lines.Add("# $title"); $lines.Add('') }
+            foreach ($pair in @(
+                    @{ h = 'Problema'; f = 'problem' },
+                    @{ h = 'Motivação'; f = 'motivation' },
+                    @{ h = 'Proposta de valor'; f = 'value_proposition' },
+                    @{ h = 'Escopo MVP'; f = 'mvp_scope' }
+                )) {
+                $block = Read-YamlBlock $raw $pair.f
+                if ($block) {
+                    $lines.Add("## $($pair.h)")
+                    $lines.Add('')
+                    $lines.Add($block)
+                    $lines.Add('')
+                }
+            }
+            $users = Read-YamlList $raw 'primary_users'
+            if ($users.Count -gt 0) {
+                $lines.Add('## Usuários principais')
+                $lines.Add('')
+                foreach ($u in $users) { $lines.Add("- $u") }
+                $lines.Add('')
+            }
+            $out = Read-YamlList $raw 'out_of_scope'
+            if ($out.Count -gt 0) {
+                $lines.Add('## Fora do escopo')
+                $lines.Add('')
+                foreach ($o in $out) { $lines.Add("- $o") }
+            }
+            return ($lines -join "`n").Trim()
+        }
+        'functional-requirements' {
+            $lines = [System.Collections.Generic.List[string]]::new()
+            $lines.Add('# Requisitos funcionais')
+            $lines.Add('')
+            foreach ($r in @($Context.functional_reqs)) {
+                $mvp = if ($r.mvp) { ' · **MVP**' } else { ' · pós-MVP' }
+                $lines.Add("## $($r.id) — $($r.title)$mvp")
+                $lines.Add('')
+                if ($r.description) { $lines.Add($r.description); $lines.Add('') }
+                $lines.Add("*Épico:* $($r.epic) · *Prioridade:* $($r.priority)")
+                $lines.Add('')
+            }
+            return ($lines -join "`n").Trim()
+        }
+        'nfr' {
+            $lines = [System.Collections.Generic.List[string]]::new()
+            $lines.Add('# Requisitos não funcionais')
+            $lines.Add('')
+            foreach ($r in @($Context.nfr_reqs)) {
+                $lines.Add("## $($r.id)$(if ($r.category) { " ($($r.category))" })")
+                $lines.Add('')
+                if ($r.statement) { $lines.Add($r.statement); $lines.Add('') }
+            }
+            return ($lines -join "`n").Trim()
+        }
+        'integrations' {
+            $lines = [System.Collections.Generic.List[string]]::new()
+            $lines.Add('# Integrações')
+            $lines.Add('')
+            foreach ($i in @($Context.integrations)) {
+                $req = if ($i.required) { 'obrigatório' } else { 'opcional' }
+                $lines.Add("## $($i.id)")
+                $lines.Add('')
+                $lines.Add("- **Tipo:** $($i.type)")
+                if ($i.provider) { $lines.Add("- **Provedor:** $($i.provider)") }
+                $lines.Add("- **Obrigatoriedade:** $req")
+                if ($i.reason) { $lines.Add("- **Motivo:** $($i.reason)") }
+                $lines.Add('')
+            }
+            return ($lines -join "`n").Trim()
+        }
+        'ux-spec' {
+            $raw = Read-ArtifactFile $OutputDir 'ux-spec.yaml'
+            if (-not $raw) { return $null }
+            $ux = Read-UxSummary $raw
+            $lines = [System.Collections.Generic.List[string]]::new()
+            $lines.Add('# Especificação UX')
+            $lines.Add('')
+            if ($ux.principles.Count -gt 0) {
+                $lines.Add('## Princípios')
+                $lines.Add('')
+                foreach ($p in $ux.principles) { $lines.Add("- $($p -replace '_', ' ')") }
+                $lines.Add('')
+            }
+            if ($ux.key_screens.Count -gt 0) {
+                $lines.Add('## Telas principais')
+                $lines.Add('')
+                foreach ($s in $ux.key_screens) { $lines.Add("- **$($s.id)** — $($s.title)") }
+            }
+            return ($lines -join "`n").Trim()
+        }
+        'maturity' {
+            $raw = Read-ArtifactFile $OutputDir 'maturity.yaml'
+            if (-not $raw) { return $null }
+            $readiness = Read-YamlField $raw 'overall_readiness'
+            $lines = [System.Collections.Generic.List[string]]::new()
+            $lines.Add('# Maturidade')
+            $lines.Add('')
+            if ($readiness) { $lines.Add("**Readiness geral:** $([math]::Round([double]$readiness * 100))%"); $lines.Add('') }
+            foreach ($d in @('business', 'product', 'ux_design', 'technical', 'sustainability', 'elevation')) {
+                if ($raw -match "(?ms)$d`:\s*\r?\n(?:[^\r\n]+\r?\n)*?\s+score:\s*([0-9.]+)") {
+                    $lines.Add("- **${d}:** $([math]::Round([double]$Matches[1] * 100))%")
+                }
+            }
+            return ($lines -join "`n").Trim()
+        }
+        'roadmap' {
+            $lines = [System.Collections.Generic.List[string]]::new()
+            $lines.Add('# Roadmap')
+            $lines.Add('')
+            foreach ($p in @($Context.phases)) {
+                $lines.Add("## $($p.id) — $($p.title)")
+                $lines.Add('')
+                $lines.Add("*Status:* $($p.status)")
+                $lines.Add('')
+            }
+            return ($lines -join "`n").Trim()
+        }
+        default {
+            $raw = Read-ArtifactFile $OutputDir $DefId
+            return $null
+        }
+    }
+}
+
+function Build-ArtifactContent([string]$OutputDir, [hashtable]$Def, [hashtable]$Context) {
+    if (-not $OutputDir) { return $null }
+    if ($Def.type -eq 'cloud-design') { return $null }
+    if ($Def.path -match '/$') { return $null }
+
+    switch ($Def.type) {
+        'markdown' {
+            return Read-ArtifactFile $OutputDir $Def.path
+        }
+        'yaml' {
+            $md = Build-YamlArtifactMarkdown $Def.id $OutputDir $Context
+            if ($md) { return $md }
+            $raw = Read-ArtifactFile $OutputDir $Def.path
+            if ($raw) { return ('```yaml' + "`n" + $raw + "`n" + '```') }
+            return $null
+        }
+        default { return Read-ArtifactFile $OutputDir $Def.path }
+    }
+}
+
+function Get-CloudDesignEntries([string]$OutputDir, [switch]$MetadataOnly) {
     $dir = Join-Path $OutputDir 'cloud-design'
     if (-not (Test-Path $dir)) { return @() }
     $labels = @{
@@ -215,12 +423,32 @@ function Get-CloudDesignEntries([string]$OutputDir) {
         'site-bonomi.dc.html' = 'Site institucional white-label (referência)'
     }
     return @(Get-ChildItem $dir -File | ForEach-Object {
-        @{
+        $entry = @{
             id = [System.IO.Path]::GetFileNameWithoutExtension($_.Name)
             filename = $_.Name
             label = if ($labels.ContainsKey($_.Name)) { $labels[$_.Name] } else { $_.BaseName -replace '-', ' ' }
             type = 'cloud-design-file'
             available = $true
+        }
+        if (-not $MetadataOnly -and $_.Extension -eq '.html') {
+            $html = Sanitize-HtmlPreview (Get-Content $_.FullName -Raw -ErrorAction SilentlyContinue)
+            if ($html) { $entry['content_html'] = $html }
+        }
+        $entry
+    })
+}
+
+function Get-ArchitectureFolderEntries([string]$OutputDir, [string]$SubPath, [string]$Type) {
+    $dir = Join-Path $OutputDir "architecture\$SubPath"
+    if (-not (Test-Path $dir)) { return @() }
+    return @(Get-ChildItem $dir -File -Filter '*.md' -ErrorAction SilentlyContinue | ForEach-Object {
+        @{
+            id = [System.IO.Path]::GetFileNameWithoutExtension($_.Name)
+            filename = $_.Name
+            label = ($_.BaseName -replace '-', ' ')
+            type = $Type
+            available = $true
+            content = (Get-Content $_.FullName -Raw -ErrorAction SilentlyContinue).Trim()
         }
     })
 }
@@ -269,11 +497,75 @@ function Build-Artifacts([string]$OutputDir, [hashtable]$Context) {
         },
         @{
             id = 'architecture'
-            label = 'Arquitetura'
+            label = 'Arquitetura — resumo C4'
             type = 'markdown'
             stage = 'architecture'
             path = 'architecture/c4-summary.md'
             description = 'Resumo C4 sanitizado — containers, domínios e diferencial'
+        },
+        @{
+            id = 'c4-context'
+            label = 'C4 — Contexto (L1)'
+            type = 'markdown'
+            stage = 'architecture'
+            path = 'architecture/c4-context.md'
+            description = 'Sistema IAutos no ecossistema externo — atores e integrações'
+        },
+        @{
+            id = 'c4-containers'
+            label = 'C4 — Containers (L2)'
+            type = 'markdown'
+            stage = 'architecture'
+            path = 'architecture/c4-containers.md'
+            description = 'Aplicações, APIs, serviços e stores'
+        },
+        @{
+            id = 'c4-components'
+            label = 'C4 — Componentes (L3)'
+            type = 'markdown'
+            stage = 'architecture'
+            path = 'architecture/c4-components.md'
+            description = 'Componentes internos dos containers críticos'
+        },
+        @{
+            id = 'domains'
+            label = 'Domínios'
+            type = 'markdown'
+            stage = 'architecture'
+            path = 'architecture/domains.md'
+            description = 'Bounded contexts e context map'
+        },
+        @{
+            id = 'context-flow'
+            label = 'Fluxograma de contexto'
+            type = 'markdown'
+            stage = 'architecture'
+            path = 'architecture/context-flow.md'
+            description = 'Fluxo end-to-end do onboarding ao valor entregue'
+        },
+        @{
+            id = 'sequences'
+            label = 'Jornadas — sequência'
+            type = 'markdown'
+            stage = 'architecture'
+            path = 'architecture/sequences/'
+            description = 'Diagramas de sequência Mermaid das jornadas principais'
+        },
+        @{
+            id = 'craft-review'
+            label = 'Craft review'
+            type = 'markdown'
+            stage = 'architecture'
+            path = 'architecture/craft-review.md'
+            description = 'Revisão Uncle Bob — SOLID, boundaries, smells (consultivo)'
+        },
+        @{
+            id = 'adrs'
+            label = 'ADRs'
+            type = 'markdown'
+            stage = 'architecture'
+            path = 'architecture/adrs/'
+            description = 'Architecture Decision Records'
         },
         @{
             id = 'maturity'
@@ -353,6 +645,20 @@ function Build-Artifacts([string]$OutputDir, [hashtable]$Context) {
                 $summary = if ($screens) { "$screens telas · $principles princípios UX" } else { $null }
             }
             'architecture' { $summary = Read-TextHead $OutputDir $def.path 4 }
+            'c4-context' { $summary = 'Nível 1 — contexto do sistema' }
+            'c4-containers' { $summary = 'Nível 2 — containers e responsabilidades' }
+            'c4-components' { $summary = 'Nível 3 — Case, Agent, Copilot' }
+            'domains' { $summary = Read-TextHead $OutputDir $def.path 3 }
+            'context-flow' { $summary = 'Fluxo end-to-end onboarding → HITL' }
+            'sequences' {
+                $entries = Get-ArchitectureFolderEntries $OutputDir 'sequences' 'sequence-diagram'
+                $summary = if ($entries.Count) { "$($entries.Count) jornadas modeladas" } else { $null }
+            }
+            'craft-review' { $summary = Read-TextHead $OutputDir $def.path 3 }
+            'adrs' {
+                $entries = Get-ArchitectureFolderEntries $OutputDir 'adrs' 'adr'
+                $summary = if ($entries.Count) { "$($entries.Count) decisões registradas" } else { $null }
+            }
             'maturity' {
                 if ($Context.readiness) { $summary = "Readiness geral: $([math]::Round([double]$Context.readiness * 100))%" }
             }
@@ -363,8 +669,8 @@ function Build-Artifacts([string]$OutputDir, [hashtable]$Context) {
             'prompts' { $summary = Read-TextHead $OutputDir $def.path 3 }
             'scaffold' { $summary = Read-TextHead $OutputDir $def.path 3 }
             'cloud-design' {
-                $entries = Get-CloudDesignEntries $OutputDir
-                $summary = if ($entries.Count) { "$($entries.Count) protótipos visuais (resumo sanitizado)" } else { $null }
+                $entries = Get-CloudDesignEntries $OutputDir -MetadataOnly
+                $summary = if ($entries.Count) { "$($entries.Count) protótipos Sky Cloud Design (metadados)" } else { $null }
             }
         }
 
@@ -378,8 +684,21 @@ function Build-Artifacts([string]$OutputDir, [hashtable]$Context) {
             summary = $summary
             available = [bool]$available
         }
+        if ($available -and $OutputDir) {
+            $body = Build-ArtifactContent $OutputDir $def $Context
+            if ($body) {
+                $item['content'] = $body
+                $item['content_format'] = if ($def.type -eq 'yaml') { 'markdown' } else { 'markdown' }
+            }
+        }
         if ($def.id -eq 'cloud-design' -and $available) {
-            $item['children'] = @(Get-CloudDesignEntries $OutputDir)
+            $item['children'] = @(Get-CloudDesignEntries $OutputDir -MetadataOnly)
+        }
+        if ($def.id -eq 'sequences' -and $available) {
+            $item['children'] = @(Get-ArchitectureFolderEntries $OutputDir 'sequences' 'sequence-diagram')
+        }
+        if ($def.id -eq 'adrs' -and $available) {
+            $item['children'] = @(Get-ArchitectureFolderEntries $OutputDir 'adrs' 'adr')
         }
         $artifacts.Add($item)
     }
@@ -428,6 +747,7 @@ $functional = Resolve-SkyDataFile $Slug 'functional-requirements.yaml' 'function
 $nfr = Resolve-SkyDataFile $Slug 'nfr.yaml' 'nfr.yaml'
 $integrations = Resolve-SkyDataFile $Slug 'integrations.yaml' 'integrations.yaml'
 $uxSpec = Resolve-SkyDataFile $Slug 'ux-spec.yaml' 'ux-spec.yaml'
+$marketBenchmark = Resolve-SkyDataFile $Slug 'market-benchmark.yaml' 'market-benchmark.yaml'
 
 $title = Read-YamlField $brief 'title'
 if (-not $title) { $title = $Slug }
@@ -494,6 +814,7 @@ $integrationsList = @(Read-Integrations $integrations)
 $phasesList = Read-Phases $roadmap
 
 $artifactContext = @{
+    slug = $Slug
     value_proposition = $vision.value_proposition
     functional_reqs = $functionalReqs
     nfr_reqs = $nfrReqs
@@ -538,6 +859,7 @@ $preview = [ordered]@{
     }
     indices = Read-Indices $merits
     indices_meta = Read-IndicesMeta $merits
+    market = Read-MarketBenchmark $marketBenchmark
     spec_version = $specVersion
     score_kind = $scoreKind
     dimensions = Read-DimensionScores $maturity

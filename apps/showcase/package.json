@@ -6,9 +6,16 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "export:diagrams": "likec4 export png diagrams --output public/diagrams/iautos",
+    "prebuild": "pnpm run export:diagrams"
   },
   "dependencies": {
-    "astro": "^5.1.0"
+    "astro": "^5.1.0",
+    "marked": "^18.0.5",
+    "mermaid": "^11.16.0"
+  },
+  "devDependencies": {
+    "likec4": "^1.58.0"
   }
 }

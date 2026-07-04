@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  html, body { margin: 0; padding: 0; background: var(--bg0); }
+  body {
+    --bg0: #060913; --bg1: #0A1124; --bg2: #0E1830;
+    --surface: rgba(148,178,255,0.05); --line: rgba(148,178,255,0.13);
+    --text: #EAF0FC; --text2: #9DA9C9; --text3: #6B7694;
+    --acc1: #7FB8FF; --acc2: #5FE3C4;
+    --grad: linear-gradient(120deg, #7FB8FF 0%, #5FE3C4 100%);
+    --glow1: rgba(78,124,224,0.22); --glow2: rgba(46,180,150,0.13);
+    --navbg: rgba(6,9,19,0.72);
+  }
+  body[data-theme="light"] {
+    --bg0: #F4F7FD; --bg1: #EAF0FA; --bg2: #FFFFFF;
+    --surface: rgba(28,58,120,0.045); --line: rgba(28,58,120,0.14);
+    --text: #0F1626; --text2: #46536F; --text3: #7A86A0;
+    --acc1: #2E6FE0; --acc2: #0FA98B;
+    --grad: linear-gradient(120deg, #2E6FE0 0%, #0FA98B 100%);
+    --glow1: rgba(46,111,224,0.14); --glow2: rgba(15,169,139,0.10);
+    --navbg: rgba(244,247,253,0.78);
+  }
+  ::selection { background: rgba(127,184,255,0.3); }
+  @keyframes sfSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+</style>
+</helmet>
+
+<div style="font-family: Manrope, sans-serif; color: var(--text); background: var(--bg0); min-height: 100vh; transition: background 0.4s, color 0.4s;">
+
+  <nav data-screen-label="Nav" style="position: fixed; top: 0; left: 0; right: 0; z-index: 50; display: flex; align-items: center; justify-content: space-between; padding: 18px 48px; background: var(--navbg); backdrop-filter: blur(18px); border-bottom: 1px solid var(--line);">
+    <a href="Sky Forge Landing.dc.html" style="display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--text);">
+      <div style="width: 30px; height: 30px; border-radius: 50%; background: conic-gradient(from 220deg, var(--acc1), var(--acc2) 55%, transparent 78%); display: grid; place-items: center; animation: sfSpin 24s linear infinite;">
+        <div style="width: 18px; height: 18px; border-radius: 50%; background: var(--bg0); transition: background 0.4s;"></div>
+      </div>
+      <span style="font-family: Sora, sans-serif; font-weight: 600; letter-spacing: 0.14em; font-size: 14px;">SKY-FORGE</span>
+      <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text3); letter-spacing: 0.15em; margin-left: 6px;">DESIGN SYSTEM v1</span>
+    </a>
+    <div style="display: flex; align-items: center; gap: 28px; font-size: 13.5px; font-weight: 500;">
+      <a href="Sky Forge Landing.dc.html" style="color: var(--text2); text-decoration: none;" style-hover="color: var(--text)">Landing</a>
+      <a href="Sky Forge Produto.dc.html" style="color: var(--text2); text-decoration: none;" style-hover="color: var(--text)">Produto</a>
+      <a href="Sky Forge Showcase.dc.html" style="color: var(--text2); text-decoration: none;" style-hover="color: var(--text)">Showcase</a>
+      <a href="Sky Forge Evolucao.dc.html" style="color: var(--text2); text-decoration: none;" style-hover="color: var(--text)">Evolução</a>
+      <button onClick="{{ toggleTheme }}" style="display: flex; align-items: center; gap: 8px; background: var(--surface); border: 1px solid var(--line); color: var(--text2); border-radius: 999px; padding: 7px 14px; font-family: Manrope, sans-serif; font-size: 12.5px; font-weight: 600; cursor: pointer;" style-hover="color: var(--text); border-color: var(--acc1)">◐ {{ themeLabel }}</button>
+    </div>
+  </nav>
+
+  <div style="max-width: 1100px; margin: 0 auto; padding: 150px 32px 120px; display: flex; flex-direction: column; gap: 90px;">
+
+    <!-- ESSENCIA -->
+    <section data-screen-label="Essencia">
+      <div style="font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.24em; color: var(--acc1); margin-bottom: 18px;">01 · ESSÊNCIA</div>
+      <h1 style="font-family: Sora, sans-serif; font-size: 46px; font-weight: 600; margin: 0 0 22px; letter-spacing: -0.02em; text-wrap: balance;">Céu profundo, ascensão sutil.</h1>
+      <p style="font-size: 17px; line-height: 1.7; color: var(--text2); max-width: 720px; margin: 0; text-wrap: pretty;">A identidade do Sky-Forge expressa sintropia tecnológica: um sistema que prospera com a inteligência da vida, organizando energia em vez de dissipá-la. Visualmente, isso é profundidade de céu noturno, gradientes que sobem do azul ao verde-aurora, e movimento lento em espiral ascendente. Nunca ruído, nunca excitação — calma premium.</p>
+      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 36px;">
+        <sc-for list="{{ pillars }}" as="pl" hint-placeholder-count="4">
+          <div style="background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 20px;">
+            <div style="font-family: Sora, sans-serif; font-size: 14.5px; font-weight: 700; margin-bottom: 6px;">{{ pl.t }}</div>
+            <div style="font-size: 13px; line-height: 1.55; color: var(--text2);">{{ pl.d }}</div>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+
+    <!-- MARCA -->
+    <section data-screen-label="Marca">
+      <div style="font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.24em; color: var(--acc1); margin-bottom: 18px;">02 · MARCA</div>
+      <h2 style="font-family: Sora, sans-serif; font-size: 32px; font-weight: 600; margin: 0 0 28px; letter-spacing: -0.015em;">O funil ascendente</h2>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+        <div style="background: linear-gradient(180deg, #060913, #0A1124); border: 1px solid var(--line); border-radius: 20px; padding: 56px; display: flex; flex-direction: column; align-items: center; gap: 24px;">
+          <div style="width: 84px; height: 84px; border-radius: 50%; background: conic-gradient(from 220deg, #7FB8FF, #5FE3C4 55%, transparent 78%); display: grid; place-items: center; animation: sfSpin 24s linear infinite;">
+            <div style="width: 50px; height: 50px; border-radius: 50%; background: #060913;"></div>
+          </div>
+          <span style="font-family: Sora, sans-serif; font-weight: 600; letter-spacing: 0.16em; font-size: 17px; color: #EAF0FC;">SKY-FORGE</span>
+          <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #6B7694; letter-spacing: 0.1em;">fundo escuro · uso primário</span>
+        </div>
+        <div style="background: #F4F7FD; border: 1px solid var(--line); border-radius: 20px; padding: 56px; display: flex; flex-direction: column; align-items: center; gap: 24px;">
+          <div style="width: 84px; height: 84px; border-radius: 50%; background: conic-gradient(from 220deg, #2E6FE0, #0FA98B 55%, transparent 78%); display: grid; place-items: center; animation: sfSpin 24s linear infinite;">
+            <div style="width: 50px; height: 50px; border-radius: 50%; background: #F4F7FD;"></div>
+          </div>
+          <span style="font-family: Sora, sans-serif; font-weight: 600; letter-spacing: 0.16em; font-size: 17px; color: #0F1626;">SKY-FORGE</span>
+          <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #7A86A0; letter-spacing: 0.1em;">fundo claro · uso alternativo</span>
+        </div>
+      </div>
+      <p style="font-size: 14px; color: var(--text2); line-height: 1.65; max-width: 680px; margin: 20px 0 0; text-wrap: pretty;">O símbolo é um funil ascendente — um anel de gradiente que converge e gira lentamente (24s por volta), afunilando a intenção rumo ao céu. Nunca acelerar a rotação; a lentidão é parte da marca.</p>
+    </section>
+
+    <!-- COR -->
+    <section data-screen-label="Cor">
+      <div style="font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.24em; color: var(--acc1); margin-bottom: 18px;">03 · COR</div>
+      <h2 style="font-family: Sora, sans-serif; font-size: 32px; font-weight: 600; margin: 0 0 28px; letter-spacing: -0.015em;">Dois céus, um gradiente</h2>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px;">
+        <div>
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.18em; color: var(--text3); margin-bottom: 14px;">TEMA ESCURO (PADRÃO)</div>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <sc-for list="{{ darkTokens }}" as="tk" hint-placeholder-count="7">
+              <div style="display: flex; align-items: center; gap: 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px;">
+                <div style="width: 42px; height: 30px; border-radius: 7px; background: {{ tk.value }}; border: 1px solid var(--line); flex-shrink: 0;"></div>
+                <span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text); width: 110px;">{{ tk.name }}</span>
+                <span style="font-family: 'JetBrains Mono', monospace; font-size: 11.5px; color: var(--text3); flex: 1;">{{ tk.value }}</span>
+                <span style="font-size: 11.5px; color: var(--text2);">{{ tk.use }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        <div>
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.18em; color: var(--text3); margin-bottom: 14px;">TEMA CLARO</div>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <sc-for list="{{ lightTokens }}" as="tk" hint-placeholder-count="7">
+              <div style="display: flex; align-items: center; gap: 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px;">
+                <div style="width: 42px; height: 30px; border-radius: 7px; background: {{ tk.value }}; border: 1px solid var(--line); flex-shrink: 0;"></div>
+                <span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text); width: 110px;">{{ tk.name }}</span>
+                <span style="font-family: 'JetBrains Mono', monospace; font-size: 11.5px; color: var(--text3); flex: 1;">{{ tk.value }}</span>
+                <span style="font-size: 11.5px; color: var(--text2);">{{ tk.use }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top: 24px; border-radius: 16px; height: 90px; background: linear-gradient(120deg, #7FB8FF 0%, #5FE3C4 100%); display: flex; align-items: center; justify-content: center;">
+        <span style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: #06131A; font-weight: 500; letter-spacing: 0.06em;">--grad · linear-gradient(120deg, acc-1 → acc-2) · reservado para ação primária, texto-destaque e barras de índice</span>
+      </div>
+      <p style="font-size: 14px; color: var(--text2); line-height: 1.65; margin: 18px 0 0; max-width: 720px; text-wrap: pretty;">Acentos definidos em par: azul-céu (base) e verde-aurora (vida), com mesma luminosidade percebida. Cores sempre via tokens — nunca hardcoded em componentes (guardrail UXD).</p>
+    </section>
+
+    <!-- TIPOGRAFIA -->
+    <section data-screen-label="Tipografia">
+      <div style="font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.24em; color: var(--acc1); margin-bottom: 18px;">04 · TIPOGRAFIA</div>
+      <h2 style="font-family: Sora, sans-serif; font-size: 32px; font-weight: 600; margin: 0 0 28px; letter-spacing: -0.015em;">Três vozes</h2>
+      <div style="display: flex; flex-direction: column; gap: 14px;">
+        <div style="background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 30px 34px; display: grid; grid-template-columns: 200px 1fr; gap: 24px; align-items: center;">
+          <div>
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--acc2); margin-bottom: 6px;">DISPLAY</div>
+            <div style="font-size: 13px; color: var(--text2);">Sora · 600–700<br>títulos, números-herói</div>
+          </div>
+          <div style="font-family: Sora, sans-serif; font-size: 40px; font-weight: 600; letter-spacing: -0.02em;">Eleve o que está sendo proposto.</div>
+        </div>
+        <div style="background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 30px 34px; display: grid; grid-template-columns: 200px 1fr; gap: 24px; align-items: center;">
+          <div>
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--acc2); margin-bottom: 6px;">TEXTO</div>
+            <div style="font-size: 13px; color: var(--text2);">Manrope · 400–700<br>corpo, UI, botões</div>
+          </div>
+          <div style="font-size: 17px; line-height: 1.7; color: var(--text2);">Cada ciclo deixa o sistema mais organizado do que o encontrou — especificação, UX digna e prosperidade humana medidas em índices.</div>
+        </div>
+        <div style="background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 30px 34px; display: grid; grid-template-columns: 200px 1fr; gap: 24px; align-items: center;">
+          <div>
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--acc2); margin-bottom: 6px;">DADOS</div>
+            <div style="font-size: 13px; color: var(--text2);">JetBrains Mono · 400–500<br>índices, labels, comandos</div>
+          </div>
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 15px; color: var(--acc2);">SKY_SCORE = 0.25×SPI + 0.20×HCE + 0.20×GAP + 0.20×CWB + 0.15×UXD</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COMPONENTES -->
+    <section data-screen-label="Componentes">
+      <div style="font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.24em; color: var(--acc1); margin-bottom: 18px;">05 · COMPONENTES</div>
+      <h2 style="font-family: Sora, sans-serif; font-size: 32px; font-weight: 600; margin: 0 0 28px; letter-spacing: -0.015em;">Blocos do sistema</h2>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+        <div style="background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 30px; display: flex; flex-direction: column; gap: 18px;">
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.16em; color: var(--text3);">AÇÕES</div>
+          <div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center;">
+            <button style="background: var(--grad); border: none; color: #06131A; font-family: Manrope, sans-serif; font-weight: 700; font-size: 14px; border-radius: 11px; padding: 13px 26px; cursor: pointer;" style-hover="filter: brightness(1.08)">Primária</button>
+            <button style="background: var(--surface); border: 1px solid var(--line); color: var(--text); font-family: Manrope, sans-serif; font-weight: 600; font-size: 14px; border-radius: 11px; padding: 13px 26px; cursor: pointer;" style-hover="border-color: var(--acc1)">Secundária</button>
+            <button style="background: transparent; border: none; color: var(--text2); font-family: Manrope, sans-serif; font-weight: 600; font-size: 14px; padding: 13px 10px; cursor: pointer;" style-hover="color: var(--text)">Terciária</button>
+          </div>
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.16em; color: var(--text3); margin-top: 6px;">CHIPS DE ESTADO</div>
+          <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text3); border: 1px solid var(--line); border-radius: 999px; padding: 5px 14px;">ai_suggested</span>
+            <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--acc2); border: 1px solid var(--acc2); border-radius: 999px; padding: 5px 14px;">user_confirmed</span>
+            <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text3); border: 1px dashed var(--line); border-radius: 999px; padding: 5px 14px;">documented</span>
+          </div>
+        </div>
+        <div style="background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 30px; display: flex; flex-direction: column; gap: 18px;">
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.16em; color: var(--text3);">BARRA DE ÍNDICE</div>
+          <div style="display: flex; flex-direction: column; gap: 7px;">
+            <div style="display: flex; justify-content: space-between;">
+              <span style="font-size: 13px; font-weight: 700;">SPI <span style="font-weight: 500; color: var(--text3); font-size: 11.5px;">Prosperity Impact</span></span>
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--acc2);">81</span>
+            </div>
+            <div style="height: 6px; border-radius: 3px; background: var(--bg0); overflow: hidden;"><div style="height: 100%; width: 81%; background: var(--grad); border-radius: 3px;"></div></div>
+          </div>
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.16em; color: var(--text3); margin-top: 6px;">CARD DE ELEVAÇÃO</div>
+          <div style="background: var(--bg2); border: 1px solid var(--line); border-radius: 14px; padding: 16px;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text3); border: 1px solid var(--line); border-radius: 999px; padding: 3px 10px;">ai_suggested</span>
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: var(--text3);">SPI +6</span>
+            </div>
+            <p style="font-size: 13px; line-height: 1.6; color: var(--text2); margin: 0;">Sugestão sempre aguarda confirmação do criador antes de virar requisito.</p>
+          </div>
+        </div>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 16px;">
+        <div style="background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 26px;">
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.16em; color: var(--text3); margin-bottom: 14px;">RAIO</div>
+          <div style="font-size: 13.5px; color: var(--text2); line-height: 2;">chips · 999px<br>botões e inputs · 11–12px<br>cards · 14–18px<br>painéis · 20–24px</div>
+        </div>
+        <div style="background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 26px;">
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.16em; color: var(--text3); margin-bottom: 14px;">ESPAÇO</div>
+          <div style="font-size: 13.5px; color: var(--text2); line-height: 2;">escala base 4px<br>respiro interno 16–36px<br>entre seções 90–130px<br>densidade sempre baixa</div>
+        </div>
+        <div style="background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 26px;">
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.16em; color: var(--text3); margin-bottom: 14px;">PROFUNDIDADE</div>
+          <div style="font-size: 13.5px; color: var(--text2); line-height: 2;">3 planos: bg-0 → bg-1 → bg-2<br>glow radial nas bordas de cena<br>sombra só em bg-2 flutuante</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MOVIMENTO -->
+    <section data-screen-label="Movimento">
+      <div style="font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.24em; color: var(--acc1); margin-bottom: 18px;">06 · MOVIMENTO</div>
+      <h2 style="font-family: Sora, sans-serif; font-size: 32px; font-weight: 600; margin: 0 0 28px; letter-spacing: -0.015em;">Lento, ascendente, vivo</h2>
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;">
+        <sc-for list="{{ motion }}" as="mo" hint-placeholder-count="3">
+          <div style="background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 26px;">
+            <div style="font-family: Sora, sans-serif; font-size: 15.5px; font-weight: 700; margin-bottom: 10px;">{{ mo.t }}</div>
+            <div style="font-size: 13.5px; line-height: 1.65; color: var(--text2); text-wrap: pretty;">{{ mo.d }}</div>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+
+    <!-- VOZ -->
+    <section data-screen-label="Voz">
+      <div style="font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.24em; color: var(--acc1); margin-bottom: 18px;">07 · VOZ</div>
+      <h2 style="font-family: Sora, sans-serif; font-size: 32px; font-weight: 600; margin: 0 0 28px; letter-spacing: -0.015em;">Técnico com propósito</h2>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+        <div style="background: var(--surface); border: 1px solid var(--acc2); border-radius: 16px; padding: 26px;">
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.16em; color: var(--acc2); margin-bottom: 14px;">SIM</div>
+          <div style="font-size: 14px; color: var(--text2); line-height: 2;">"Prosperidade, medida."<br>"Elevação sempre com permissão."<br>"Cada ciclo deixa o sistema mais organizado."<br>Verbos de engenharia + substantivos de vida.</div>
+        </div>
+        <div style="background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 26px;">
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.16em; color: var(--text3); margin-bottom: 14px;">NÃO</div>
+          <div style="font-size: 14px; color: var(--text2); line-height: 2;">Misticismo vago ou promessa de impacto.<br>Jargão agroflorestal literal (poda, estratos).<br>Urgência, escassez, dark patterns.<br>Exclamações e emoji.</div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <footer style="border-top: 1px solid var(--line); padding: 36px 48px; display: flex; justify-content: space-between; align-items: center; font-size: 12.5px; color: var(--text3);">
+    <span style="font-family: Sora, sans-serif; letter-spacing: 0.14em; font-weight: 600;">SKY-FORGE · DESIGN SYSTEM v1</span>
+    <span>tokens antes de cores · calma antes de excitação · permissão antes de elevação</span>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { theme: (typeof localStorage !== 'undefined' && localStorage.getItem('sf-theme')) || 'dark' };
+
+  componentDidMount() {
+    document.body.setAttribute('data-theme', this.state.theme);
+  }
+
+  renderVals() {
+    const t = this.state.theme;
+    return {
+      themeLabel: t === 'dark' ? 'Escuro' : 'Claro',
+      toggleTheme: () => {
+        const next = t === 'dark' ? 'light' : 'dark';
+        localStorage.setItem('sf-theme', next);
+        this.setState({ theme: next }, () => document.body.setAttribute('data-theme', next));
+      },
+      pillars: [
+        { t: 'Profundidade', d: 'Três planos de fundo e glows radiais criam céu, não superfície chapada.' },
+        { t: 'Ascensão', d: 'Gradientes, barras e o funil apontam sempre para cima.' },
+        { t: 'Calma', d: 'Movimento quase ambiente; baixa excitação é requisito, não estilo.' },
+        { t: 'Medida', d: 'Números e índices em mono — o propósito é verificável.' }
+      ],
+      darkTokens: [
+        { name: '--bg-0', value: '#060913', use: 'céu / fundo' },
+        { name: '--bg-1', value: '#0A1124', use: 'plano médio' },
+        { name: '--bg-2', value: '#0E1830', use: 'cards flutuantes' },
+        { name: '--text', value: '#EAF0FC', use: 'texto primário' },
+        { name: '--text-2', value: '#9DA9C9', use: 'texto secundário' },
+        { name: '--acc-1', value: '#7FB8FF', use: 'azul-céu' },
+        { name: '--acc-2', value: '#5FE3C4', use: 'verde-aurora' }
+      ],
+      lightTokens: [
+        { name: '--bg-0', value: '#F4F7FD', use: 'céu / fundo' },
+        { name: '--bg-1', value: '#EAF0FA', use: 'plano médio' },
+        { name: '--bg-2', value: '#FFFFFF', use: 'cards flutuantes' },
+        { name: '--text', value: '#0F1626', use: 'texto primário' },
+        { name: '--text-2', value: '#46536F', use: 'texto secundário' },
+        { name: '--acc-1', value: '#2E6FE0', use: 'azul-céu' },
+        { name: '--acc-2', value: '#0FA98B', use: 'verde-aurora' }
+      ],
+      motion: [
+        { t: 'Partículas em funil', d: 'Sobem em cone que se afunila rumo ao céu. Velocidade 0.0004–0.001 do viewport por frame; opacidade em seno do trajeto. Nunca reagem ao mouse.' },
+        { t: 'Símbolo', d: 'Rotação contínua de 24s por volta. É respiração, não animação de destaque.' },
+        { t: 'Transições de UI', d: 'Tema em 0.4s; barras de índice em 0.8s com easing suave. Hover muda borda e brilho, nunca escala além de -4px em Y.' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

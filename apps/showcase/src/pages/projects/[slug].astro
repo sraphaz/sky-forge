@@ -3,6 +3,8 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import ProjectSectionNav from "../../components/ProjectSectionNav.astro";
 import RequirementEpic from "../../components/RequirementEpic.astro";
 import ArtifactExplorer from "../../components/ArtifactExplorer.astro";
+import MaturityBar from "../../components/MaturityBar.astro";
+import ProjectCtaPanel from "../../components/ProjectCtaPanel.astro";
 import {
   loadIndex,
   loadPreview,
@@ -12,7 +14,12 @@ import {
   indexLabel,
   phaseClass,
   pipelineLabel,
+  journeyPhaseLabel,
   groupRequirementsByEpic,
+  verdictLabel,
+  verdictClass,
+  competitorTypeLabel,
+  confidenceLabel,
 } from "../../lib/registry";
 import { withBase } from "../../lib/paths";
 
@@ -40,13 +47,19 @@ const ux = project.architecture?.ux;
 const artifacts = project.artifacts ?? [];
 const epicGroups = groupRequirementsByEpic(functional, epics);
 const artifactCount = artifacts.filter((a) => a.available !== false).length;
+const journeyPhase = agents?.journey_phase;
+const market = project.market;
+const hasMarket = market != null && (market.mpi != null || (market.competitors?.length ?? 0) > 0);
 ---
 
 <BaseLayout title={project.title} description={project.excerpt}>
   <header class="site-header project-hero">
     <div class="container">
-      <a class="back-link" href={withBase("/")} style="color: var(--color-sky-glow);">← Sky-Forge</a>
+      <a class="back-link" href={withBase("/")} style="color: var(--color-sky-glow);">← Hub de projetos</a>
       <div class="meta-row">
+        {journeyPhase && (
+          <span class="badge project-phase-badge">{journeyPhaseLabel(journeyPhase)}</span>
+        )}
         {project.tier && <span class="badge">{project.tier}</span>}
         {project.tags?.slice(0, 4).map((tag) => <span class="chip chip-light">{tag}</span>)}
       </div>
@@ -55,14 +68,146 @@ const artifactCount = artifacts.filter((a) => a.available !== false).length;
       {vision?.reference_tenant && (
         <p class="hero-meta">Tenant de referência: <strong>{vision.reference_tenant}</strong></p>
       )}
+      {project.readiness != null && (
+        <div style="margin-top: 1.25rem; max-width: 28rem;">
+          <MaturityBar value={project.readiness} label="Maturidade geral" variant="hero" id="hero-maturity" />
+        </div>
+      )}
+      <div class="project-hero-stats">
+        {project.sky_score != null && (
+          <div class="project-hero-stat">
+            <div class="project-hero-stat-value">{project.sky_score}</div>
+            <div class="project-hero-stat-label">SKY Score · {project.score_kind === "verified" ? "verificado" : "intenção"}</div>
+          </div>
+        )}
+        {project.elevation_level && (
+          <div class="project-hero-stat">
+            <div class="project-hero-stat-value" style="font-size: 1.35rem; text-transform: capitalize;">{project.elevation_level}</div>
+            <div class="project-hero-stat-label">Nível de elevação</div>
+          </div>
+        )}
+        {project.readiness != null && (
+          <div class="project-hero-stat">
+            <div class="project-hero-stat-value">{formatPercent(project.readiness)}</div>
+            <div class="project-hero-stat-label">Readiness</div>
+          </div>
+        )}
+      </div>
     </div>
   </header>
 
   <div class="container">
-    <ProjectSectionNav slug={slug!} hasProcess={agents != null} />
+    <ProjectSectionNav slug={slug!} hasProcess={agents != null} hasMarket={hasMarket} />
   </div>
 
-  <main class="container project-sections">
+  <main id="main-content" class="container project-sections">
+    {(project.indices || project.dimensions) && (
+      <section id="indices" class="panel project-section">
+        <h2 class="section-title">Índices SKY & maturidade</h2>
+        {project.indices && (
+          <>
+            {Object.entries(project.indices).map(([key, score]) => {
+              const meta = project.indices_meta?.[key];
+              return (
+                <div class="bar-row bar-row-indices">
+                  <span>
+                    <strong>{key}</strong>
+                    <span class="index-name">{indexLabel(key)}</span>
+                  </span>
+                  <div class="bar-track">
+                    <div class="bar-fill" style={`width: ${score}%`} />
+                  </div>
+                  <span>
+                    {score}
+                    {meta?.evidence_count != null && (
+                      <span class="evidence-count" title={`${meta.evidence_count} evidências vinculadas`}>
+                        · {meta.evidence_count} ev.
+                      </span>
+                    )}
+                  </span>
+                </div>
+              );
+            })}
+            <p class="panel-hint" style="margin: 0.65rem 0 0;">
+              Rubrica aberta em <a href={withBase("/metodo/")}>método SKY</a>
+              {project.spec_version && ` · espec v${project.spec_version}`}.
+            </p>
+          </>
+        )}
+        {project.dimensions && (
+          <div style={project.indices ? "margin-top: 1.25rem;" : ""}>
+            <h3>Dimensões</h3>
+            {Object.entries(project.dimensions).map(([key, score]) => (
+              <div class="bar-row">
+                <span>{dimensionLabel(key)}</span>
+                <div class="bar-track">
+                  <div class="bar-fill" style={`width: ${Math.round(score * 100)}%`} />
+                </div>
+                <span>{formatPercent(score)}</span>
+              </div>
+            ))}
+          </div>
+        )}
+        {project.pipeline && project.pipeline.length > 0 && (
+          <div style="margin-top: 1.25rem;">
+            <h3>Pipeline</h3>
+            <div class="pipeline-grid">
+              {project.pipeline.map((stage) => (
+                <span class={`pipeline-stage ${stage.approved ? "approved" : "pending"}`} title={stage.stage}>
+                  {pipelineLabel(stage.stage)}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+      </section>
+    )}
+    {hasMarket && (
+      <section id="mercado" class="panel project-section">
+        <h2 class="section-title">Posicionamento de mercado</h2>
+        <p class="panel-hint section-lead">
+          Benchmark do agente market-benchmark — consciência sobre a proposição,
+          não pressão de escopo. Rubrica MPI aberta no <a href={withBase("/metodo/")}>método SKY</a>.
+        </p>
+        {market?.mpi != null && (
+          <div class="meta-row" style="margin: 0.75rem 0 1rem;">
+            <span class="stat-chip">
+              MPI {market.mpi}{market.band != null && ` ±${market.band}`}
+            </span>
+            {market.confidence && <span class="chip">{confidenceLabel(market.confidence)}</span>}
+          </div>
+        )}
+        {market?.verdicts && market.verdicts.length > 0 && (
+          <div style="margin-bottom: 1.25rem;">
+            <h3>Veredito por eixo</h3>
+            <ul class="plain-list">
+              {market.verdicts.map((v) => (
+                <li style="margin-bottom: 0.35rem;">
+                  <span class={`chip verdict-chip ${verdictClass(v.verdict)}`}>{verdictLabel(v.verdict)}</span>
+                  {" "}{v.axis}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+        {market?.competitors && market.competitors.length > 0 && (
+          <div>
+            <h3>Iniciativas comparadas</h3>
+            <div class="meta-row" style="margin-top: 0.5rem;">
+              {market.competitors.map((c) => (
+                <a class="chip" href={c.url} target="_blank" rel="noopener noreferrer">
+                  {c.name}
+                  {competitorTypeLabel(c.type) && (
+                    <span class="panel-hint" style="margin-left: 0.3rem;">· {competitorTypeLabel(c.type)}</span>
+                  )}
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
+      </section>
+    )}
+
     <section id="visao" class="panel project-section">
       <h2 class="section-title">Visão do aplicativo</h2>
       {vision?.problem && (
@@ -141,7 +286,7 @@ const artifactCount = artifacts.filter((a) => a.available !== false).length;
             Explorar todos ({artifactCount}) →
           </a>
         </div>
-        <ArtifactExplorer artifacts={artifacts} compact />
+        <ArtifactExplorer artifacts={artifacts} slug={slug!} listOnly />
       </section>
     )}
 
@@ -206,106 +351,30 @@ const artifactCount = artifacts.filter((a) => a.available !== false).length;
       </section>
     )}
 
-    {project.phases && project.phases.length > 0 && (
-      <section id="roadmap" class="panel project-section">
-        <h2 class="section-title">Roadmap de entrega</h2>
-        <ul class="phase-list">
-          {project.phases.map((phase) => (
-            <li class={`phase-item ${phaseClass(phase.status)}`}>
-              <span class="phase-dot" />
-              <div>
-                <strong>{phase.id}</strong> — {phase.title}
-                <span class="chip" style="margin-left: 0.5rem;">{phase.status.replace(/_/g, " ")}</span>
-              </div>
-            </li>
-          ))}
-        </ul>
-      </section>
-    )}
-
     <section id="producao" class="panel project-section">
       <h2 class="section-title">Pronto para produção</h2>
       <p class="panel-hint">
-        Filtro de maturidade e pipeline — o que já passou pelos gates antes de entrar em implementação.
+        Resumo de prontidão — gates e roadmap antes de implementação.
       </p>
-      <div class="hero-stats hero-stats-inline">
-        {project.readiness != null && (
-          <div class="stat stat-inline">
-            <div class="stat-value stat-value-dark">{formatPercent(project.readiness)}</div>
-            <div class="stat-label stat-label-dark">Maturidade geral</div>
-          </div>
-        )}
-        {project.sky_score != null && (
-          <div class="stat stat-inline">
-            <div class="stat-value stat-value-dark">{project.sky_score}</div>
-            <div class="stat-label stat-label-dark">SKY Score</div>
-          </div>
-        )}
-      </div>
-      {project.dimensions && (
-        <div style="margin-top: 1.25rem;">
-          <h3>Dimensões</h3>
-          {Object.entries(project.dimensions).map(([key, score]) => (
-            <div class="bar-row">
-              <span>{dimensionLabel(key)}</span>
-              <div class="bar-track">
-                <div class="bar-fill" style={`width: ${Math.round(score * 100)}%`} />
-              </div>
-              <span>{formatPercent(score)}</span>
-            </div>
-          ))}
-        </div>
-      )}
-      {project.indices && (
-        <div style="margin-top: 1.25rem;">
-          <div class="section-header-row" style="margin-bottom: 0.5rem;">
-            <h3 style="margin: 0;">Índices SKY</h3>
-            <span class="chip" title="Medido antes do lançamento — checkpoints de impacto tornam o score verificado">
-              {project.score_kind === "verified" ? "impacto verificado" : "score de intenção"}
-              {project.spec_version && ` · espec v${project.spec_version}`}
-            </span>
-          </div>
-          {Object.entries(project.indices).map(([key, score]) => {
-            const meta = project.indices_meta?.[key];
-            return (
-              <div class="bar-row bar-row-indices">
-                <span>
-                  <strong>{key}</strong>
-                  <span class="index-name">{indexLabel(key)}</span>
-                </span>
-                <div class="bar-track">
-                  <div class="bar-fill" style={`width: ${score}%`} />
+      {project.phases && project.phases.length > 0 && (
+        <div style="margin-top: 1rem;">
+          <h3>Roadmap de entrega</h3>
+          <ul class="phase-list">
+            {project.phases.map((phase) => (
+              <li class={`phase-item ${phaseClass(phase.status)}`}>
+                <span class="phase-dot" />
+                <div>
+                  <strong>{phase.id}</strong> — {phase.title}
+                  <span class="chip" style="margin-left: 0.5rem;">{phase.status.replace(/_/g, " ")}</span>
                 </div>
-                <span>
-                  {score}
-                  {meta?.evidence_count != null && (
-                    <span class="evidence-count" title={`${meta.evidence_count} evidências vinculadas`}>
-                      · {meta.evidence_count} ev.
-                    </span>
-                  )}
-                </span>
-              </div>
-            );
-          })}
-          <p class="panel-hint" style="margin: 0.65rem 0 0;">
-            O que separa um 60 de um 80 em cada índice está na
-            <a href={withBase("/metodo/")}>rubrica aberta do método</a> — evidenciar antes de pontuar.
-          </p>
-        </div>
-      )}
-      {project.pipeline && project.pipeline.length > 0 && (
-        <div style="margin-top: 1.25rem;">
-          <h3>Pipeline desbloqueado</h3>
-          <div class="pipeline-grid">
-            {project.pipeline.map((stage) => (
-              <span class={`pipeline-stage ${stage.approved ? "approved" : "pending"}`} title={stage.stage}>
-                {pipelineLabel(stage.stage)}
-              </span>
+              </li>
             ))}
-          </div>
+          </ul>
         </div>
       )}
     </section>
+
+    <ProjectCtaPanel slug={slug!} />
 
     <section id="como-foi-produzido" class="panel project-section process-section">
       <h2 class="section-title">Como foi produzido</h2>
