@@ -16,6 +16,11 @@ param(
 $ErrorActionPreference = 'Stop'
 . (Join-Path $PSScriptRoot 'get-sky-config.ps1')
 
+function Write-Utf8NoBom([string]$Path, [string]$Content) {
+    $utf8 = New-Object System.Text.UTF8Encoding $false
+    [System.IO.File]::WriteAllText($Path, $Content, $utf8)
+}
+
 function Read-YamlField([string]$Content, [string]$Field) {
     if ($Content -match "(?m)^$Field`:\s*(.+)$") { return $Matches[1].Trim() }
     return $null
@@ -1072,7 +1077,7 @@ $preview = [ordered]@{
 
 New-Item -ItemType Directory -Path $registryDir -Force | Out-Null
 $previewPath = Join-Path $registryDir "$Slug.preview.json"
-$preview | ConvertTo-Json -Depth 10 | Set-Content $previewPath -Encoding UTF8
+Write-Utf8NoBom $previewPath ($preview | ConvertTo-Json -Depth 10)
 
 # Atualizar index.json
 $existing = @($index.projects | Where-Object { $_.slug -ne $Slug })
@@ -1091,7 +1096,7 @@ $entry = [ordered]@{
     gap_count = $gapsSummary.total_count
 }
 $index.projects = @($existing) + @($entry)
-@{ version = '1.0'; projects = $index.projects } | ConvertTo-Json -Depth 10 | Set-Content $indexPath -Encoding UTF8
+Write-Utf8NoBom $indexPath (@{ version = '1.0'; projects = $index.projects } | ConvertTo-Json -Depth 10)
 
 Write-Host "Preview publicado: $previewPath" -ForegroundColor Green
 Write-Host "Indice atualizado: $indexPath"

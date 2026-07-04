@@ -72,12 +72,56 @@ async function postDecision(body: Record<string, unknown>): Promise<DecideResult
   return data;
 }
 
-async function postBatch(decisions: BatchSelection[], dryRun = false): Promise<DecideResult> {
-  const res = await fetch(`${apiBase}/api/gaps/decide-batch`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ slug, dry_run: dryRun, decisions }),
+function batchPayload(decisions: BatchSelection[], dryRun: boolean) {
+  return JSON.stringify({
+    slug,
+    dry_run: dryRun,
+    decisions: decisions.map((d) => ({
+      item_id: d.itemId,
+      decision: d.decision,
+      label: d.label,
+      dimension: d.dimension,
+      note: d.note,
+      answer_source: d.answer_source,
+    })),
   });
+}
+
+async function postBatchSequential(decisions: BatchSelection[], dryRun = false): Promise<DecideResult> {
+  let lastState: GapState | null = null;
+  for (const d of decisions) {
+    const result = await postDecision({
+      item_id: d.itemId,
+      decision: d.decision,
+      label: d.label,
+      dimension: d.dimension,
+      note: d.note,
+      answer_source: d.answer_source,
+      dry_run: dryRun,
+    });
+    if (result.state) lastState = result.state;
+  }
+  return { ok: true, state: lastState ?? (await fetchState()) };
+}
+
+async function postBatch(decisions: BatchSelection[], dryRun = false): Promise<DecideResult> {
+  const headers = { "Content-Type": "application/json" };
+  const body = batchPayload(decisions, dryRun);
+
+  // Mesma rota do decide único — evita 404 quando middleware antigo não registrou decide-batch
+  let res = await fetch(`${apiBase}/api/gaps/decide`, { method: "POST", headers, body });
+
+  if (res.status === 404) {
+    res = await fetch(`${apiBase}/api/gaps/decide-batch`, { method: "POST", headers, body });
+  }
+
+  if (res.status === 404 || res.status === 400) {
+    const probe = (await res.json().catch(() => ({}))) as { error?: string };
+    if (res.status === 404 || probe.error?.includes("item_id")) {
+      return postBatchSequential(decisions, dryRun);
+    }
+  }
+
   const data = (await res.json().catch(() => ({}))) as DecideResult & {
     errors?: { item_id: string; error: string }[];
   };

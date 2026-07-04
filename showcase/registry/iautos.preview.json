@@ -1,4 +1,4 @@
-﻿{
+{
     "slug":  "iautos",
     "title":  "IAutos — Legaltech white-label para escritórios de advocacia",
     "excerpt":  "Plataforma legaltech brasileira white-label: casos como pastas versionadas (template Obsidian), copiloto com RAG por caso, multi-agente com guardrails, site institucional por tenant, colaboração interna e conformidade...",
@@ -1179,6 +1179,6 @@
                       }
                   ],
     "public":  true,
-    "published_at":  "2026-07-04T19:18:59.6888268Z",
+    "published_at":  "2026-07-04T19:24:38.2656421Z",
     "outputs_dir":  "C:\\Users\\rapha\\CursorRepos\\sky-forge\\outputs\\iautos"
 }

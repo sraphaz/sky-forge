@@ -154,7 +154,19 @@ function readDecisionsInbox(sessionDir) {
 function readPreview(slug) {
   const previewPath = path.join(REGISTRY_DIR, `${slug}.preview.json`);
   if (!fs.existsSync(previewPath)) return null;
-  return JSON.parse(fs.readFileSync(previewPath, "utf8"));
+  const raw = fs.readFileSync(previewPath, "utf8").replace(/^\uFEFF/, "");
+  return JSON.parse(raw);
+}
+
+/** Normaliza path da requisição (base /sky-forge, trailing slash). */
+function normalizeApiPath(fullUrl, base) {
+  let url = (fullUrl ?? "").split("?")[0];
+  const prefix = (base ?? "/").replace(/\/$/, "");
+  if (prefix && (url === prefix || url.startsWith(`${prefix}/`))) {
+    url = url.slice(prefix.length) || "/";
+  }
+  if (!url.startsWith("/")) url = `/${url}`;
+  return url.replace(/\/+$/, "") || "/";
 }
 
 async function runPowerShell(scriptPath, args) {
@@ -314,12 +326,18 @@ async function processDecision(slug, payload, opts = {}) {
   return { item_id: itemId, decision, changes, audited };
 }
 
-async function handleDecide(req, res) {
-  let payload;
-  try {
-    payload = JSON.parse((await readBody(req)) || "{}");
-  } catch {
-    return sendJson(res, 400, { ok: false, error: "JSON inválido" });
+async function handleDecide(req, res, preParsed) {
+  let payload = preParsed;
+  if (!payload) {
+    try {
+      payload = JSON.parse((await readBody(req)) || "{}");
+    } catch {
+      return sendJson(res, 400, { ok: false, error: "JSON inválido" });
+    }
+  }
+
+  if (Array.isArray(payload.decisions)) {
+    return handleDecideBatch(req, res, payload);
   }
 
   const slug = String(payload.slug ?? "");
@@ -339,12 +357,14 @@ async function handleDecide(req, res) {
   }
 }
 
-async function handleDecideBatch(req, res) {
-  let payload;
-  try {
-    payload = JSON.parse((await readBody(req)) || "{}");
-  } catch {
-    return sendJson(res, 400, { ok: false, error: "JSON inválido" });
+async function handleDecideBatch(req, res, preParsed) {
+  let payload = preParsed;
+  if (!payload) {
+    try {
+      payload = JSON.parse((await readBody(req)) || "{}");
+    } catch {
+      return sendJson(res, 400, { ok: false, error: "JSON inválido" });
+    }
   }
 
   const slug = String(payload.slug ?? "");
@@ -397,9 +417,7 @@ export default function skyLocalApi() {
       "astro:server:setup": ({ server }) => {
         server.middlewares.use((req, res, next) => {
           const fullUrl = req.url ?? "";
-          let url = fullUrl.split("?")[0];
-          const prefix = base.replace(/\/$/, "");
-          if (prefix && url.startsWith(prefix)) url = url.slice(prefix.length);
+          const url = normalizeApiPath(fullUrl, base);
 
           if (url === "/api/health") {
             if (req.method !== "GET") return sendJson(res, 405, { ok: false });
