@@ -20,14 +20,24 @@ Manual de operação. Sky-Forge **eleva** propostas: especifica software e conec
 ## Fluxo
 
 ```
-Intenção → intake-conductor (conversa)
+Chegada (sky-host) → intake-conductor (conversa)
     → sky-elevator + ux-design-specialist (elevação & UX)
     → market-scout / architect (batch)
-    → prompt-assembler → sky-export (+ Cloud Design)
+    → delivery-steward (export → pasta externa)
+    → showcase-curator (preview visual, opt-in)
+    → repo-scaffolder / prompt-assembler (implementar)
     → learn-from-outcome
 ```
 
 ## Catálogo de agentes
+
+### Experiência do usuário
+
+| ID | Função |
+|----|--------|
+| `sky-host` | **Anfitrião** — progresso, opções numeradas, roteamento |
+| `delivery-steward` | Export, `SKY_OUTPUTS_DIR`, privacidade do pacote |
+| `showcase-curator` | Galeria visual, `publish -Public`, deploy |
 
 ### Operacionais
 
@@ -61,6 +71,11 @@ Intenção → intake-conductor (conversa)
 | `sky-plan` | Pipeline batch |
 | `sky-validate` | Valida pacote |
 | `sky-export` | Empacota + Cloud Design |
+| `sky-deliver` | Entrega guiada (delivery-steward) |
+| `sky-publish` | Preview sanitizado para showcase |
+| `sky-showcase` | Site visual local |
+| `sky-choreograph` | Resolver coreografia + check autonomia |
+| `sky-audit` | Trilha de auditoria |
 | `sky-rag-index` / `sky-rag-query` | PR 4 |
 | `learn-from-outcome` | Retroalimentação |
 
@@ -73,7 +88,15 @@ Intenção → intake-conductor (conversa)
 ./scripts/sky/sky.ps1 approve -Slug <slug> -Stage brief|elevation|architecture|package
 ./scripts/sky/sky.ps1 validate -Slug <slug>
 ./scripts/sky/sky.ps1 export -Slug <slug>
+./scripts/sky/sky.ps1 publish -Slug <slug> -Public
+./scripts/sky/sky.ps1 showcase
+./scripts/sky/sky.ps1 agents -Slug <slug>
+./scripts/sky/sky.ps1 audit -Slug <slug>
 ```
+
+Autonomia e auditoria: [AGENT_AUTONOMY.md](docs/_meta/AGENT_AUTONOMY.md) · [AGENT_OBSERVABILITY.md](docs/_meta/AGENT_OBSERVABILITY.md)
+
+Jornada UX: [USER_JOURNEY.md](docs/_meta/USER_JOURNEY.md) · Outputs externos: [OUTPUTS_AND_SHOWCASE.md](docs/_meta/OUTPUTS_AND_SHOWCASE.md)
 
 Compat: `./scripts/forge/forge.ps1` delega para `sky.ps1`.
 
@@ -83,10 +106,14 @@ Compat: `./scripts/forge/forge.ps1` delega para `sky.ps1`.
 - `open_to_elevation: false` → sky-elevator só documenta, não insiste.
 - Catálogo `docs/humanity/challenges-catalog.yaml` — neutro, sem prescrição política.
 - UX: sem dark patterns; cores via tokens.
+- **sky-host** é a face da experiência — uma decisão por turno; privacidade por padrão.
+- **Autonomia** — níveis 0–6; ações bloqueadas vão para `.sky/audit/`; ver `check-autonomy.ps1`.
 
 ## Referências
 
 - [SKY_MERIT_INDICES.md](docs/_meta/SKY_MERIT_INDICES.md)
 - [INTAKE_PROTOCOL.md](docs/_meta/INTAKE_PROTOCOL.md)
 - [MATURITY_MODEL.md](docs/_meta/MATURITY_MODEL.md)
+- [USER_JOURNEY.md](docs/_meta/USER_JOURNEY.md)
+- [OUTPUTS_AND_SHOWCASE.md](docs/_meta/OUTPUTS_AND_SHOWCASE.md)
 - [sky-package.spec.yaml](docs/specs/sky-package.spec.yaml)

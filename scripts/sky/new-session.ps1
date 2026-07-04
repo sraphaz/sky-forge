@@ -20,6 +20,8 @@ if (Test-Path $SessionDir) {
 
 New-Item -ItemType Directory -Path $SessionDir -Force | Out-Null
 
+$now = (Get-Date).ToUniversalTime().ToString('yyyy-MM-ddTHH:mm:ssZ')
+
 $files = @(
     'maturity.yaml',
     'brief-draft.yaml',
@@ -29,7 +31,8 @@ $files = @(
     'alternatives.yaml',
     'approvals.yaml',
     'sky-merits.yaml',
-    'ux-spec.yaml'
+    'ux-spec.yaml',
+    'journey.yaml'
 )
 
 foreach ($f in $files) {
@@ -110,11 +113,39 @@ policies:
 pending_suggestions: []
 "@
         }
+        if ($f -eq 'journey.yaml') {
+            $content = @"
+version: "1.0"
+slug: $Slug
+current_phase: arrival
+updated_at: $now
+
+user_preferences:
+  communication_style: concise
+  outputs_location: default
+  public_showcase: undecided
+
+phase_history:
+  - phase: arrival
+    at: $now
+    agent: sky-host
+
+next_suggested_actions:
+  - id: start_intake
+    label: Contar sua ideia em linguagem natural
+    agent: intake-conductor
+  - id: brownfield
+    label: Trouxe material existente (zip, docs, mockup)
+    agent: intake-conductor
+
+notes: |
+  Criado pelo sky-intake. sky-host conduz a experiência.
+"@
+        }
         Set-Content -Path $dest -Value $content -Encoding UTF8 -NoNewline
     }
 }
 
-$now = (Get-Date).ToUniversalTime().ToString('yyyy-MM-ddTHH:mm:ssZ')
 $maturityPath = Join-Path $SessionDir 'maturity.yaml'
 if (Test-Path $maturityPath) {
     $m = Get-Content $maturityPath -Raw

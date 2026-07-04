@@ -1,0 +1,11 @@
+id: sky-showcase
+name: Sky Showcase
+description: Inicia site visual local e orienta deploy GitHub Pages.
+inputs:
+  slug: optional
+steps:
+  - read: showcase/registry/index.json
+  - script: scripts/sky/sky.ps1 showcase
+  - agent: showcase-curator explica o que o usuário vê na galeria
+guardrails:
+  local_first_before_deploy: true

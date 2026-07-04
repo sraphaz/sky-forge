@@ -5,9 +5,10 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
-$RepoRoot = Resolve-Path (Join-Path $PSScriptRoot '..\..')
+. (Join-Path $PSScriptRoot 'get-sky-config.ps1')
+$RepoRoot = Get-SkyRepoRoot
 $SessionDir = Join-Path $RepoRoot ".sky\sessions\$Slug"
-$OutputDir = Join-Path $RepoRoot "outputs\$Slug"
+$OutputDir = Get-SkyOutputDirForSlug $Slug
 
 New-Item -ItemType Directory -Path $OutputDir -Force | Out-Null
 New-Item -ItemType Directory -Path (Join-Path $OutputDir 'prompts') -Force | Out-Null
@@ -53,13 +54,20 @@ slug: $Slug
 exported_at: $((Get-Date).ToUniversalTime().ToString('o'))
 package_completeness: partial
 overall_readiness: $readiness
+outputs_dir: $OutputDir
 artifacts:
   - brief.yaml
   - functional-requirements.yaml
+  - nfr.yaml
+  - integrations.yaml
+  - maturity.yaml
+  - sky-merits.yaml
+  - ux-spec.yaml
   - tier-matrix.yaml
   - scaffold/AGENTS.md
-next_pr: forge-plan para architecture, roadmap, prompts avancados
+  - cloud-design/
+next_step: ./scripts/sky/sky.ps1 publish -Slug $Slug -Public
 "@
 Set-Content (Join-Path $OutputDir 'PACKAGE_MANIFEST.yaml') -Value $manifest -Encoding UTF8
 
-Write-Host "Exportado: outputs/$Slug/" -ForegroundColor Green
+Write-Host "Exportado: $OutputDir" -ForegroundColor Green

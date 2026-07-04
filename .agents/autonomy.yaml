@@ -1,0 +1,73 @@
+# Níveis de autonomia — Sky-Forge
+# Fonte de verdade para coreografia, auditoria e gates humanos.
+version: "1.0"
+updated: 2026-07-04
+
+levels:
+  observe:
+    rank: 0
+    description: Ler sessão, maturity, journey — sem escrita
+  consult:
+    rank: 1
+    description: Parecer consultivo (domínio) — sem alterar artefatos
+  route:
+    rank: 2
+    description: Sugerir handoff e opções — sky-host
+  activate:
+    rank: 3
+    description: Escrever YAML em .sky/sessions/
+  invoke_skill:
+    rank: 4
+    description: Executar skills/scripts sky.ps1
+  side_effect:
+    rank: 5
+    description: Export, outputs/, registry — efeitos externos à sessão
+  public:
+    rank: 6
+    description: publish -Public — sempre exige gate humano explícito
+
+# Máximo por agente sem aprovação humana (pode ser menor na coreografia)
+agent_defaults:
+  sky-host: route
+  intake-conductor: activate
+  delivery-steward: invoke_skill
+  showcase-curator: invoke_skill
+  sky-elevator: consult
+  ux-design-specialist: activate
+  market-scout: activate
+  solutions-architect: activate
+  prompt-assembler: invoke_skill
+  repo-scaffolder: side_effect
+  orchestrator: route
+
+human_gates:
+  brief:
+    required_before: [invoke_skill, side_effect, public]
+    approval_stage: brief
+  elevation:
+    required_before: [public]
+    approval_stage: elevation
+  package:
+    required_before: [side_effect]
+    approval_stage: package
+  public_showcase:
+    required_before: [public]
+    approval_stage: public_showcase
+    always_explicit_user: true
+
+# Ações auditáveis (vocabulary)
+actions:
+  - session.read
+  - session.write
+  - domain.consult
+  - route.handoff
+  - skill.invoke
+  - export.package
+  - publish.preview
+  - publish.public
+  - showcase.open
+  - human.gate.requested
+  - human.gate.approved
+  - human.gate.denied
+  - choreography.resolve
+  - autonomy.blocked

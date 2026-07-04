@@ -1,0 +1,32 @@
+# Agent Graph — schema Sky-Forge
+version: 1
+updated: 2026-07-04
+kind: agent-graph-schema
+
+nodes:
+  Agent:
+    id_namespace: agent
+    source: .agents/**/*.agent.yaml
+  Skill:
+    id_namespace: skill
+    source: .skills/*.skill.yaml
+  ChoreographyRule:
+    id_namespace: rule
+    source: .agents/choreography.yaml
+  AutonomyLevel:
+    id_namespace: autonomy
+    source: .agents/autonomy.yaml
+  HumanGate:
+    id_namespace: gate
+    source: .agents/autonomy.yaml
+  AuditEvent:
+    id_namespace: audit
+    source: .sky/audit/**/events.jsonl
+
+edges:
+  activates_agent: ChoreographyRule → Agent
+  consults_domain: Agent → Agent
+  may_invoke_skill: Agent → Skill
+  requires_gate: Agent → HumanGate
+  max_autonomy: Agent → AutonomyLevel
+  recorded_in: Agent → AuditEvent

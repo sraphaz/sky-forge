@@ -1,0 +1,25 @@
+version: "1.0"
+slug: example-horta
+current_phase: shape
+updated_at: null
+
+user_preferences:
+  communication_style: concise
+  outputs_location: default
+  public_showcase: undecided
+
+phase_history:
+  - phase: arrival
+    at: null
+    agent: sky-host
+
+next_suggested_actions:
+  - id: continue_intake
+    label: Continuar intake — contar mais sobre o problema
+    agent: intake-conductor
+  - id: check_status
+    label: Ver maturidade atual
+    command: ./scripts/sky/sky.ps1 status -Slug example-horta
+
+notes: |
+  Atualizado pelo sky-host ou especialista ativo a cada handoff.

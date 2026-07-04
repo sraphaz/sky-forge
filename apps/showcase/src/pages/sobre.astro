@@ -1,0 +1,229 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { withBase } from "../lib/paths";
+---
+
+<BaseLayout
+  title="Sobre a plataforma"
+  description="Como o Sky-Forge funciona — navegador, instalação local, export para IA e privacidade"
+>
+  <header class="site-header">
+    <div class="container">
+      <a class="back-link" href={withBase("/")} style="color: var(--color-sky-glow);">← Hub de projetos</a>
+      <span class="badge">Plataforma · MIT</span>
+      <h1>Sobre o Sky-Forge</h1>
+      <p>
+        Funil conversacional que transforma uma ideia em especificação verificável — com maturidade,
+        índices SKY, UX digna e pacote exportável. Cada projeto no hub é <em>output</em> de um intake;
+        a página do projeto fala do <strong>aplicativo</strong>, não da ferramenta.
+      </p>
+      <nav class="hub-nav" aria-label="Navegação principal">
+        <a href={withBase("/")} class="hub-nav-link">Projetos</a>
+        <a href={withBase("/agentes/")} class="hub-nav-link">Agentes</a>
+        <a href={withBase("/sobre/")} class="hub-nav-link hub-nav-active">Sobre</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="panel">
+      <h3>O que é</h3>
+      <p>
+        Sky-Forge conduz intake, elevação, arquitetura e entrega em etapas com gates humanos.
+        Agentes especializados produzem artefatos YAML, roadmap e scaffold — tudo auditável.
+        Você decide uma ação por vez: exportar, publicar preview ou implementar.
+      </p>
+    </section>
+
+    <section class="panel">
+      <h3>Dois modos de uso</h3>
+      <div class="two-col">
+        <div>
+          <h4 class="subheading">Navegador (este site)</h4>
+          <p>
+            Hub read-only dos projetos publicados com opt-in
+            (<code>publish -Public</code>). Ideal para compartilhar visão — sem briefs completos
+            nem dados sensíveis.
+          </p>
+          <ul class="phase-list">
+            <li class="phase-item phase-done">
+              <span class="phase-dot"></span>
+              <span>Maturidade, índices SKY, roadmap</span>
+            </li>
+            <li class="phase-item phase-done">
+              <span class="phase-dot"></span>
+              <span>Como foi produzido — agentes e auditoria</span>
+            </li>
+            <li class="phase-item phase-pending">
+              <span class="phase-dot"></span>
+              <span>Export e Git — instalação local</span>
+            </li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="subheading">Instalação local</h4>
+          <p>
+            CLI <code>sky.ps1</code> no clone do repo. Sessões em
+            <code>.sky/sessions/</code>; pacotes em pasta externa
+            (<code>SKY_OUTPUTS_DIR</code>).
+          </p>
+          <pre class="code-block"><code>./scripts/sky/sky.ps1 intake -Slug meu-projeto
+./scripts/sky/sky.ps1 export -Slug meu-projeto
+./scripts/sky/sky.ps1 showcase</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h3>Fluxo da jornada</h3>
+      <ol class="flow-list">
+        <li><strong>Chegada</strong> — conversa natural, lacunas e maturidade</li>
+        <li><strong>Elevar & UX</strong> — índices SKY, acessibilidade, tokens</li>
+        <li><strong>Especificar</strong> — requisitos, integrações, roadmap</li>
+        <li><strong>Entregar</strong> — pacote em pasta externa (privado)</li>
+        <li><strong>Apresentar</strong> — preview sanitizado no hub (opt-in)</li>
+        <li><strong>Implementar</strong> — scaffold e prompts para o repo do app</li>
+      </ol>
+    </section>
+
+    <section class="panel">
+      <h3>Camadas de dados</h3>
+      <p class="panel-hint">Privacidade por padrão — três camadas separadas.</p>
+      <div class="layers-diagram">
+        <div class="layer layer-core">
+          <strong>Core (MIT)</strong>
+          <span>Código, agentes, docs — repo sky-forge</span>
+        </div>
+        <div class="layer layer-outputs">
+          <strong>Pacotes completos</strong>
+          <span>Pasta externa · briefs, scaffold, Cloud Design</span>
+        </div>
+        <div class="layer layer-preview">
+          <strong>Previews no hub</strong>
+          <span><code>showcase/registry/</code> · metadados sanitizados</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h3>No hub vs. no pacote</h3>
+      <div class="two-col">
+        <div>
+          <h4 class="subheading">Hub (público, opt-in)</h4>
+          <p class="panel-hint">Visão do app, requisitos, arquitetura, roadmap e trilha de produção.</p>
+        </div>
+        <div>
+          <h4 class="subheading">Pacote externo (privado)</h4>
+          <p class="panel-hint">Brief completo, Cloud Design proprietário, prompts e scaffold.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h3>Exportar para IA</h3>
+      <p>
+        Escolha escopo (essencial, especificação ou completo), revise sanitização e gere
+        <code>SKY_AI_CONTEXT.md</code> ou bundle zip para Cursor, Claude ou CI.
+        Export e publish nunca no mesmo passo.
+      </p>
+    </section>
+
+    <section class="panel">
+      <h3>Repositório Git</h3>
+      <p>
+        Abordagem <strong>local-first</strong>: aponte a pasta de trabalho; detectamos
+        <code>.git</code> automaticamente. Remoto e credenciais ficam opcionais — sem OAuth
+        obrigatório no MVP.
+      </p>
+    </section>
+
+    <section class="panel">
+      <h3>Documentação</h3>
+      <ul class="doc-links">
+        <li><code>docs/_meta/SKY_APP_UX.md</code> — spec de UX do produto</li>
+        <li><code>docs/_meta/USER_JOURNEY.md</code> — jornada e fases</li>
+        <li><code>docs/_meta/OUTPUTS_AND_SHOWCASE.md</code> — outputs e showcase</li>
+      </ul>
+    </section>
+
+    <p style="margin-top: 1.5rem;">
+      <a href={withBase("/")}>Ver projetos no hub →</a>
+    </p>
+  </main>
+</BaseLayout>
+
+<style>
+  .code-block {
+    background: var(--color-sky-deep);
+    color: var(--color-sky-glow);
+    padding: 1rem 1.25rem;
+    border-radius: var(--radius);
+    font-size: 0.82rem;
+    overflow-x: auto;
+    margin: 0.75rem 0 0;
+  }
+
+  .code-block code {
+    font-family: ui-monospace, monospace;
+    white-space: pre-wrap;
+  }
+
+  .layers-diagram {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+  }
+
+  .layer {
+    display: grid;
+    gap: 0.25rem;
+    padding: 0.85rem 1rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--color-border);
+    font-size: 0.9rem;
+  }
+
+  .layer span {
+    color: var(--color-text-muted);
+    font-size: 0.85rem;
+  }
+
+  .layer-core {
+    background: #e8f0f8;
+    border-color: #b8d4ec;
+  }
+
+  .layer-outputs {
+    background: #f0f4f8;
+  }
+
+  .layer-preview {
+    background: #e8f5ee;
+    border-color: #b8e0c8;
+  }
+
+  .flow-list {
+    margin: 0;
+    padding-left: 1.25rem;
+    color: var(--color-text-muted);
+    font-size: 0.92rem;
+  }
+
+  .flow-list li {
+    margin-bottom: 0.5rem;
+  }
+
+  .flow-list strong {
+    color: var(--color-text);
+  }
+
+  .doc-links {
+    margin: 0;
+    padding-left: 1.25rem;
+    font-size: 0.92rem;
+  }
+
+  .doc-links li {
+    margin-bottom: 0.4rem;
+  }
+</style>

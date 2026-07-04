@@ -1,0 +1,11 @@
+id: sky-choreograph
+name: Sky Choreograph
+description: Resolve coreografia e valida autonomia antes de ações sensíveis.
+inputs:
+  slug: kebab-case
+  intent: optional
+  action: optional
+steps:
+  - script: scripts/agents/choreograph-agents.ps1 -Slug {slug} -Intent {intent}
+  - script: scripts/sky/check-autonomy.ps1 -Slug {slug} -AgentId {agent} -Action {action}
+  - read: docs/_meta/AGENT_AUTONOMY.md

@@ -1,0 +1,15 @@
+id: sky-publish
+name: Sky Publish
+description: Gera preview sanitizado no registry para o showcase (opt-in público).
+inputs:
+  slug: kebab-case
+  public: boolean
+steps:
+  - read: docs/_meta/OUTPUTS_AND_SHOWCASE.md
+  - read: .sky/sessions/{slug}/brief-draft.yaml
+  - agent: showcase-curator confirma consentimento se public=true
+  - script: scripts/sky/publish-preview.ps1 -Slug {slug} [-Public]
+  - agent: atualizar journey.yaml (phase showcase)
+guardrails:
+  require_explicit_public_consent: true
+  redact_pii: true

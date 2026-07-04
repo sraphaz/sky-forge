@@ -89,6 +89,35 @@ Perguntas exemplo:
 
 **Consultar:** security-compliance se tier = enterprise.
 
+### Nível 5 — Entrega (`conversation_level: delivery`)
+
+**Quando:** `overall_readiness ≥ 0.55` ou usuário pede export/pacote.
+
+**Handoff:** `delivery-steward` (sky-host apresenta opções numeradas).
+
+Perguntas exemplo:
+
+- Onde quer guardar o pacote? (pasta externa recomendada)
+- Export parcial agora ou fechar lacunas para 85%?
+- Há dados sensíveis que não devem sair da sua máquina?
+
+**Não fazer:** publicar no showcase no mesmo turno.
+
+**Comandos:** `sky export`, `SKY_OUTPUTS_DIR`.
+
+### Nível 6 — Apresentação visual (`conversation_level: showcase`)
+
+**Quando:** após export OU pedido explícito de “ver visualmente”.
+
+**Handoff:** `showcase-curator`.
+
+Gate de privacidade obrigatório antes de `-Public`:
+
+1. Pode aparecer com título + resumo sanitizado?
+2. Há dados de clientes ou segredo profissional?
+
+**Comandos:** `sky publish -Public`, `sky showcase`.
+
 ## Human gates
 
 | Stage | Quando pedir aprovação |
@@ -102,9 +131,11 @@ Registrar em `approvals.yaml` via `forge-approve`.
 
 ## Retomar sessão
 
-1. Ler `maturity.yaml` + últimos artefatos.
-2. Listar top 3 gaps por peso.
-3. Continuar do `conversation_level` adequado — não recomeçar do zero.
+1. **sky-host** lê `journey.yaml` + `maturity.yaml` + últimos artefatos.
+2. Resume em 3 linhas + opções numeradas (máx. 4).
+3. Continuar do `conversation_level` ou `current_phase` — não recomeçar do zero.
+
+Ver [USER_JOURNEY.md](USER_JOURNEY.md).
 
 ## RAG (PR 4)
 

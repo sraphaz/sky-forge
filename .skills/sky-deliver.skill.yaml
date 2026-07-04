@@ -1,0 +1,21 @@
+id: sky-deliver
+name: Sky Deliver
+description: |
+  Conduz entrega do pacote — valida maturidade, exporta para pasta configurável
+  e atualiza journey.yaml. Ponto de entrada do delivery-steward.
+inputs:
+  slug: kebab-case
+  completeness: partial | full
+  outputs_dir: optional
+steps:
+  - read: docs/_meta/OUTPUTS_AND_SHOWCASE.md
+  - read: docs/_meta/USER_JOURNEY.md
+  - read: .sky/sessions/{slug}/maturity.yaml
+  - read: .sky/sessions/{slug}/journey.yaml
+  - script: scripts/sky/validate-package.ps1 -Slug {slug} -Completeness {completeness}
+  - script: scripts/sky/export-package.ps1 -Slug {slug}
+  - script: extensions/sky-cloud-design/scripts/export-dc.ps1 -Slug {slug}
+  - agent: delivery-steward atualiza journey.yaml (phase deliver → showcase ou implement)
+guardrails:
+  explain_outputs_dir_to_user: true
+  force_only_with_user_consent: true

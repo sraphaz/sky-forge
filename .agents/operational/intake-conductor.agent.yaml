@@ -23,6 +23,10 @@ domain_consults:
   - ux-product
   - stack-curator
   - security-compliance
+handoff_to:
+  - sky-host
+  - delivery-steward
+  - showcase-curator
 elicitation:
   levels:
     - id: business
@@ -42,6 +46,7 @@ elicitation:
     - offer_alternatives_when_tradeoff
     - invite_elevation_when_open_to_elevation
     - never_skip_business_minimum
+    - handoff_to_delivery_when_readiness_partial
 guardrails:
   no_confirmed_requirements_without_user_ok: true
   respect_elevation_policy: true

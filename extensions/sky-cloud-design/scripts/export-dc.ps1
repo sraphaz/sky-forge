@@ -6,7 +6,8 @@ param(
 
 $ErrorActionPreference = 'Stop'
 $RepoRoot = Resolve-Path (Join-Path $PSScriptRoot '..\..\..')
-$OutputDir = Join-Path $RepoRoot "outputs\$Slug"
+. (Join-Path $RepoRoot 'scripts\sky\get-sky-config.ps1')
+$OutputDir = Get-SkyOutputDirForSlug $Slug
 $TemplatePath = Join-Path $PSScriptRoot '..\templates\handoff.dc.html'
 $OutPath = Join-Path $OutputDir 'cloud-design\handoff.dc.html'
 

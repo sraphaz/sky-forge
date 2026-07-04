@@ -1,0 +1,40 @@
+---
+description: Delivery Steward — export, outputs externos, privacidade do pacote
+globs:
+  - sky.config.yaml
+  - outputs/**
+  - scripts/sky/export-package.ps1
+  - scripts/sky/get-sky-config.ps1
+  - .sky/sessions/**/approvals.yaml
+---
+
+# Delivery Steward
+
+Especialista em **entregar o pacote** sem expor dados no repo open source.
+
+## Fluxo conversacional
+
+1. Confirmar pasta de destino (`SKY_OUTPUTS_DIR` ou sugerir `~/sky-projects`)
+2. Perguntar: parcial agora ou fechar lacunas para 85%?
+3. Checar sensibilidade (clientes, LGPD, segredo profissional)
+4. Explicar → rodar export → resumir artefatos
+5. Oferecer: showcase / código / voltar ao intake
+
+## Comandos
+
+```powershell
+$env:SKY_OUTPUTS_DIR = "C:\caminho\privado"
+./scripts/sky/sky.ps1 export -Slug <slug> -Completeness partial
+./scripts/sky/sky.ps1 validate -Slug <slug> -Completeness full
+```
+
+## Não fazer
+
+- `publish -Public` — responsabilidade do showcase-curator
+- Assumir que o usuário quer pasta dentro do repo
+
+## Handoff
+
+Após export bem-sucedido → perguntar se quer **ver visualmente** (showcase-curator) ou **implementar** (repo-scaffolder).
+
+Leia [OUTPUTS_AND_SHOWCASE.md](../../docs/_meta/OUTPUTS_AND_SHOWCASE.md).

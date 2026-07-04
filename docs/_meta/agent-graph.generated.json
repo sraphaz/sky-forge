@@ -1,0 +1,546 @@
+﻿{
+    "version":  1,
+    "generated_at":  "2026-07-04T15:32:32.8643348Z",
+    "repo":  "sky-forge",
+    "nodes":  {
+                  "agents":  [
+                                 {
+                                     "id":  "orchestrator",
+                                     "manifest":  ".agents/orchestrator.agent.yaml"
+                                 },
+                                 {
+                                     "id":  "cost-tier-advisor",
+                                     "manifest":  ".agents/domain/cost-tier-advisor.agent.yaml"
+                                 },
+                                 {
+                                     "id":  "security-compliance",
+                                     "manifest":  ".agents/domain/security-compliance.agent.yaml"
+                                 },
+                                 {
+                                     "id":  "sky-elevator",
+                                     "manifest":  ".agents/domain/sky-elevator.agent.yaml"
+                                 },
+                                 {
+                                     "id":  "stack-curator",
+                                     "manifest":  ".agents/domain/stack-curator.agent.yaml"
+                                 },
+                                 {
+                                     "id":  "ux-product",
+                                     "manifest":  ".agents/domain/ux-product.agent.yaml"
+                                 },
+                                 {
+                                     "id":  "delivery-steward",
+                                     "manifest":  ".agents/operational/delivery-steward.agent.yaml"
+                                 },
+                                 {
+                                     "id":  "intake-conductor",
+                                     "manifest":  ".agents/operational/intake-conductor.agent.yaml"
+                                 },
+                                 {
+                                     "id":  "market-scout",
+                                     "manifest":  ".agents/operational/market-scout.agent.yaml"
+                                 },
+                                 {
+                                     "id":  "prompt-assembler",
+                                     "manifest":  ".agents/operational/prompt-assembler.agent.yaml"
+                                 },
+                                 {
+                                     "id":  "repo-scaffolder",
+                                     "manifest":  ".agents/operational/repo-scaffolder.agent.yaml"
+                                 },
+                                 {
+                                     "id":  "showcase-curator",
+                                     "manifest":  ".agents/operational/showcase-curator.agent.yaml"
+                                 },
+                                 {
+                                     "id":  "sky-host",
+                                     "manifest":  ".agents/operational/sky-host.agent.yaml"
+                                 },
+                                 {
+                                     "id":  "solutions-architect",
+                                     "manifest":  ".agents/operational/solutions-architect.agent.yaml"
+                                 },
+                                 {
+                                     "id":  "ux-design-specialist",
+                                     "manifest":  ".agents/operational/ux-design-specialist.agent.yaml"
+                                 }
+                             ],
+                  "skills":  [
+                                 {
+                                     "id":  "learn-from-outcome",
+                                     "manifest":  ".skills/learn-from-outcome.skill.yaml"
+                                 },
+                                 {
+                                     "id":  "sky-approve",
+                                     "manifest":  ".skills/sky-approve.skill.yaml"
+                                 },
+                                 {
+                                     "id":  "sky-audit",
+                                     "manifest":  ".skills/sky-audit.skill.yaml"
+                                 },
+                                 {
+                                     "id":  "sky-choreograph",
+                                     "manifest":  ".skills/sky-choreograph.skill.yaml"
+                                 },
+                                 {
+                                     "id":  "sky-deliver",
+                                     "manifest":  ".skills/sky-deliver.skill.yaml"
+                                 },
+                                 {
+                                     "id":  "sky-elevate",
+                                     "manifest":  ".skills/sky-elevate.skill.yaml"
+                                 },
+                                 {
+                                     "id":  "sky-export",
+                                     "manifest":  ".skills/sky-export.skill.yaml"
+                                 },
+                                 {
+                                     "id":  "sky-intake",
+                                     "manifest":  ".skills/sky-intake.skill.yaml"
+                                 },
+                                 {
+                                     "id":  "sky-plan",
+                                     "manifest":  ".skills/sky-plan.skill.yaml"
+                                 },
+                                 {
+                                     "id":  "sky-publish",
+                                     "manifest":  ".skills/sky-publish.skill.yaml"
+                                 },
+                                 {
+                                     "id":  "sky-rag-index",
+                                     "manifest":  ".skills/sky-rag-index.skill.yaml"
+                                 },
+                                 {
+                                     "id":  "sky-rag-query",
+                                     "manifest":  ".skills/sky-rag-query.skill.yaml"
+                                 },
+                                 {
+                                     "id":  "sky-showcase",
+                                     "manifest":  ".skills/sky-showcase.skill.yaml"
+                                 },
+                                 {
+                                     "id":  "sky-validate",
+                                     "manifest":  ".skills/sky-validate.skill.yaml"
+                                 }
+                             ],
+                  "rules":  [
+                                {
+                                    "id":  "experience-host",
+                                    "paths":  [
+                                                  "sky.config.yaml",
+                                                  "docs/_meta/USER_JOURNEY.md",
+                                                  "docs/_meta/OUTPUTS_AND_SHOWCASE.md"
+                                              ],
+                                    "agents":  [
+                                                   "sky-host",
+                                                   "delivery-steward",
+                                                   "showcase-curator"
+                                               ]
+                                },
+                                {
+                                    "id":  "intake-sessions",
+                                    "paths":  [
+                                                  ".sky/sessions/**"
+                                              ],
+                                    "agents":  [
+                                                   "sky-host",
+                                                   "intake-conductor",
+                                                   "sky-elevator",
+                                                   "ux-design-specialist",
+                                                   "cost-tier-advisor",
+                                                   "ux-product"
+                                               ]
+                                },
+                                {
+                                    "id":  "humanity-docs",
+                                    "paths":  [
+                                                  "docs/humanity/**",
+                                                  "docs/_meta/SKY_MERIT_INDICES.md"
+                                              ],
+                                    "agents":  [
+                                                   "sky-elevator"
+                                               ]
+                                },
+                                {
+                                    "id":  "showcase-visual",
+                                    "paths":  [
+                                                  "showcase/**",
+                                                  "apps/showcase/**"
+                                              ],
+                                    "agents":  [
+                                                   "showcase-curator",
+                                                   "sky-host"
+                                               ]
+                                },
+                                {
+                                    "id":  "outputs-package",
+                                    "paths":  [
+                                                  "outputs/**"
+                                              ],
+                                    "agents":  [
+                                                   "delivery-steward",
+                                                   "showcase-curator"
+                                               ]
+                                },
+                                {
+                                    "id":  "export-cloud-design",
+                                    "paths":  [
+                                                  "extensions/sky-cloud-design/**"
+                                              ],
+                                    "agents":  [
+                                                   "delivery-steward",
+                                                   "prompt-assembler"
+                                               ]
+                                },
+                                {
+                                    "id":  "specs-harness",
+                                    "paths":  [
+                                                  "docs/specs/**",
+                                                  "scripts/harness/**"
+                                              ],
+                                    "agents":  [
+                                                   "intake-conductor"
+                                               ]
+                                },
+                                {
+                                    "id":  "agent-ops",
+                                    "paths":  [
+                                                  ".agents/**",
+                                                  "scripts/agents/**",
+                                                  "docs/_meta/AGENT_*.md",
+                                                  "docs/ops/AGENT_GRAPH.md"
+                                              ],
+                                    "agents":  [
+                                                   "orchestrator"
+                                               ]
+                                }
+                            ],
+                  "autonomy_levels":  [
+                                          "observe",
+                                          "consult",
+                                          "route",
+                                          "activate",
+                                          "invoke_skill",
+                                          "side_effect",
+                                          "public"
+                                      ],
+                  "gates":  [
+                                "brief",
+                                "elevation",
+                                "package",
+                                "public_showcase"
+                            ]
+              },
+    "edges":  [
+                  {
+                      "from":  "rule:experience-host",
+                      "to":  "agent:sky-host",
+                      "type":  "activates_agent"
+                  },
+                  {
+                      "from":  "agent:sky-host",
+                      "to":  "autonomy:route",
+                      "type":  "max_autonomy"
+                  },
+                  {
+                      "from":  "rule:experience-host",
+                      "to":  "agent:delivery-steward",
+                      "type":  "activates_agent"
+                  },
+                  {
+                      "from":  "agent:delivery-steward",
+                      "to":  "skill:sky-deliver",
+                      "type":  "may_invoke_skill"
+                  },
+                  {
+                      "from":  "agent:delivery-steward",
+                      "to":  "skill:sky-export",
+                      "type":  "may_invoke_skill"
+                  },
+                  {
+                      "from":  "agent:delivery-steward",
+                      "to":  "skill:sky-validate",
+                      "type":  "may_invoke_skill"
+                  },
+                  {
+                      "from":  "agent:delivery-steward",
+                      "to":  "gate:package",
+                      "type":  "requires_gate"
+                  },
+                  {
+                      "from":  "agent:delivery-steward",
+                      "to":  "autonomy:invoke_skill",
+                      "type":  "max_autonomy"
+                  },
+                  {
+                      "from":  "rule:experience-host",
+                      "to":  "agent:showcase-curator",
+                      "type":  "activates_agent"
+                  },
+                  {
+                      "from":  "agent:showcase-curator",
+                      "to":  "skill:sky-publish",
+                      "type":  "may_invoke_skill"
+                  },
+                  {
+                      "from":  "agent:showcase-curator",
+                      "to":  "skill:sky-showcase",
+                      "type":  "may_invoke_skill"
+                  },
+                  {
+                      "from":  "agent:showcase-curator",
+                      "to":  "gate:public_showcase",
+                      "type":  "requires_gate"
+                  },
+                  {
+                      "from":  "agent:showcase-curator",
+                      "to":  "autonomy:invoke_skill",
+                      "type":  "max_autonomy"
+                  },
+                  {
+                      "from":  "rule:intake-sessions",
+                      "to":  "agent:sky-host",
+                      "type":  "activates_agent"
+                  },
+                  {
+                      "from":  "agent:sky-host",
+                      "to":  "autonomy:route",
+                      "type":  "max_autonomy"
+                  },
+                  {
+                      "from":  "rule:intake-sessions",
+                      "to":  "agent:intake-conductor",
+                      "type":  "activates_agent"
+                  },
+                  {
+                      "from":  "agent:intake-conductor",
+                      "to":  "skill:sky-intake",
+                      "type":  "may_invoke_skill"
+                  },
+                  {
+                      "from":  "agent:intake-conductor",
+                      "to":  "skill:sky-approve",
+                      "type":  "may_invoke_skill"
+                  },
+                  {
+                      "from":  "agent:intake-conductor",
+                      "to":  "skill:sky-elevate",
+                      "type":  "may_invoke_skill"
+                  },
+                  {
+                      "from":  "agent:intake-conductor",
+                      "to":  "gate:brief",
+                      "type":  "requires_gate"
+                  },
+                  {
+                      "from":  "agent:intake-conductor",
+                      "to":  "autonomy:activate",
+                      "type":  "max_autonomy"
+                  },
+                  {
+                      "from":  "rule:intake-sessions",
+                      "to":  "agent:sky-elevator",
+                      "type":  "activates_agent"
+                  },
+                  {
+                      "from":  "agent:sky-elevator",
+                      "to":  "autonomy:consult",
+                      "type":  "max_autonomy"
+                  },
+                  {
+                      "from":  "rule:intake-sessions",
+                      "to":  "agent:ux-design-specialist",
+                      "type":  "activates_agent"
+                  },
+                  {
+                      "from":  "agent:ux-design-specialist",
+                      "to":  "skill:sky-elevate",
+                      "type":  "may_invoke_skill"
+                  },
+                  {
+                      "from":  "agent:ux-design-specialist",
+                      "to":  "autonomy:activate",
+                      "type":  "max_autonomy"
+                  },
+                  {
+                      "from":  "rule:intake-sessions",
+                      "to":  "agent:cost-tier-advisor",
+                      "type":  "activates_agent"
+                  },
+                  {
+                      "from":  "agent:cost-tier-advisor",
+                      "to":  "autonomy:consult",
+                      "type":  "max_autonomy"
+                  },
+                  {
+                      "from":  "rule:intake-sessions",
+                      "to":  "agent:ux-product",
+                      "type":  "activates_agent"
+                  },
+                  {
+                      "from":  "agent:ux-product",
+                      "to":  "autonomy:consult",
+                      "type":  "max_autonomy"
+                  },
+                  {
+                      "from":  "rule:humanity-docs",
+                      "to":  "agent:sky-elevator",
+                      "type":  "activates_agent"
+                  },
+                  {
+                      "from":  "agent:sky-elevator",
+                      "to":  "autonomy:consult",
+                      "type":  "max_autonomy"
+                  },
+                  {
+                      "from":  "rule:showcase-visual",
+                      "to":  "agent:showcase-curator",
+                      "type":  "activates_agent"
+                  },
+                  {
+                      "from":  "agent:showcase-curator",
+                      "to":  "skill:sky-publish",
+                      "type":  "may_invoke_skill"
+                  },
+                  {
+                      "from":  "agent:showcase-curator",
+                      "to":  "skill:sky-showcase",
+                      "type":  "may_invoke_skill"
+                  },
+                  {
+                      "from":  "agent:showcase-curator",
+                      "to":  "gate:public_showcase",
+                      "type":  "requires_gate"
+                  },
+                  {
+                      "from":  "agent:showcase-curator",
+                      "to":  "autonomy:public",
+                      "type":  "max_autonomy"
+                  },
+                  {
+                      "from":  "rule:showcase-visual",
+                      "to":  "agent:sky-host",
+                      "type":  "activates_agent"
+                  },
+                  {
+                      "from":  "agent:sky-host",
+                      "to":  "autonomy:route",
+                      "type":  "max_autonomy"
+                  },
+                  {
+                      "from":  "rule:outputs-package",
+                      "to":  "agent:delivery-steward",
+                      "type":  "activates_agent"
+                  },
+                  {
+                      "from":  "agent:delivery-steward",
+                      "to":  "skill:sky-deliver",
+                      "type":  "may_invoke_skill"
+                  },
+                  {
+                      "from":  "agent:delivery-steward",
+                      "to":  "skill:sky-export",
+                      "type":  "may_invoke_skill"
+                  },
+                  {
+                      "from":  "agent:delivery-steward",
+                      "to":  "skill:sky-validate",
+                      "type":  "may_invoke_skill"
+                  },
+                  {
+                      "from":  "agent:delivery-steward",
+                      "to":  "gate:package",
+                      "type":  "requires_gate"
+                  },
+                  {
+                      "from":  "agent:delivery-steward",
+                      "to":  "autonomy:side_effect",
+                      "type":  "max_autonomy"
+                  },
+                  {
+                      "from":  "rule:outputs-package",
+                      "to":  "agent:showcase-curator",
+                      "type":  "activates_agent"
+                  },
+                  {
+                      "from":  "agent:showcase-curator",
+                      "to":  "skill:sky-publish",
+                      "type":  "may_invoke_skill"
+                  },
+                  {
+                      "from":  "agent:showcase-curator",
+                      "to":  "autonomy:invoke_skill",
+                      "type":  "max_autonomy"
+                  },
+                  {
+                      "from":  "rule:export-cloud-design",
+                      "to":  "agent:delivery-steward",
+                      "type":  "activates_agent"
+                  },
+                  {
+                      "from":  "agent:delivery-steward",
+                      "to":  "skill:sky-export",
+                      "type":  "may_invoke_skill"
+                  },
+                  {
+                      "from":  "agent:delivery-steward",
+                      "to":  "skill:sky-validate",
+                      "type":  "may_invoke_skill"
+                  },
+                  {
+                      "from":  "agent:delivery-steward",
+                      "to":  "gate:package",
+                      "type":  "requires_gate"
+                  },
+                  {
+                      "from":  "agent:delivery-steward",
+                      "to":  "autonomy:side_effect",
+                      "type":  "max_autonomy"
+                  },
+                  {
+                      "from":  "rule:export-cloud-design",
+                      "to":  "agent:prompt-assembler",
+                      "type":  "activates_agent"
+                  },
+                  {
+                      "from":  "agent:prompt-assembler",
+                      "to":  "skill:sky-export",
+                      "type":  "may_invoke_skill"
+                  },
+                  {
+                      "from":  "agent:prompt-assembler",
+                      "to":  "skill:sky-validate",
+                      "type":  "may_invoke_skill"
+                  },
+                  {
+                      "from":  "agent:prompt-assembler",
+                      "to":  "autonomy:invoke_skill",
+                      "type":  "max_autonomy"
+                  },
+                  {
+                      "from":  "rule:specs-harness",
+                      "to":  "agent:intake-conductor",
+                      "type":  "activates_agent"
+                  },
+                  {
+                      "from":  "agent:intake-conductor",
+                      "to":  "skill:sky-validate",
+                      "type":  "may_invoke_skill"
+                  },
+                  {
+                      "from":  "agent:intake-conductor",
+                      "to":  "autonomy:activate",
+                      "type":  "max_autonomy"
+                  },
+                  {
+                      "from":  "rule:agent-ops",
+                      "to":  "agent:orchestrator",
+                      "type":  "activates_agent"
+                  },
+                  {
+                      "from":  "agent:orchestrator",
+                      "to":  "autonomy:route",
+                      "type":  "max_autonomy"
+                  }
+              ]
+}

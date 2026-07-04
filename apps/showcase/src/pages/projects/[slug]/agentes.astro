@@ -1,0 +1,47 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import AgentsPanel from "../../../components/AgentsPanel.astro";
+import { loadIndex, loadPreview, loadAgentsView } from "../../../lib/registry";
+import { withBase } from "../../../lib/paths";
+
+export async function getStaticPaths() {
+  const { projects } = loadIndex();
+  return projects
+    .filter((p) => p.public !== false)
+    .map((p) => ({ params: { slug: p.slug } }));
+}
+
+const { slug } = Astro.params;
+const project = await loadPreview(slug!);
+const agents = await loadAgentsView(slug!);
+
+if (!project) {
+  return Astro.redirect(withBase("/"));
+}
+---
+
+<BaseLayout title={`Como foi produzido — ${project.title}`} description="Trilha Sky-Forge: agentes, gates e auditoria">
+  <header class="site-header">
+    <div class="container">
+      <a class="back-link" href={withBase(`/projects/${slug}/`)} style="color: var(--color-sky-glow);">← Visão do aplicativo</a>
+      <span class="badge">Sky-Forge · meta</span>
+      <h1>{project.title}</h1>
+      <p>
+        Como o Sky-Forge produziu este pacote — coreografia, gates humanos e trilha de eventos.
+        Para a proposta do app, volte à <a href={withBase(`/projects/${slug}/`)} style="color: var(--color-sky-glow);">página do projeto</a>.
+      </p>
+    </div>
+  </header>
+
+  <main class="container">
+    {agents ? (
+      <AgentsPanel agents={agents} projectTitle={project.title} slug={slug!} />
+    ) : (
+      <section class="panel empty-state">
+        <p>Snapshot de agentes ainda não publicado para este projeto.</p>
+        <p><code>./scripts/sky/sky.ps1 publish -Slug {slug}</code></p>
+        <p><a href={withBase(`/projects/${slug}/`)}>← Voltar à visão do aplicativo</a></p>
+      </section>
+    )}
+  </main>
+</BaseLayout>

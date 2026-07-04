@@ -1,0 +1,32 @@
+---
+import { withBase } from "../lib/paths";
+
+interface Props {
+  slug: string;
+  hasProduction?: boolean;
+  hasProcess?: boolean;
+}
+
+const { slug, hasProduction = true, hasProcess = true } = Astro.props;
+
+const sections = [
+  { id: "visao", label: "Visão" },
+  { id: "funcionalidades", label: "Funcionalidades" },
+  { id: "requisitos", label: "Requisitos" },
+  { id: "arquitetura", label: "Arquitetura" },
+  { id: "roadmap", label: "Roadmap" },
+  ...(hasProduction ? [{ id: "producao", label: "Produção" }] : []),
+  ...(hasProcess ? [{ id: "como-foi-produzido", label: "Como foi produzido" }] : []),
+];
+---
+
+<nav class="section-nav" aria-label="Seções do projeto">
+  {sections.map((s) => (
+    <a href={`#${s.id}`} class="section-nav-link">{s.label}</a>
+  ))}
+  {hasProcess && (
+    <a href={withBase(`/projects/${slug}/agentes/`)} class="section-nav-link section-nav-meta">
+      Trilha completa →
+    </a>
+  )}
+</nav>

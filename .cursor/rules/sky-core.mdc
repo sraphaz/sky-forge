@@ -9,6 +9,7 @@ alwaysApply: true
 Leia [AGENTS.md](../../AGENTS.md) e [SKY_MERIT_INDICES.md](../../docs/_meta/SKY_MERIT_INDICES.md).
 
 - Sessoes em `.sky/sessions/{slug}/`
+- Experiencia: **sky-host** — [USER_JOURNEY.md](../../docs/_meta/USER_JOURNEY.md)
 - Intake: [INTAKE_PROTOCOL.md](../../docs/_meta/INTAKE_PROTOCOL.md)
 - Elevação: consultar `sky-elevator`; respeitar `sky-merits.yaml` → `policies`
 - UX: `ux-design-specialist` — WCAG AA, tokens, baixa excitação

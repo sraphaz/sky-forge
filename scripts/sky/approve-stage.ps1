@@ -4,7 +4,7 @@ param(
     [string]$Slug,
 
     [Parameter(Mandatory = $true)]
-    [ValidateSet('brief', 'research', 'elevation', 'architecture', 'package')]
+    [ValidateSet('brief', 'research', 'elevation', 'architecture', 'package', 'public_showcase')]
     [string]$Stage
 )
 
@@ -40,3 +40,8 @@ if (Test-Path $maturityPath) {
 }
 
 Write-Host "Aprovado: $Stage para sessao $Slug em $now" -ForegroundColor Green
+
+$rec = Join-Path $PSScriptRoot 'record-agent-event.ps1'
+if (Test-Path $rec) {
+    & $rec -Slug $Slug -AgentId 'sky-host' -Action 'human.gate.approved' -Outcome 'ok' -AutonomyLevel 'route' -HumanGate $Stage -Details "stage=$Stage" -ErrorAction SilentlyContinue | Out-Null
+}

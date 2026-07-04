@@ -1,0 +1,31 @@
+---
+import type { ProjectIndexEntry } from "../lib/registry";
+import { formatPercent } from "../lib/registry";
+import { withBase } from "../lib/paths";
+
+interface Props {
+  project: ProjectIndexEntry;
+}
+
+const { project } = Astro.props;
+const href = withBase(`/projects/${project.slug}/`);
+---
+
+<article class="card">
+  <div class="meta-row">
+    {project.tier && <span class="chip">{project.tier}</span>}
+    {project.elevation_level && <span class="chip">{project.elevation_level}</span>}
+    {project.tags?.slice(0, 2).map((tag) => <span class="chip">{tag}</span>)}
+  </div>
+  <h2><a href={href}>{project.title}</a></h2>
+  {project.excerpt && <p>{project.excerpt}</p>}
+  <div class="meta-row">
+    {project.sky_score != null && (
+      <span class="score-pill">SKY {project.sky_score}</span>
+    )}
+    {project.readiness != null && (
+      <span class="chip">Maturidade {formatPercent(project.readiness)}</span>
+    )}
+  </div>
+  <a href={href}>Ver visão completa →</a>
+</article>

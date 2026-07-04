@@ -1,0 +1,296 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ProjectSectionNav from "../../components/ProjectSectionNav.astro";
+import {
+  loadIndex,
+  loadPreview,
+  loadAgentsView,
+  formatPercent,
+  dimensionLabel,
+  indexLabel,
+  phaseClass,
+  pipelineLabel,
+  type FunctionalRequirement,
+} from "../../lib/registry";
+import { withBase } from "../../lib/paths";
+
+export async function getStaticPaths() {
+  const { projects } = loadIndex();
+  return projects
+    .filter((p) => p.public !== false)
+    .map((p) => ({ params: { slug: p.slug } }));
+}
+
+const { slug } = Astro.params;
+const project = await loadPreview(slug!);
+const agents = await loadAgentsView(slug!);
+
+if (!project) {
+  return Astro.redirect(withBase("/"));
+}
+
+const vision = project.vision;
+const functional = project.requirements?.functional ?? [];
+const nfrs = project.requirements?.non_functional ?? [];
+const integrations = project.architecture?.integrations ?? [];
+const ux = project.architecture?.ux;
+
+function groupByEpic(reqs: FunctionalRequirement[]) {
+  const groups: Record<string, FunctionalRequirement[]> = {};
+  for (const r of reqs) {
+    const epic = r.epic ?? "Geral";
+    if (!groups[epic]) groups[epic] = [];
+    groups[epic].push(r);
+  }
+  return Object.entries(groups).sort(([a], [b]) => a.localeCompare(b));
+}
+
+const epicGroups = groupByEpic(functional);
+---
+
+<BaseLayout title={project.title} description={project.excerpt}>
+  <header class="site-header project-hero">
+    <div class="container">
+      <a class="back-link" href={withBase("/")} style="color: var(--color-sky-glow);">← Galeria de projetos</a>
+      <div class="meta-row">
+        {project.tier && <span class="badge">{project.tier}</span>}
+        {project.tags?.slice(0, 4).map((tag) => <span class="chip chip-light">{tag}</span>)}
+      </div>
+      <h1>{project.title}</h1>
+      {vision?.value_proposition && <p class="hero-lead">{vision.value_proposition.split("\n")[0]}</p>}
+      {vision?.reference_tenant && (
+        <p class="hero-meta">Tenant de referência: <strong>{vision.reference_tenant}</strong></p>
+      )}
+    </div>
+  </header>
+
+  <div class="container">
+    <ProjectSectionNav slug={slug!} hasProcess={agents != null} />
+  </div>
+
+  <main class="container project-sections">
+    <section id="visao" class="panel project-section">
+      <h2 class="section-title">Visão do aplicativo</h2>
+      {vision?.problem && (
+        <div class="vision-block">
+          <h3>Problema</h3>
+          <p>{vision.problem}</p>
+        </div>
+      )}
+      {vision?.motivation && (
+        <div class="vision-block">
+          <h3>Motivação</h3>
+          <p>{vision.motivation}</p>
+        </div>
+      )}
+      {vision?.primary_users && vision.primary_users.length > 0 && (
+        <div class="vision-block">
+          <h3>Usuários principais</h3>
+          <ul class="plain-list">
+            {vision.primary_users.map((u) => <li>{u}</li>)}
+          </ul>
+        </div>
+      )}
+      {vision?.mvp_scope && (
+        <div class="vision-block">
+          <h3>Escopo MVP</h3>
+          <p>{vision.mvp_scope}</p>
+        </div>
+      )}
+      {vision?.out_of_scope && vision.out_of_scope.length > 0 && (
+        <div class="vision-block">
+          <h3>Fora do escopo</h3>
+          <ul class="plain-list">
+            {vision.out_of_scope.map((item) => <li>{item}</li>)}
+          </ul>
+        </div>
+      )}
+    </section>
+
+    {functional.length > 0 && (
+      <section id="funcionalidades" class="panel project-section">
+        <h2 class="section-title">Funcionalidades</h2>
+        <p class="panel-hint">Requisitos funcionais agrupados por épico — o que o app propõe entregar.</p>
+        {epicGroups.map(([epic, reqs]) => (
+          <div class="epic-group">
+            <h3 class="epic-heading">Épico {epic}</h3>
+            <ul class="req-list">
+              {reqs.map((r) => (
+                <li class="req-item">
+                  <span class="req-id">{r.id}</span>
+                  <span class="req-title">{r.title}</span>
+                  <span class="chip">{r.priority ?? "—"}</span>
+                  {r.mvp && <span class="chip chip-mvp">MVP</span>}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </section>
+    )}
+
+    {nfrs.length > 0 && (
+      <section id="requisitos" class="panel project-section">
+        <h2 class="section-title">Requisitos não funcionais</h2>
+        <ul class="req-list">
+          {nfrs.map((r) => (
+            <li class="req-item">
+              <span class="req-id">{r.id}</span>
+              <span class="req-title">{r.statement}</span>
+              {r.category && <span class="chip">{r.category}</span>}
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
+
+    {(integrations.length > 0 || ux) && (
+      <section id="arquitetura" class="panel project-section">
+        <h2 class="section-title">Arquitetura & tecnologia</h2>
+        {integrations.length > 0 && (
+          <>
+            <h3>Integrações & stack</h3>
+            <ul class="integration-list">
+              {integrations.map((i) => (
+                <li class="integration-item">
+                  <strong>{i.id}</strong> — {i.type}
+                  {i.provider && <> · <code>{i.provider}</code></>}
+                  {i.required != null && (
+                    <span class="chip">{i.required ? "obrigatório" : "opcional"}</span>
+                  )}
+                  {i.reason && <p class="panel-hint" style="margin: 0.35rem 0 0;">{i.reason}</p>}
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
+        {ux?.principles && ux.principles.length > 0 && (
+          <div style="margin-top: 1.25rem;">
+            <h3>Princípios UX</h3>
+            <div class="meta-row">
+              {ux.principles.map((p) => <span class="chip">{p.replace(/_/g, " ")}</span>)}
+            </div>
+          </div>
+        )}
+        {ux?.key_screens && ux.key_screens.length > 0 && (
+          <div style="margin-top: 1.25rem;">
+            <h3>Telas principais</h3>
+            <div class="screen-grid">
+              {ux.key_screens.map((s) => (
+                <span class="screen-chip">{s.title}</span>
+              ))}
+            </div>
+          </div>
+        )}
+      </section>
+    )}
+
+    {project.phases && project.phases.length > 0 && (
+      <section id="roadmap" class="panel project-section">
+        <h2 class="section-title">Roadmap de entrega</h2>
+        <ul class="phase-list">
+          {project.phases.map((phase) => (
+            <li class={`phase-item ${phaseClass(phase.status)}`}>
+              <span class="phase-dot" />
+              <div>
+                <strong>{phase.id}</strong> — {phase.title}
+                <span class="chip" style="margin-left: 0.5rem;">{phase.status.replace(/_/g, " ")}</span>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
+
+    <section id="producao" class="panel project-section">
+      <h2 class="section-title">Pronto para produção</h2>
+      <p class="panel-hint">
+        Filtro de maturidade e pipeline — o que já passou pelos gates antes de entrar em implementação.
+      </p>
+      <div class="hero-stats hero-stats-inline">
+        {project.readiness != null && (
+          <div class="stat stat-inline">
+            <div class="stat-value stat-value-dark">{formatPercent(project.readiness)}</div>
+            <div class="stat-label stat-label-dark">Maturidade geral</div>
+          </div>
+        )}
+        {project.sky_score != null && (
+          <div class="stat stat-inline">
+            <div class="stat-value stat-value-dark">{project.sky_score}</div>
+            <div class="stat-label stat-label-dark">SKY Score</div>
+          </div>
+        )}
+      </div>
+      {project.dimensions && (
+        <div style="margin-top: 1.25rem;">
+          <h3>Dimensões</h3>
+          {Object.entries(project.dimensions).map(([key, score]) => (
+            <div class="bar-row">
+              <span>{dimensionLabel(key)}</span>
+              <div class="bar-track">
+                <div class="bar-fill" style={`width: ${Math.round(score * 100)}%`} />
+              </div>
+              <span>{formatPercent(score)}</span>
+            </div>
+          ))}
+        </div>
+      )}
+      {project.indices && (
+        <div style="margin-top: 1.25rem;">
+          <h3>Índices SKY</h3>
+          {Object.entries(project.indices).map(([key, score]) => (
+            <div class="bar-row">
+              <span title={indexLabel(key)}>{key}</span>
+              <div class="bar-track">
+                <div class="bar-fill" style={`width: ${score}%`} />
+              </div>
+              <span>{score}</span>
+            </div>
+          ))}
+        </div>
+      )}
+      {project.pipeline && project.pipeline.length > 0 && (
+        <div style="margin-top: 1.25rem;">
+          <h3>Pipeline desbloqueado</h3>
+          <div class="pipeline-grid">
+            {project.pipeline.map((stage) => (
+              <span class={`pipeline-stage ${stage.approved ? "approved" : "pending"}`} title={stage.stage}>
+                {pipelineLabel(stage.stage)}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+    </section>
+
+    <section id="como-foi-produzido" class="panel project-section process-section">
+      <h2 class="section-title">Como foi produzido</h2>
+      <p class="panel-hint">
+        Meta-informação do <strong>Sky-Forge</strong> — agentes, gates e auditoria que geraram este pacote.
+        Não faz parte da proposta do aplicativo.
+      </p>
+      {agents ? (
+        <>
+          <div class="meta-row" style="margin: 1rem 0;">
+            <span class="chip">{agents.metrics?.total_events ?? 0} eventos auditados</span>
+            <span class="outcome-pill outcome-ok">{agents.event_counts?.ok ?? 0} ok</span>
+            <span class="outcome-pill outcome-blocked">{agents.event_counts?.blocked ?? 0} bloqueados</span>
+            {agents.journey_phase && <span class="chip">fase: {agents.journey_phase}</span>}
+          </div>
+          {agents.gates && (
+            <div class="meta-row" style="margin-bottom: 1rem;">
+              {agents.gates.map((g) => (
+                <span class={`chip ${g.approved ? "gate-chip-ok" : "gate-chip-pending"}`}>
+                  {g.id}: {g.approved ? "✓" : "○"}
+                </span>
+              ))}
+            </div>
+          )}
+          <a href={withBase(`/projects/${slug}/agentes/`)} class="cta-link">Ver trilha completa de agentes →</a>
+        </>
+      ) : (
+        <p class="empty">Trilha ainda não publicada. Rode <code>sky publish -Slug {slug}</code>.</p>
+      )}
+    </section>
+  </main>
+</BaseLayout>

@@ -2,6 +2,15 @@
 .sky/sessions/*
 !templates/sessions/
 
+# Agent audit & observability (local)
+.sky/audit/*
+!.sky/audit/.gitkeep
+.sky/observability/*
+!.sky/observability/.gitkeep
+
+# Intake source archives (large — local only)
+.intake-sources/
+
 outputs/*
 !outputs/.gitkeep
 
@@ -22,6 +31,7 @@ Thumbs.db
 
 # Node/Python artifacts (future tooling)
 node_modules/
+apps/showcase/dist/
 __pycache__/
 .venv/
 dist/

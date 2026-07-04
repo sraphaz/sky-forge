@@ -1,0 +1,58 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { loadIndex, loadAgentsView } from "../lib/registry";
+import { withBase } from "../lib/paths";
+
+const { projects } = loadIndex();
+const visible = projects.filter((p) => p.public !== false);
+
+const agentSnapshots = await Promise.all(
+  visible.map(async (p) => {
+    const agents = await loadAgentsView(p.slug);
+    return { project: p, agents };
+  })
+);
+---
+
+<BaseLayout title="Como foi produzido" description="Trilha Sky-Forge por projeto">
+  <header class="site-header">
+    <div class="container">
+      <a class="back-link" href={withBase("/")} style="color: var(--color-sky-glow);">← Galeria de projetos</a>
+      <span class="badge">Sky-Forge · meta</span>
+      <h1>Como foi produzido</h1>
+      <p>
+        Auditoria e coreografia dos agentes que geraram cada output — separado da visão do aplicativo.
+      </p>
+    </div>
+  </header>
+
+  <main class="container">
+    {agentSnapshots.filter((s) => s.agents).length === 0 ? (
+      <div class="panel empty-state">
+        <p>Nenhum snapshot de agentes publicado.</p>
+        <p><code>./scripts/sky/sky.ps1 publish -Slug &lt;slug&gt;</code></p>
+      </div>
+    ) : (
+      agentSnapshots.filter((s) => s.agents).map(({ project, agents }) => (
+        <section class="panel" style="margin-bottom: 1.25rem;">
+          <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 0.5rem;">
+            <h3 style="margin: 0;">
+              <a href={withBase(`/projects/${project.slug}/agentes/`)}>{project.title}</a>
+            </h3>
+            <span class="chip">{agents!.metrics?.total_events ?? 0} eventos</span>
+          </div>
+          <div class="meta-row" style="margin-top: 0.75rem;">
+            <span class="outcome-pill outcome-ok">{agents!.event_counts?.ok ?? 0} ok</span>
+            <span class="outcome-pill outcome-blocked">{agents!.event_counts?.blocked ?? 0} blocked</span>
+            {agents!.journey_phase && <span class="chip">fase: {agents!.journey_phase}</span>}
+          </div>
+          <p style="margin: 0.75rem 0 0;">
+            <a href={withBase(`/projects/${project.slug}/`)}>Visão do app</a>
+            ·
+            <a href={withBase(`/projects/${project.slug}/agentes/`)}>Trilha completa →</a>
+          </p>
+        </section>
+      ))
+    )}
+  </main>
+</BaseLayout>

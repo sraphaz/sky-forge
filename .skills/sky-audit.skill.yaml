@@ -1,0 +1,8 @@
+id: sky-audit
+name: Sky Audit
+description: Registra e consulta trilha de auditoria de agentes.
+inputs:
+  slug: kebab-case
+steps:
+  - script: scripts/sky/agent-audit.ps1 -Slug {slug}
+  - read: docs/_meta/AGENT_OBSERVABILITY.md

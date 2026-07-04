@@ -1,0 +1,365 @@
+﻿{
+    "slug":  "iautos",
+    "title":  "IAutos — Legaltech white-label para escritórios de advocacia",
+    "excerpt":  "Plataforma legaltech brasileira white-label: casos como pastas versionadas (template Obsidian), copiloto com RAG por caso, multi-agente com guardrails, site institucional por tenant, colaboração interna e conformidade...",
+    "tier":  "growth",
+    "sky_score":  71,
+    "readiness":  0.78,
+    "elevation_level":  "horizon",
+    "tags":  [
+                 "legaltech",
+                 "saas_b2b",
+                 "white_label",
+                 "multi_tenant"
+             ],
+    "vision":  {
+                   "problem":  "Escritórios pequenos e médios no Brasil carecem de uma plataforma marca-própria que una\ngestão de casos (pastas versionadas, metodologia Obsidian validada) e copiloto jurídico\ncom governança, LGPD, citações rastreáveis e human-in-the-loop — sem depender de\nferramentas estrangeiras desconectadas da realidade local.",
+                   "motivation":  "Produtizar o Processo_Obsidian_IA_Template já usado pelo escritório Bonomi Almeida\nAdvogados, escalando para SaaS multi-tenant white-label com IA híbrida (gerenciado + BYOK).",
+                   "value_proposition":  "Plataforma legaltech brasileira white-label: casos como pastas versionadas (template Obsidian),\ncopiloto com RAG por caso, multi-agente com guardrails, site institucional por tenant,\ncolaboração interna e conformidade LGPD/OAB.",
+                   "primary_users":  [
+                                         "advogado(a) do escritório — opera casos, revisa análises, aprova rascunhos",
+                                         "equipe administrativa — upload, organização, prazos",
+                                         "administrador do tenant — marca, integrações, LGPD, conexão de IA",
+                                         "cliente final do escritório (indireto) — beneficia-se de atendimento mais organizado"
+                                     ],
+                   "mvp_scope":  "Tenant Bonomi Almeida como instância inaugural. Épicos E1–E5 do handoff (fundação, casos,\nnúcleo IA, multi-agente, conformidade). Site institucional já mockado. E6 (chat/integrações)\npós-MVP ou fase 1.5 conforme capacidade.",
+                   "out_of_scope":  [
+                                        "Conclusão jurídica automática sem revisão humana",
+                                        "Cross-tenant ou vazamento entre pastas de caso",
+                                        "Marketplace agressivo de leads",
+                                        "Substituir ERP financeiro completo do escritório no MVP"
+                                    ],
+                   "reference_tenant":  "Bonomi Almeida Advogados"
+               },
+    "requirements":  {
+                         "non_functional":  [
+                                                {
+                                                    "category":  "security",
+                                                    "id":  "NFR-001",
+                                                    "statement":  "Isolamento multi-tenant com RLS — zero cross-tenant"
+                                                },
+                                                {
+                                                    "category":  "compliance",
+                                                    "id":  "NFR-002",
+                                                    "statement":  "LGPD — retenção, consentimento, exportar/excluir dados"
+                                                },
+                                                {
+                                                    "category":  "compliance",
+                                                    "id":  "NFR-003",
+                                                    "statement":  "Sigilo profissional OAB — no-training/zero-retention no provedor gerenciado"
+                                                },
+                                                {
+                                                    "category":  "accessibility",
+                                                    "id":  "NFR-004",
+                                                    "statement":  "WCAG 2.1 AA no app advogado"
+                                                },
+                                                {
+                                                    "category":  "performance",
+                                                    "id":  "NFR-005",
+                                                    "statement":  "Retriever RAG \u003c 3s p95 em pasta média"
+                                                },
+                                                {
+                                                    "category":  "maintainability",
+                                                    "id":  "NFR-006",
+                                                    "statement":  "TypeScript estrito, sem any; Vitest + Playwright no DoD"
+                                                }
+                                            ],
+                         "functional":  [
+                                            {
+                                                "priority":  "must",
+                                                "title":  "Multi-tenant white-label por domínio",
+                                                "mvp":  true,
+                                                "id":  "RF-001",
+                                                "epic":  "E1"
+                                            },
+                                            {
+                                                "priority":  "must",
+                                                "title":  "Casos como pastas versionadas (template Obsidian)",
+                                                "mvp":  true,
+                                                "id":  "RF-002",
+                                                "epic":  "E2"
+                                            },
+                                            {
+                                                "priority":  "must",
+                                                "title":  "Regra ouro — original separado de interpretação",
+                                                "mvp":  true,
+                                                "id":  "RF-003",
+                                                "epic":  "E2"
+                                            },
+                                            {
+                                                "priority":  "must",
+                                                "title":  "Upload, OCR, versionamento de documentos",
+                                                "mvp":  true,
+                                                "id":  "RF-004",
+                                                "epic":  "E2"
+                                            },
+                                            {
+                                                "priority":  "must",
+                                                "title":  "Explorador de caso (pastas + tabs Explorer/Racional/Análises/Timeline/Dossiê)",
+                                                "mvp":  true,
+                                                "id":  "RF-005",
+                                                "epic":  "E2"
+                                            },
+                                            {
+                                                "priority":  "must",
+                                                "title":  "RAG por caso com citações rastreáveis",
+                                                "mvp":  true,
+                                                "id":  "RF-006",
+                                                "epic":  "E3"
+                                            },
+                                            {
+                                                "priority":  "must",
+                                                "title":  "Harness + guardrails + modelo Claim (fato/inferência/hipótese/dúvida)",
+                                                "mvp":  true,
+                                                "id":  "RF-007",
+                                                "epic":  "E3"
+                                            },
+                                            {
+                                                "priority":  "must",
+                                                "title":  "Roster multi-agente + Orquestrador + Agent Factory por caso",
+                                                "mvp":  true,
+                                                "id":  "RF-008",
+                                                "epic":  "E4"
+                                            },
+                                            {
+                                                "priority":  "must",
+                                                "title":  "Copiloto chat + editor com rascunhos human-in-the-loop",
+                                                "mvp":  true,
+                                                "id":  "RF-009",
+                                                "epic":  "E4"
+                                            },
+                                            {
+                                                "priority":  "must",
+                                                "title":  "IA híbrida gerenciado + BYOK via Vault",
+                                                "mvp":  true,
+                                                "id":  "RF-010",
+                                                "epic":  "E5"
+                                            },
+                                            {
+                                                "priority":  "must",
+                                                "title":  "Painel Segurança/LGPD",
+                                                "mvp":  true,
+                                                "id":  "RF-011",
+                                                "epic":  "E5"
+                                            },
+                                            {
+                                                "priority":  "should",
+                                                "title":  "Site institucional white-label (referência Bonomi)",
+                                                "mvp":  true,
+                                                "id":  "RF-012",
+                                                "epic":  null
+                                            },
+                                            {
+                                                "priority":  "should",
+                                                "title":  "Equipe, chat interno realtime, Integration Hub",
+                                                "mvp":  false,
+                                                "id":  "RF-013",
+                                                "epic":  "E6"
+                                            }
+                                        ]
+                     },
+    "architecture":  {
+                         "integrations":  [
+                                              {
+                                                  "provider":  "custom_jwt_rbac",
+                                                  "reason":  "RBAC por tenant + papéis advogado/admin já especificado no handoff",
+                                                  "id":  "INT-001",
+                                                  "type":  "auth",
+                                                  "required":  true
+                                              },
+                                              {
+                                                  "provider":  "minio_dev",
+                                                  "reason":  "Handoff define MinIO local; S3 em produção",
+                                                  "id":  "INT-002",
+                                                  "type":  "storage",
+                                                  "required":  true
+                                              },
+                                              {
+                                                  "provider":  "vault_hybrid",
+                                                  "reason":  "IA-15 gerenciado + BYOK",
+                                                  "id":  "INT-003",
+                                                  "type":  "other",
+                                                  "required":  true
+                                              },
+                                              {
+                                                  "provider":  "resend",
+                                                  "reason":  "E6 fase 1 — conector e-mail",
+                                                  "id":  "INT-004",
+                                                  "type":  "email",
+                                                  "required":  false
+                                              },
+                                              {
+                                                  "provider":  "google_calendar",
+                                                  "reason":  "IA-20 conectores fase 1",
+                                                  "id":  "INT-005",
+                                                  "type":  "other",
+                                                  "required":  false
+                                              }
+                                          ],
+                         "ux":  {
+                                    "principles":  [
+                                                       "low_excitation_legal_calm",
+                                                       "wcag_2_1_aa",
+                                                       "design_tokens_css_variables_per_tenant",
+                                                       "human_in_the_loop_visible",
+                                                       "never_mix_original_with_interpretation_ui"
+                                                   ],
+                                    "key_screens":  [
+                                                        {
+                                                            "id":  "dashboard",
+                                                            "title":  "Dashboard"
+                                                        },
+                                                        {
+                                                            "id":  "cases-list",
+                                                            "title":  "Lista de casos"
+                                                        },
+                                                        {
+                                                            "id":  "case-detail",
+                                                            "title":  "Detalhe do caso"
+                                                        },
+                                                        {
+                                                            "id":  "agents-roster",
+                                                            "title":  "Agentes — harness compartilhado"
+                                                        },
+                                                        {
+                                                            "id":  "equipe-chat",
+                                                            "title":  "Equipe \u0026 Chat (E6)"
+                                                        },
+                                                        {
+                                                            "id":  "editor",
+                                                            "title":  "Editor de documentos / rascunhos"
+                                                        },
+                                                        {
+                                                            "id":  "settings",
+                                                            "title":  "Configurações"
+                                                        }
+                                                    ]
+                                }
+                     },
+    "indices":  {
+                    "HCE":  74,
+                    "CWB":  65,
+                    "UXD":  78,
+                    "GAP":  70,
+                    "SPI":  68
+                },
+    "dimensions":  {
+                       "technical":  0.8,
+                       "sustainability":  0.62,
+                       "ux_design":  0.85,
+                       "product":  0.82,
+                       "elevation":  0.72,
+                       "business":  0.88
+                   },
+    "phases":  [
+                   {
+                       "status":  "next",
+                       "title":  "Fundação",
+                       "id":  "E1"
+                   },
+                   {
+                       "status":  "pending",
+                       "title":  "Casos \u0026 documentos",
+                       "id":  "E2"
+                   },
+                   {
+                       "status":  "pending",
+                       "title":  "Núcleo de IA",
+                       "id":  "E3"
+                   },
+                   {
+                       "status":  "pending",
+                       "title":  "Multi-agente",
+                       "id":  "E4"
+                   },
+                   {
+                       "status":  "pending",
+                       "title":  "Config \u0026 conformidade",
+                       "id":  "E5"
+                   },
+                   {
+                       "status":  "post_mvp",
+                       "title":  "Colaboração \u0026 integrações",
+                       "id":  "E6"
+                   }
+               ],
+    "pipeline":  [
+                     {
+                         "stage":  "market_research",
+                         "approved":  true
+                     },
+                     {
+                         "stage":  "sky_elevation",
+                         "approved":  true
+                     },
+                     {
+                         "stage":  "ux_review",
+                         "approved":  true
+                     },
+                     {
+                         "stage":  "architecture",
+                         "approved":  true
+                     },
+                     {
+                         "stage":  "roadmap",
+                         "approved":  true
+                     },
+                     {
+                         "stage":  "prompt_compile",
+                         "approved":  true
+                     },
+                     {
+                         "stage":  "cloud_design_export",
+                         "approved":  true
+                     },
+                     {
+                         "stage":  "full_package",
+                         "approved":  false
+                     }
+                 ],
+    "artifacts":  [
+                      {
+                          "label":  "Brief",
+                          "path":  "brief.yaml",
+                          "type":  "yaml"
+                      },
+                      {
+                          "label":  "Requisitos",
+                          "path":  "functional-requirements.yaml",
+                          "type":  "yaml"
+                      },
+                      {
+                          "label":  "NFR",
+                          "path":  "nfr.yaml",
+                          "type":  "yaml"
+                      },
+                      {
+                          "label":  "Integrações",
+                          "path":  "integrations.yaml",
+                          "type":  "yaml"
+                      },
+                      {
+                          "label":  "UX",
+                          "path":  "ux-spec.yaml",
+                          "type":  "yaml"
+                      },
+                      {
+                          "label":  "Maturidade",
+                          "path":  "maturity.yaml",
+                          "type":  "yaml"
+                      },
+                      {
+                          "label":  "Roadmap",
+                          "path":  "roadmap/phases.yaml",
+                          "type":  "yaml"
+                      },
+                      {
+                          "label":  "Cloud Design",
+                          "path":  "cloud-design/",
+                          "type":  "cloud-design"
+                      }
+                  ],
+    "public":  true,
+    "published_at":  "2026-07-04T15:50:27.2671173Z",
+    "outputs_dir":  "C:\\Users\\rapha\\CursorRepos\\sky-forge\\outputs\\iautos"
+}

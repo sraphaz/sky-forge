@@ -1,0 +1,49 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import ProjectCard from "../components/ProjectCard.astro";
+import { loadIndex } from "../lib/registry";
+import { withBase } from "../lib/paths";
+
+const { projects } = loadIndex();
+const visible = projects.filter((p) => p.public !== false);
+---
+
+<BaseLayout title="Hub de projetos" description="Seus projetos elevados — visão clara de cada aplicativo, passo a passo">
+  <header class="site-header">
+    <div class="container">
+      <span class="badge">Open source · MIT</span>
+      <h1>Hub de projetos</h1>
+      <p>
+        Registre ideias localmente e acompanhe o que cada intake produziu. Cada card é a
+        <strong>visão de um aplicativo</strong> — problema, requisitos, arquitetura e prontidão.
+        A plataforma em si está em
+        <a href={withBase("/sobre/")} style="color: var(--color-sky-glow);">sobre o Sky-Forge</a>.
+      </p>
+      <nav class="hub-nav" aria-label="Navegação principal">
+        <a href={withBase("/")} class="hub-nav-link hub-nav-active">Projetos</a>
+        <a href={withBase("/agentes/")} class="hub-nav-link">Agentes</a>
+        <a href={withBase("/sobre/")} class="hub-nav-link">Sobre</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    {visible.length === 0 ? (
+      <div class="empty-state panel">
+        <p>Nenhum projeto no hub ainda.</p>
+        <p>
+          Comece com intake local; publique um preview quando quiser compartilhar:
+        </p>
+        <p>
+          <code>./scripts/sky/sky.ps1 intake -Slug meu-projeto</code><br />
+          <code>./scripts/sky/sky.ps1 publish -Slug meu-projeto -Public</code>
+        </p>
+        <p><a href={withBase("/sobre/")}>Como a plataforma funciona →</a></p>
+      </div>
+    ) : (
+      <div class="grid">
+        {visible.map((project) => <ProjectCard project={project} />)}
+      </div>
+    )}
+  </main>
+</BaseLayout>

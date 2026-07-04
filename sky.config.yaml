@@ -1,0 +1,18 @@
+# Sky-Forge — configuração local (versionada; paths absolutos via env)
+version: "1.0"
+
+outputs:
+  # Pacotes completos — recomendado FORA do repo (gitignored por padrão).
+  # Override: variável de ambiente SKY_OUTPUTS_DIR
+  dir: outputs
+
+registry:
+  # Previews sanitizados para o site — versionados no repo open source
+  dir: showcase/registry
+  # Registry externo opcional (ex.: pasta pessoal não commitada)
+  external_dir: null
+
+showcase:
+  port: 4321
+  # registry = só previews públicos | outputs = lê pacotes locais (dev)
+  data_source: registry

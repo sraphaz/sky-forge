@@ -9,7 +9,7 @@
 [CmdletBinding()]
 param(
     [Parameter(Position = 0, Mandatory = $true)]
-    [ValidateSet('intake', 'status', 'approve', 'run', 'validate', 'export', 'elevate')]
+    [ValidateSet('intake', 'status', 'approve', 'run', 'validate', 'export', 'elevate', 'publish', 'showcase', 'agents', 'audit', 'choreograph')]
     [string]$Command,
 
     [Parameter()]
@@ -24,7 +24,19 @@ param(
     [string]$Completeness = 'full',
 
     [Parameter()]
-    [switch]$Force
+    [switch]$Force,
+
+    [Parameter()]
+    [switch]$Public,
+
+    [Parameter()]
+    [string]$Intent,
+
+    [Parameter()]
+    [string[]]$ChangedFiles,
+
+    [Parameter()]
+    [int]$Last = 20
 )
 
 $ErrorActionPreference = 'Stop'
@@ -32,6 +44,14 @@ $RepoRoot = Resolve-Path (Join-Path $PSScriptRoot '..\..')
 
 function Get-SessionDir([string]$s) {
     Join-Path $RepoRoot ".sky\sessions\$s"
+}
+
+function Invoke-AgentAudit {
+    param([string]$s, [string]$agent, [string]$action, [string]$level, [string]$outcome, [string]$details = '')
+    $rec = Join-Path $PSScriptRoot 'record-agent-event.ps1'
+    if (Test-Path $rec) {
+        & $rec -Slug $s -AgentId $agent -Action $action -Outcome $outcome -AutonomyLevel $level -Details $details -ErrorAction SilentlyContinue | Out-Null
+    }
 }
 
 switch ($Command) {
@@ -82,11 +102,79 @@ switch ($Command) {
     }
     'export' {
         if (-not $Slug) { throw 'export requires -Slug' }
+        $check = Join-Path $PSScriptRoot 'check-autonomy.ps1'
+        if (Test-Path $check) {
+            & $check -Slug $Slug -AgentId 'delivery-steward' -Action 'export.package' -ErrorAction SilentlyContinue
+            if ($LASTEXITCODE -ne 0 -and -not $Force) {
+                Write-Host "Export bloqueado — aprove gate package ou use -Force com consciencia." -ForegroundColor Yellow
+                Invoke-AgentAudit $Slug 'delivery-steward' 'export.package' 'side_effect' 'blocked' 'gate package'
+                throw 'autonomy gate package'
+            }
+        }
         $validateArgs = @{ Slug = $Slug; Completeness = $Completeness }
         if ($Force -or $Completeness -eq 'partial') { $validateArgs.Force = $true }
         & (Join-Path $PSScriptRoot 'validate-package.ps1') @validateArgs
         & (Join-Path $PSScriptRoot 'export-package.ps1') -Slug $Slug
         $dcScript = Join-Path $RepoRoot 'extensions\sky-cloud-design\scripts\export-dc.ps1'
         if (Test-Path $dcScript) { & $dcScript -Slug $Slug }
+        Invoke-AgentAudit $Slug 'delivery-steward' 'export.package' 'side_effect' 'ok'
+        & (Join-Path $RepoRoot 'scripts\agents\choreograph-agents.ps1') -Slug $Slug -Trigger post_export -ErrorAction SilentlyContinue | Out-Null
+    }
+    'publish' {
+        if (-not $Slug) { throw 'publish requires -Slug' }
+        $action = if ($Public) { 'publish.public' } else { 'publish.preview' }
+        $check = Join-Path $PSScriptRoot 'check-autonomy.ps1'
+        if (Test-Path $check) {
+            & $check -Slug $Slug -AgentId 'showcase-curator' -Action $action -ErrorAction SilentlyContinue
+            if ($LASTEXITCODE -ne 0 -and $Public) {
+                Invoke-AgentAudit $Slug 'showcase-curator' $action 'public' 'blocked'
+                throw 'autonomy gate public_showcase'
+            }
+        }
+        $pubArgs = @{ Slug = $Slug }
+        if ($Public) { $pubArgs.Public = $true }
+        & (Join-Path $PSScriptRoot 'publish-preview.ps1') @pubArgs
+        Invoke-AgentAudit $Slug 'showcase-curator' $action $(if ($Public) { 'public' } else { 'invoke_skill' }) 'ok'
+    }
+    'showcase' {
+        . (Join-Path $PSScriptRoot 'get-sky-config.ps1')
+        $cfg = Read-SkyConfigFile
+        $showcaseDir = Join-Path $RepoRoot 'apps\showcase'
+        if (-not (Test-Path (Join-Path $showcaseDir 'package.json'))) {
+            throw "Showcase nao encontrado em apps/showcase"
+        }
+        Write-Host "Iniciando showcase em http://localhost:$($cfg.showcasePort)" -ForegroundColor Cyan
+        Push-Location $showcaseDir
+        try {
+            if (-not (Test-Path 'node_modules')) {
+                Write-Host "pnpm install..." -ForegroundColor Yellow
+                pnpm install
+            }
+            pnpm dev --port $cfg.showcasePort
+        } finally {
+            Pop-Location
+        }
+        if ($Slug) { Invoke-AgentAudit $Slug 'showcase-curator' 'showcase.open' 'invoke_skill' 'ok' }
+    }
+    'agents' {
+        $choreo = Join-Path $RepoRoot 'scripts\agents\choreograph-agents.ps1'
+        $cargs = @{ Trigger = 'manual' }
+        if ($Slug) { $cargs.Slug = $Slug }
+        if ($Intent) { $cargs.Intent = $Intent }
+        if ($ChangedFiles) { $cargs.ChangedFiles = $ChangedFiles }
+        & $choreo @cargs
+    }
+    'audit' {
+        $aargs = @{ Last = $Last }
+        if ($Slug) { $aargs.Slug = $Slug }
+        & (Join-Path $PSScriptRoot 'agent-audit.ps1') @aargs
+    }
+    'choreograph' {
+        $choreo = Join-Path $RepoRoot 'scripts\agents\choreograph-agents.ps1'
+        $cargs = @{ Json = $true; Trigger = 'manual' }
+        if ($Slug) { $cargs.Slug = $Slug }
+        if ($Intent) { $cargs.Intent = $Intent }
+        if ($ChangedFiles) { $cargs.ChangedFiles = $ChangedFiles }
+        & $choreo @cargs
     }
 }

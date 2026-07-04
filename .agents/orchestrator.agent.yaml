@@ -11,15 +11,26 @@ skills:
   - sky-elevate
   - sky-approve
   - sky-validate
+  - sky-deliver
+  - sky-publish
+  - sky-choreograph
+  - sky-audit
 routing:
   area/intake: intake-conductor
+  area/experience: sky-host
+  area/delivery: delivery-steward
+  area/showcase: showcase-curator
   area/elevation: sky-elevator
   area/ux: ux-design-specialist
   area/architecture: solutions-architect
   area/market: market-scout
-  area/export: prompt-assembler
+  area/export: delivery-steward
+  area/implement: repo-scaffolder
 co_route:
-  .sky/sessions/**: intake-conductor
+  .sky/sessions/**: sky-host
+  showcase/**: showcase-curator
+  apps/showcase/**: showcase-curator
+  sky.config.yaml: delivery-steward
   docs/humanity/**: sky-elevator
   docs/specs/**: intake-conductor
 guardrails:

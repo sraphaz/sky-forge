@@ -41,3 +41,13 @@ Sempre opcional. Se `open_to_elevation: false`, pule sugestões.
 ```
 
 Persistir YAML a cada turno. Informar `SKY_SCORE` e `elevation_level` quando disponível.
+
+Se `overall_readiness ≥ 0.55`, oferecer handoff ao **delivery-steward** via **sky-host** (não exportar sem explicar).
+
+## Agentes de experiência
+
+| Agente | Quando |
+|--------|--------|
+| sky-host | Sempre — face da experiência, opções numeradas |
+| delivery-steward | Export, pasta externa |
+| showcase-curator | Galeria visual, publish opt-in |
