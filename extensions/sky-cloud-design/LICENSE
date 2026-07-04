@@ -1,0 +1,13 @@
+PROPRIETARY LICENSE — Sky Cloud Design Extension (Sky-Forge)
+
+Copyright (c) 2026 Sky-Forge contributors. All rights reserved.
+
+This directory and its contents are NOT licensed under the MIT license
+that applies to the Blueprint Forge core repository.
+
+You may not copy, modify, merge, publish, distribute, sublicense, or sell
+copies of this extension without explicit written permission from the copyright holder.
+
+The core repository may invoke this extension when present locally; redistribution
+of the extension as part of a public fork of blueprint-forge is prohibited
+unless separately licensed.

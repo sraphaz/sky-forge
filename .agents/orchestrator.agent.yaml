@@ -1,0 +1,26 @@
+id: orchestrator
+name: Orquestrador Sky-Forge
+description: Roteia intenções; elevação e UX via co-route.
+triggers:
+  - manual
+scope:
+  paths: []
+  may_code: false
+skills:
+  - sky-intake
+  - sky-elevate
+  - sky-approve
+  - sky-validate
+routing:
+  area/intake: intake-conductor
+  area/elevation: sky-elevator
+  area/ux: ux-design-specialist
+  area/architecture: solutions-architect
+  area/market: market-scout
+  area/export: prompt-assembler
+co_route:
+  .sky/sessions/**: intake-conductor
+  docs/humanity/**: sky-elevator
+  docs/specs/**: intake-conductor
+guardrails:
+  require_harness: true

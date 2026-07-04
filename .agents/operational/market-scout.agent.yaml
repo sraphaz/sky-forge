@@ -1,0 +1,20 @@
+id: market-scout
+name: Market Scout
+description: Pesquisa mercado, concorrentes e stacks atuais; sintetiza research.md.
+triggers:
+  - manual
+scope:
+  paths:
+    - outputs/**
+    - docs/tiers/**
+    - docs/integrations/**
+  may_code: true
+skills:
+  - forge-plan
+  - forge-rag-query
+outputs:
+  - research.md
+  - market-signals.yaml
+guardrails:
+  cite_sources: true
+  separate_rag_from_web: true

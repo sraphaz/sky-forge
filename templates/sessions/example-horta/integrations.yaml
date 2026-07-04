@@ -1,0 +1,20 @@
+integrations:
+  - id: INT-001
+    type: maps
+    required: true
+    provider_options:
+      - openstreetmap_flutter_map
+      - google_maps
+      - mapbox
+    ai_recommendation: openstreetmap_flutter_map
+    reason: MVP gratuito, sem API key
+    user_choice: pending
+  - id: INT-002
+    type: auth
+    required: true
+    provider_options:
+      - supabase_auth
+      - firebase_auth
+    ai_recommendation: supabase_auth
+    reason: Alinha com tier mvp-free e postgres
+    user_choice: pending

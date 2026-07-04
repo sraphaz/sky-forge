@@ -1,0 +1,9 @@
+id: sky-validate
+name: Sky Validate
+description: Valida pacote contra sky-package.spec.yaml.
+inputs:
+  slug: kebab-case
+  completeness: partial | full
+steps:
+  - script: scripts/sky/validate-package.ps1 -Slug {slug} -Completeness {completeness}
+  - script: scripts/harness/validate-specs.ps1 -SpecId sky-package

@@ -1,0 +1,26 @@
+id: example-horta
+title: Horta Comunitária do Bairro
+problem: |
+  Moradores não têm visibilidade de quem cultiva o quê nas hortas coletivas
+  e perdem datas de plantio/compartilhamento.
+motivation: |
+  Fortalecer vínculo local e reduzir desperdício de mudas e ferramentas.
+primary_users:
+  - morador cultivador
+  - vizinho interessado em participar
+value_proposition: |
+  Mapa vivo das hortas + calendário compartilhado de plantio no bairro.
+mvp_scope: |
+  Mapa com pins das hortas + calendário básico de eventos de plantio.
+out_of_scope:
+  - marketplace de produtos
+  - pagamentos
+tier: mvp-free
+app_types:
+  - community
+  - territorial
+institutional_site: true
+constraints:
+  budget: mínimo possível
+  timeline: MVP em 2 meses
+  team_size: 1 dev + IA

@@ -1,0 +1,22 @@
+$id: https://sky-forge.dev/schemas/nfr.schema.yaml
+title: Non-Functional Requirements
+type: object
+required: [requirements]
+properties:
+  requirements:
+    type: array
+    items:
+      type: object
+      required: [id, category, statement]
+      properties:
+        id:
+          type: string
+          pattern: "^NFR-[0-9]+$"
+        category:
+          enum: [performance, security, scalability, availability, accessibility, maintainability, compliance, cost]
+        statement: { type: string }
+        target: { type: string }
+        tier_minimum:
+          enum: [mvp-free, growth, enterprise]
+        ai_suggested: { type: boolean }
+        user_confirmed: { type: boolean, nullable: true }

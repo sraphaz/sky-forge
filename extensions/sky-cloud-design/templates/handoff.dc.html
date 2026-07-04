@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{PROJECT_TITLE}} — Handoff Blueprint Forge</title>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body { font-family: system-ui, sans-serif; margin: 2rem; max-width: 960px; }
+h1 { font-size: 1.75rem; }
+section { margin: 2rem 0; padding: 1rem; border: 1px solid #ccc; border-radius: 8px; }
+.meta { color: #666; font-size: 0.9rem; }
+</style>
+</helmet>
+
+<h1>{{PROJECT_TITLE}}</h1>
+<p class="meta">Gerado por Blueprint Forge · {{GENERATED_AT}} · Slug: {{SLUG}}</p>
+
+<section id="brief">
+<h2>Brief</h2>
+<pre>{{BRIEF_SUMMARY}}</pre>
+</section>
+
+<section id="maturity">
+<h2>Maturidade</h2>
+<pre>{{MATURITY_SUMMARY}}</pre>
+</section>
+
+<section id="requirements">
+<h2>Requisitos funcionais (must)</h2>
+<pre>{{RF_MUST}}</pre>
+</section>
+
+<section id="architecture">
+<h2>Arquitetura</h2>
+<p>Ver outputs/{{SLUG}}/architecture/ — seção expandida na PR 5.</p>
+</section>
+
+<section id="next">
+<h2>Próximos passos</h2>
+<ol>
+<li>Importar prompts em Cursor / Claude Code</li>
+<li>Inicializar repo com scaffold/</li>
+<li>Implementar por task graph</li>
+</ol>
+</section>
+
+</x-dc>
+</body>
+</html>

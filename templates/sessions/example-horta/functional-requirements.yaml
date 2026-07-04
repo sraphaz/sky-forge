@@ -1,0 +1,25 @@
+requirements:
+  - id: RF-001
+    title: Visualizar mapa das hortas do bairro
+    description: Pins clicáveis com nome e responsável
+    source: usuário mencionou mapa
+    priority: must
+    mvp: true
+    ai_suggested: false
+    user_confirmed: true
+  - id: RF-002
+    title: Calendário de plantio compartilhado
+    description: Eventos de plantio e colheita por horta
+    source: inferido — horta comunitária típica
+    priority: should
+    mvp: true
+    ai_suggested: true
+    user_confirmed: null
+  - id: RF-003
+    title: Página institucional sobre o projeto
+    description: Site estático com missão e como participar
+    source: institutional_site true no brief
+    priority: should
+    mvp: true
+    ai_suggested: false
+    user_confirmed: true

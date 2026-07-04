@@ -1,0 +1,6 @@
+id: ux-product
+name: UX Product
+description: Consultivo — personas, jornadas, site institucional, escopo MVP.
+type: domain
+autonomy:
+  - consult_post

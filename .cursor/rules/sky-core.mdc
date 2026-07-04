@@ -1,0 +1,16 @@
+---
+description: Nucleo Sky-Forge — elevar propostas com prosperidade humana e UX digna
+globs:
+alwaysApply: true
+---
+
+# Sky-Forge — regras nucleo
+
+Leia [AGENTS.md](../../AGENTS.md) e [SKY_MERIT_INDICES.md](../../docs/_meta/SKY_MERIT_INDICES.md).
+
+- Sessoes em `.sky/sessions/{slug}/`
+- Intake: [INTAKE_PROTOCOL.md](../../docs/_meta/INTAKE_PROTOCOL.md)
+- Elevação: consultar `sky-elevator`; respeitar `sky-merits.yaml` → `policies`
+- UX: `ux-design-specialist` — WCAG AA, tokens, baixa excitação
+- Inferencias: `ai_suggested: true` ate confirmacao
+- Extensao `extensions/sky-cloud-design/` — proprietaria

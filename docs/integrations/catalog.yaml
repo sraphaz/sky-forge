@@ -1,0 +1,67 @@
+# Catálogo de integrações — referência para intake e stack-curator
+version: "1.0"
+updated: 2026-07-04
+
+integrations:
+  - type: auth
+    providers:
+      - id: supabase_auth
+        tiers: [mvp-free, growth]
+        cost: free_tier
+      - id: clerk
+        tiers: [growth, enterprise]
+        cost: saas
+      - id: keycloak
+        tiers: [enterprise]
+        cost: self_hosted
+
+  - type: maps
+    providers:
+      - id: openstreetmap_flutter_map
+        tiers: [mvp-free, growth]
+        cost: free
+      - id: google_maps
+        tiers: [growth, enterprise]
+        cost: pay_per_use
+      - id: mapbox
+        tiers: [growth, enterprise]
+        cost: saas
+
+  - type: payments
+    providers:
+      - id: stripe
+        tiers: [growth, enterprise]
+        cost: per_transaction
+      - id: mercado_pago
+        tiers: [growth, enterprise]
+        cost: per_transaction
+
+  - type: email
+    providers:
+      - id: resend
+        tiers: [mvp-free, growth]
+        cost: free_tier
+      - id: sendgrid
+        tiers: [growth, enterprise]
+        cost: saas
+
+  - type: storage
+    providers:
+      - id: supabase_storage
+        tiers: [mvp-free, growth]
+      - id: s3
+        tiers: [growth, enterprise]
+
+  - type: analytics
+    providers:
+      - id: posthog
+        tiers: [mvp-free, growth]
+      - id: mixpanel
+        tiers: [growth, enterprise]
+
+  - type: push
+    providers:
+      - id: fcm
+        tiers: [mvp-free, growth, enterprise]
+      - id: onesignal
+        tiers: [growth]

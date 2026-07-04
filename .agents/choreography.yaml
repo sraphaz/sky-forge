@@ -1,0 +1,78 @@
+# Coreografia — Sky-Forge
+version: 2
+updated: 2026-07-04
+policy: |
+  intake-conductor coreografa conversa; sky-elevator e ux-design-specialist elevam
+  a proposta; operacionais produzem artefatos em batch.
+
+rules:
+  - id: intake-sessions
+    paths:
+      - .sky/sessions/**
+    agents:
+      - id: intake-conductor
+        type: operational
+        autonomy: [activate, invoke_skill]
+        skills: [sky-intake, sky-approve, sky-elevate]
+      - id: sky-elevator
+        type: domain
+        autonomy: [consult_post]
+      - id: ux-design-specialist
+        type: operational
+        autonomy: [consult_post, invoke_skill]
+        skills: [sky-elevate]
+      - id: cost-tier-advisor
+        type: domain
+        autonomy: [consult_post]
+      - id: ux-product
+        type: domain
+        autonomy: [consult_post]
+
+  - id: humanity-docs
+    paths:
+      - docs/humanity/**
+      - docs/_meta/SKY_MERIT_INDICES.md
+    agents:
+      - id: sky-elevator
+        type: domain
+        autonomy: [consult_post]
+
+  - id: outputs-package
+    paths:
+      - outputs/**
+    agents:
+      - id: market-scout
+        type: operational
+        autonomy: [activate]
+      - id: solutions-architect
+        type: operational
+        autonomy: [activate, invoke_skill]
+        skills: [sky-plan]
+      - id: ux-design-specialist
+        type: operational
+        autonomy: [activate]
+      - id: stack-curator
+        type: domain
+        autonomy: [consult_post]
+      - id: security-compliance
+        type: domain
+        autonomy: [consult_post]
+
+  - id: export-cloud-design
+    paths:
+      - extensions/sky-cloud-design/**
+    agents:
+      - id: prompt-assembler
+        type: operational
+        autonomy: [activate, invoke_skill]
+        skills: [sky-export, sky-validate]
+
+  - id: specs-harness
+    paths:
+      - docs/specs/**
+      - scripts/harness/**
+    agents:
+      - id: intake-conductor
+        type: operational
+        autonomy: [activate]
+    skills: [sky-validate]

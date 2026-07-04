@@ -1,0 +1,30 @@
+id: mvp-free
+title: MVP / Gratuito
+description: Protótipo, validação de ideia, custo mínimo.
+
+stack_defaults:
+  backend: [supabase, firebase]
+  frontend_web: [nextjs-vercel, astro]
+  mobile: [flutter-expo]
+  auth: [supabase_auth, firebase_auth]
+  database: [postgres_supabase, firestore]
+  hosting: [vercel_hobby, netlify_free]
+
+cost_estimate_monthly_usd: "0–25"
+
+trade_offs:
+  pros:
+    - Setup rápido
+    - Sem compromisso de infra
+    - Ideal para validar PMF
+  cons:
+    - Limites de free tier
+    - Menos controle de compliance
+    - Escala manual
+
+sustainability_minimum: 0.30
+
+when_to_use:
+  - Ideia nova sem receita
+  - Piloto comunitário
+  - Protótipo para investidor

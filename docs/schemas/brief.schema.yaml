@@ -1,0 +1,37 @@
+$id: https://sky-forge.dev/schemas/brief.schema.yaml
+title: Brief
+type: object
+required: [id, title, problem]
+properties:
+  id:
+    type: string
+    pattern: "^[a-z0-9-]+$"
+  title:
+    type: string
+  problem:
+    type: string
+  motivation:
+    type: string
+  primary_users:
+    type: array
+    items: { type: string }
+  value_proposition:
+    type: string
+  mvp_scope:
+    type: string
+  out_of_scope:
+    type: array
+    items: { type: string }
+  tier:
+    enum: [mvp-free, growth, enterprise, undecided]
+  app_types:
+    type: array
+    items: { type: string }
+  institutional_site:
+    type: boolean
+  constraints:
+    type: object
+    properties:
+      budget: { type: string }
+      timeline: { type: string }
+      team_size: { type: string }

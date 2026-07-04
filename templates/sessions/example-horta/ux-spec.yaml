@@ -1,0 +1,33 @@
+# UX Spec — exemplo horta
+version: "1.0"
+slug: example-horta
+
+principles:
+  - mobile_first
+  - wcag_2_1_aa
+  - low_excitation_no_dark_patterns
+  - territory_as_calm_reference
+  - conscious_explicit_actions
+
+tokens:
+  source: design_tokens_css_variables
+  hardcoded_colors_forbidden: true
+
+key_screens:
+  - id: map-home
+    title: Mapa das hortas
+    primary_action: Ver pin e detalhes
+    accessibility:
+      - touch_targets_min_44px
+      - map_alternative_list_view
+  - id: calendar
+    title: Calendário de plantio
+    primary_action: Ver evento da comunidade
+
+journeys:
+  - persona: morador cultivador
+    steps: [abrir app, ver mapa, registrar evento no calendário]
+
+institutional_site:
+  required: true
+  tone: calmo, informativo, sem urgência artificial

@@ -1,0 +1,24 @@
+id: example-feature
+version: "1.0.0"
+title: "Título da capability"
+owner: intake-conductor
+status: draft
+
+intent: |
+  Uma ou duas frases — o quê e por quê.
+
+acceptance:
+  - id: AC-1
+    when: "Quando condição observável"
+    then: "comportamento verificável"
+    status: pending
+
+harness:
+  scripts: []
+  commands: []
+  agents: []
+
+links:
+  docs: []
+
+guardrails: []

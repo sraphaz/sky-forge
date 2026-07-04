@@ -1,0 +1,33 @@
+$id: https://sky-forge.dev/schemas/alternatives.schema.yaml
+title: Alternatives and Client Policies
+type: object
+required: [policies]
+properties:
+  policies:
+    type: object
+    properties:
+      open_to_stack_alternatives: { type: boolean, default: true }
+      open_to_scope_changes: { type: boolean, default: true }
+      open_to_tier_upgrade: { type: boolean, default: true }
+      open_to_ai_recommendation: { type: boolean, default: true }
+      max_alternatives_per_topic: { type: integer, default: 3 }
+  pending_suggestions:
+    type: array
+    items:
+      type: object
+      required: [topic, options, recommendation]
+      properties:
+        topic: { type: string }
+        options:
+          type: array
+          items:
+            type: object
+            properties:
+              id: { type: string }
+              label: { type: string }
+              cost: { type: string }
+              complexity: { enum: [low, medium, high] }
+        recommendation: { type: string }
+        rationale: { type: string }
+        resolved: { type: boolean, default: false }
+        user_choice: { type: string }

@@ -1,0 +1,8 @@
+id: sky-rag-index
+name: Sky RAG Index
+description: "(PR 4) Indexa docs/patterns, outcomes, tiers."
+status: planned
+steps:
+  - script: scripts/sky/rag-index.ps1
+references:
+  - docs/specs/sky-rag.spec.yaml

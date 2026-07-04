@@ -1,0 +1,9 @@
+id: sky-rag-query
+name: Sky RAG Query
+description: "(PR 4) Retrieve semântico por dimensão e tier."
+status: planned
+inputs:
+  query: string
+  dimension: business | product | ux_design | technical | sustainability | elevation
+steps:
+  - script: scripts/sky/rag-query.ps1

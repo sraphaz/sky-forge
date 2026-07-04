@@ -1,0 +1,13 @@
+id: learn-from-outcome
+name: Learn From Outcome
+description: Após construir app real, registra learnings em docs/outcomes/ para RAG futuro.
+inputs:
+  slug: kebab-case
+  outcome: success | partial | failure
+steps:
+  - template: docs/outcomes/_template/learnings.md
+  - write: docs/outcomes/{slug}/learnings.md
+  - optional: scripts/forge/rag-index.ps1
+guardrails:
+  anonymize_pii: true
+  no_raw_transcripts: true

@@ -1,0 +1,88 @@
+version: "1.0"
+slug: example-horta
+sky_score: 52
+elevation_level: rise
+
+policies:
+  open_to_elevation: true
+  open_to_humanity_connections: true
+  open_to_ux_dignity_review: true
+
+weights:
+  SPI: 0.25
+  HCE: 0.20
+  GAP: 0.20
+  CWB: 0.20
+  UXD: 0.15
+
+indices:
+  SPI:
+    score: 55
+    rationale: |
+      Horta comunitária fortalece autonomia alimentar local e troca no bairro.
+    evidence:
+      - brief motivação comunitária
+  HCE:
+    score: 50
+    rationale: |
+      Calendário de plantio pode educar práticas regenerativas se copy for didático.
+    evidence: []
+  GAP:
+    score: 45
+    rationale: |
+      Conexão moderada com CH-BIODIVERSITY e CH-LOCAL-ECONOMY.
+    evidence:
+      - challenge_id CH-BIODIVERSITY
+  CWB:
+    score: 58
+    rationale: |
+      Coesão de vizinhança e cuidado coletivo alinhados ao produto.
+    evidence: []
+  UXD:
+    score: 40
+    rationale: |
+      ux-spec ainda não produzido; alvo WCAG AA e baixa excitação.
+    evidence: []
+
+elevation_suggestions:
+  - id: ELV-001
+    title: Parceria com hortas escolares do bairro
+    description: |
+      Expandir calendário para incluir oficinas abertas — aumenta HCE e CWB
+      sem alterar core do mapa.
+    challenge_id: CH-EDUCATION
+    impact_indices: [HCE, CWB]
+    ai_suggested: true
+    user_confirmed: null
+    scope: post_mvp
+  - id: ELV-002
+    title: Modo offline leve para consulta do mapa
+    description: |
+      Inclusão digital em conectividade fraca — alinha CH-INEQUALITY.
+    challenge_id: CH-INEQUALITY
+    impact_indices: [SPI, GAP]
+    ai_suggested: true
+    user_confirmed: null
+    scope: optional
+
+humanity_connections:
+  - challenge_id: CH-BIODIVERSITY
+    product_feature: Mapa de hortas com geolocalização
+    connection_rationale: |
+      Território como referência — lugares vivos, não abstração de feed global.
+    ai_suggested: true
+  - challenge_id: CH-LOCAL-ECONOMY
+    product_feature: Calendário de troca de mudas e ferramentas
+    connection_rationale: |
+      Economia de vizinhança sem marketplace agressivo.
+    ai_suggested: true
+
+ux_design:
+  principles:
+    - mobile_first
+    - wcag_aa
+    - low_excitation
+    - design_tokens_only
+  accessibility_target: WCAG 2.1 AA
+  excitation_level: low
+  design_tokens_required: true

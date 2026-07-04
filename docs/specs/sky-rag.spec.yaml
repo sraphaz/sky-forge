@@ -1,0 +1,32 @@
+id: sky-rag
+version: "1.0.0"
+title: "RAG local para corpus Forge"
+owner: intake-conductor
+status: draft
+
+intent: |
+  Indexação e consulta semântica de patterns, outcomes e tiers para enriquecer
+  intake e recomendações sem inflar contexto.
+
+acceptance:
+  - id: AC-RAG-1
+    then: "rag-index.ps1 indexa docs/patterns e docs/outcomes"
+  - id: AC-RAG-2
+    then: "rag-query.ps1 retorna top-k com source_path e metadata"
+  - id: AC-RAG-3
+    then: "transcripts de sessão não aparecem no índice"
+  - id: AC-RAG-4
+    then: "intake-conductor invoca forge-rag-query antes de sugestões de stack (tier technical)"
+
+harness:
+  scripts: []
+  commands: []
+  agents:
+    - intake-conductor
+
+links:
+  docs:
+    - docs/_meta/RAG_STRATEGY.md
+
+guardrails:
+  - no-pii-in-index

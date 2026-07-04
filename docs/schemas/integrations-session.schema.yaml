@@ -1,0 +1,26 @@
+$id: https://sky-forge.dev/schemas/integrations-session.schema.yaml
+title: Session Integrations
+type: object
+required: [integrations]
+properties:
+  integrations:
+    type: array
+    items:
+      type: object
+      required: [id, type, required]
+      properties:
+        id:
+          type: string
+          pattern: "^INT-[0-9]+$"
+        type:
+          enum: [auth, maps, payments, email, sms, storage, analytics, erp, crm, social_login, push, search, other]
+        required: { type: boolean }
+        provider_options:
+          type: array
+          items: { type: string }
+        ai_recommendation: { type: string }
+        reason: { type: string }
+        user_choice:
+          type: string
+          enum: [pending, delegated, custom]
+        custom_provider: { type: string }

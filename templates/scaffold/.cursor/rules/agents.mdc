@@ -1,0 +1,7 @@
+---
+description: Thin pointer to AGENTS.md (scaffold pattern from victusfate/scaffold)
+globs:
+alwaysApply: true
+---
+
+Leia e siga [AGENTS.md](../../AGENTS.md) na raiz do projeto gerado.

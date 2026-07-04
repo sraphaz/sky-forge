@@ -1,0 +1,66 @@
+version: "1.0"
+slug: example-horta
+updated_at: "2026-07-04T12:00:00Z"
+overall_readiness: 0.42
+
+weights:
+  business: 0.22
+  product: 0.18
+  ux_design: 0.15
+  technical: 0.18
+  sustainability: 0.12
+  elevation: 0.15
+
+dimensions:
+  business:
+    level: 2
+    score: 0.82
+    gaps: ["modelo de receita não discutido"]
+  product:
+    level: 1
+    score: 0.55
+    gaps: ["jornada de onboarding", "RFs além do mapa"]
+  ux_design:
+    level: 0
+    score: 0.35
+    gaps: ["ux-spec incompleto", "acessibilidade não validada"]
+  technical:
+    level: 0
+    score: 0.25
+    gaps: ["integrações não listadas", "NFRs de escala"]
+  sustainability:
+    level: 0
+    score: 0.10
+    gaps: ["deploy", "observabilidade", "quem mantém"]
+  elevation:
+    level: 1
+    score: 0.48
+    gaps: ["humanity_connections não confirmadas", "SPI baixo sem receita local"]
+
+conversation_level: product
+
+pipeline_unlock:
+  market_research:
+    requires: { business: 0.70 }
+    approved: false
+  sky_elevation:
+    requires: { business: 0.65, product: 0.50 }
+    approved: false
+  ux_review:
+    requires: { product: 0.55 }
+    approved: false
+  architecture:
+    requires: { business: 0.80, product: 0.60, ux_design: 0.40 }
+    approved: false
+  roadmap:
+    requires: { product: 0.70 }
+    approved: false
+  prompt_compile:
+    requires: { product: 0.75, technical: 0.50, ux_design: 0.50 }
+    approved: false
+  cloud_design_export:
+    requires: { product: 0.80, technical: 0.60, elevation: 0.35 }
+    approved: false
+  full_package:
+    requires: { overall: 0.85 }
+    approved: false

@@ -1,0 +1,34 @@
+id: enterprise
+title: Enterprise
+description: Escala, compliance, multi-tenant, operação formal.
+
+stack_defaults:
+  backend: [dotnet_k8s, java_spring]
+  frontend_web: [nextjs_enterprise]
+  mobile: [flutter_enterprise]
+  auth: [oidc_enterprise, keycloak]
+  database: [postgres_ha, sql_server]
+  hosting: [kubernetes, azure_aws_gcp]
+  observability: [datadog, grafana_stack]
+  compliance: [soc2_track, lgpd_formal]
+
+cost_estimate_monthly_usd: "500+"
+
+trade_offs:
+  pros:
+    - ADRs e governança
+    - SLA e auditoria
+    - Multi-região
+  cons:
+    - Custo e complexidade altos
+    - Time de ops necessário
+
+sustainability_minimum: 0.75
+
+when_to_use:
+  - Dados sensíveis / saúde / financeiro
+  - Contratos B2B
+  - Requisitos regulatórios
+
+required_consults:
+  - security-compliance

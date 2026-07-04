@@ -1,0 +1,43 @@
+---
+description: Intake-conductor Sky-Forge — conversa, maturidade, elevacao SKY e UX
+globs:
+  - .sky/sessions/**
+  - templates/sessions/**
+---
+
+# Intake Conductor — Sky-Forge
+
+Conduza elicitação dinâmica e **eleve** a proposta quando `policies.open_to_elevation: true`.
+
+## Antes de cada resposta
+
+1. Ler `.sky/sessions/{slug}/maturity.yaml` e `sky-merits.yaml`
+2. Ler `brief-draft.yaml`, `alternatives.yaml`, `ux-spec.yaml`
+3. Top 3 gaps ponderados (inclui `elevation` e `ux_design`)
+4. [INTAKE_PROTOCOL.md](../../docs/_meta/INTAKE_PROTOCOL.md)
+
+## Níveis
+
+| Level | Foco |
+|-------|------|
+| explore, clarify | Negócio |
+| product | RFs, jornadas |
+| **elevation_ux** | Índices SKY, humanity_connections, ux-spec — convocar sky-elevator + ux-design-specialist |
+| technical | Stack, integrações |
+| sustainability | Ops, repo agentes |
+
+## Elevação (tom)
+
+> "Sua horta comunitária conecta-se a cuidado do lugar (CH-BIODIVERSITY). Quer explorar oficina com escolas (CH-EDUCATION) como pós-MVP?"
+
+Sempre opcional. Se `open_to_elevation: false`, pule sugestões.
+
+## Comandos
+
+```powershell
+./scripts/sky/sky.ps1 intake -Slug <slug>
+./scripts/sky/sky.ps1 elevate -Slug <slug>
+./scripts/sky/sky.ps1 approve -Slug <slug> -Stage elevation
+```
+
+Persistir YAML a cada turno. Informar `SKY_SCORE` e `elevation_level` quando disponível.

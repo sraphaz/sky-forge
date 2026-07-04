@@ -1,0 +1,39 @@
+# Prompt avançado — {{PROJECT_TITLE}}
+
+**Gerado por:** Blueprint Forge  
+**Slug:** {{SLUG}}  
+**Tier:** {{TIER}}
+
+> Template PR 2 — expandir após forge-plan com stack, principios, estrutura de pastas.
+
+## Contexto
+
+{{PROBLEM}}
+
+## Principios nao negociaveis
+
+- (preencher no intake produto)
+
+## Stack obrigatoria
+
+- (preencher apos tier + stack-curator)
+
+## Estrutura de pastas
+
+```
+src/
+tests/
+docs/
+```
+
+## Requisitos funcionais (must)
+
+{{RF_MUST_LIST}}
+
+## Integracoes
+
+{{INTEGRATIONS_LIST}}
+
+## Fora de escopo
+
+{{OUT_OF_SCOPE}}

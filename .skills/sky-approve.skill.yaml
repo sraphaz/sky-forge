@@ -1,0 +1,8 @@
+id: sky-approve
+name: Sky Approve
+description: Human gate por estágio (brief, elevation, architecture, package).
+inputs:
+  slug: kebab-case
+  stage: brief | research | elevation | architecture | package
+steps:
+  - script: scripts/sky/approve-stage.ps1 -Slug {slug} -Stage {stage}

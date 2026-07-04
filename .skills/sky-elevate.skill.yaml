@@ -1,0 +1,20 @@
+id: sky-elevate
+name: Sky Elevate
+description: |
+  Consulta sky-elevator + ux-design-specialist: índices SKY, conexões humanidade,
+  sugestões de expansão de consciência e revisão UXD.
+inputs:
+  slug: kebab-case
+steps:
+  - read: docs/_meta/SKY_MERIT_INDICES.md
+  - read: docs/humanity/challenges-catalog.yaml
+  - read: .sky/sessions/{slug}/brief-draft.yaml
+  - read: .sky/sessions/{slug}/sky-merits.yaml
+  - agent: sky-elevator consult_post → atualizar sky-merits.yaml
+  - agent: ux-design-specialist → ux-spec fragment + UXD score
+  - validate: policies.open_to_elevation respeitada
+outputs:
+  - .sky/sessions/{slug}/sky-merits.yaml
+  - .sky/sessions/{slug}/ux-spec.yaml
+guardrails:
+  ai_suggested_elevation_requires_confirmation: true

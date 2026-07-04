@@ -1,0 +1,50 @@
+Sky-Forge
+Copyright (c) 2026 Sky-Forge contributors
+
+This product incorporates ideas and patterns from the following open source
+projects. See docs/attribution/ for detail. This file satisfies attribution
+requirements where applicable.
+
+---
+
+BMAD Method (MIT)
+  Copyright (c) 2025 BMad Code, LLC
+  https://github.com/bmad-code-org/BMAD-METHOD
+  Patterns adopted: scale-adaptive tracks, elicitation menus, workflow phases.
+  Trademarks BMad™, BMad Method™, BMad Core™ are NOT used in this project name.
+
+GitHub Spec Kit (MIT)
+  Copyright GitHub, Inc.
+  https://github.com/github/spec-kit
+  Patterns adopted: specify → plan → tasks phase model.
+
+OpenSpec (MIT)
+  Copyright (c) 2024 OpenSpec Contributors
+  https://github.com/Fission-AI/OpenSpec
+  Patterns adopted: lightweight spec deltas (future brownfield support).
+
+victusfate/scaffold (MIT)
+  Copyright (c) 2026 victusfate
+  https://github.com/victusfate/scaffold
+  Patterns adopted: AGENTS.md cross-harness, thin IDE rules.
+
+agent-generator (Apache-2.0)
+  Copyright ruslanmv and contributors
+  https://github.com/ruslanmv/agent-generator
+  Patterns adopted: contract validation, allowed-scope boundaries.
+
+swarm-planner (no license declared on upstream as of 2026-07-04)
+  https://github.com/Gabrielasu/swarm-planner
+  Patterns ONLY reimplemented: task graph, self-contained prompt packets,
+  human review checkpoint. No upstream code copied.
+
+Arah agent operation patterns
+  Internal reference from sraphaz/arah: harness, agent-graph, choreography,
+  spec YAML format. Not distributed as third-party dependency.
+
+---
+
+Proprietary components (NOT under MIT):
+
+  extensions/forge-cloud-design/
+  See extensions/forge-cloud-design/LICENSE

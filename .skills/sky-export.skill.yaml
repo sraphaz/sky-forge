@@ -1,0 +1,9 @@
+id: sky-export
+name: Sky Export
+description: Empacota outputs e invoca sky-cloud-design.
+inputs:
+  slug: kebab-case
+steps:
+  - skill: sky-validate
+  - script: scripts/sky/export-package.ps1 -Slug {slug}
+  - script: extensions/sky-cloud-design/scripts/export-dc.ps1 -Slug {slug}

@@ -1,0 +1,24 @@
+$id: https://sky-forge.dev/schemas/functional-requirements.schema.yaml
+title: Functional Requirements
+type: object
+required: [requirements]
+properties:
+  requirements:
+    type: array
+    items:
+      type: object
+      required: [id, title, priority]
+      properties:
+        id:
+          type: string
+          pattern: "^RF-[0-9]+$"
+        title: { type: string }
+        description: { type: string }
+        source: { type: string }
+        priority:
+          enum: [must, should, could, wont]
+        mvp: { type: boolean }
+        ai_suggested: { type: boolean, default: false }
+        user_confirmed:
+          type: boolean
+          nullable: true

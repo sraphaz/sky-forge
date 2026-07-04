@@ -1,0 +1,21 @@
+policies:
+  open_to_stack_alternatives: true
+  open_to_scope_changes: true
+  open_to_tier_upgrade: false
+  open_to_ai_recommendation: true
+  max_alternatives_per_topic: 3
+
+pending_suggestions:
+  - topic: maps
+    options:
+      - id: A
+        label: OpenStreetMap + flutter_map
+        cost: free
+        complexity: low
+      - id: B
+        label: Google Maps
+        cost: pay_per_use
+        complexity: low
+    recommendation: A
+    rationale: Tier mvp-free; ver docs/patterns/community-app-with-map.md
+    resolved: false

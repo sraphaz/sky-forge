@@ -1,0 +1,19 @@
+id: prompt-assembler
+name: Prompt Assembler
+description: Compila prompts avançados e empacota export; invoca sky-cloud-design.
+triggers:
+  - manual
+scope:
+  paths:
+    - outputs/**
+    - templates/prompts/**
+    - extensions/sky-cloud-design/**
+  may_code: true
+skills:
+  - forge-export
+  - forge-validate
+outputs:
+  - prompts/
+  - cloud-design/
+guardrails:
+  validate_before_export: true

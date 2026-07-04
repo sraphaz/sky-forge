@@ -1,0 +1,47 @@
+id: intake-conductor
+name: Intake Conductor
+description: |
+  Agente de entrada conversacional. Conduz elicitação em 6 dimensões incluindo
+  ux_design e elevation (prosperidade humana). Coreografa sky-elevator e ux-design-specialist.
+triggers:
+  - manual
+scope:
+  paths:
+    - .sky/sessions/**
+    - docs/schemas/**
+    - templates/sessions/**
+  may_code: true
+skills:
+  - sky-intake
+  - sky-approve
+  - sky-elevate
+  - sky-rag-query
+domain_consults:
+  - sky-elevator
+  - ux-design-specialist
+  - cost-tier-advisor
+  - ux-product
+  - stack-curator
+  - security-compliance
+elicitation:
+  levels:
+    - id: business
+      min_score_before_next: 0.70
+    - id: product
+      min_score_before_next: 0.60
+    - id: elevation_ux
+      min_score_before_next: 0.40
+    - id: technical
+      min_score_before_next: 0.50
+    - id: sustainability
+      min_score_before_next: 0.40
+  rules:
+    - one_topic_per_turn
+    - mirror_user_language
+    - mark_inferences_ai_suggested
+    - offer_alternatives_when_tradeoff
+    - invite_elevation_when_open_to_elevation
+    - never_skip_business_minimum
+guardrails:
+  no_confirmed_requirements_without_user_ok: true
+  respect_elevation_policy: true

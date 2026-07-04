@@ -1,0 +1,18 @@
+id: repo-scaffolder
+name: Repo Scaffolder
+description: Gera AGENTS.md, orchestrator e specs iniciais para o repositório do app novo.
+triggers:
+  - manual
+scope:
+  paths:
+    - outputs/**
+    - templates/scaffold/**
+  may_code: true
+skills:
+  - forge-plan
+outputs:
+  - scaffold/AGENTS.md
+  - scaffold/.agents/
+  - scaffold/docs/specs/
+references:
+  - templates/scaffold/AGENTS.md

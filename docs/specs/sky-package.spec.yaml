@@ -1,0 +1,43 @@
+id: sky-package
+version: "1.1.0"
+title: "Pacote exportável Sky-Forge"
+owner: intake-conductor
+status: active
+
+intent: |
+  Pacote em outputs/{slug}/ com material para Cloud Design, Cursor e repo novo;
+  inclui sky-merits, ux-spec e elevação documentada.
+
+acceptance:
+  - id: AC-SK-1
+    then: "brief.yaml com problem, primary_users, tier"
+  - id: AC-SK-2
+    then: "sky-merits.yaml com indices SPI,HCE,GAP,CWB,UXD e policies"
+  - id: AC-SK-3
+    then: "ux-spec.yaml com principles e accessibility_target"
+  - id: AC-SK-4
+    then: ">= 1 RF must com user_confirmed para export full"
+  - id: AC-SK-5
+    then: "elevation_suggestions com ai_suggested nao viram RF must sem confirmacao"
+  - id: AC-SK-6
+    then: "architecture/ se technical.score >= 0.6"
+  - id: AC-SK-7
+    then: "validate-package.ps1 passa"
+
+harness:
+  scripts:
+    - scripts/sky/validate-package.ps1
+    - scripts/sky/validate-maturity.ps1
+  agents:
+    - intake-conductor
+    - ux-design-specialist
+    - sky-elevator
+
+links:
+  docs:
+    - docs/_meta/SKY_MERIT_INDICES.md
+    - docs/_meta/MATURITY_MODEL.md
+
+guardrails:
+  - elevation-optional-respect-policy
+  - no-full-export-below-0.85-unless-force

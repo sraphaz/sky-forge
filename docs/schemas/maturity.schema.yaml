@@ -1,0 +1,60 @@
+$id: https://sky-forge.dev/schemas/maturity.schema.yaml
+title: Maturity Map
+type: object
+required: [version, slug, overall_readiness, dimensions, pipeline_unlock]
+properties:
+  version:
+    type: string
+  slug:
+    type: string
+  updated_at:
+    type: string
+    format: date-time
+  overall_readiness:
+    type: number
+    minimum: 0
+    maximum: 1
+  dimensions:
+    type: object
+    properties:
+      business:
+        $ref: "#/definitions/dimension"
+      product:
+        $ref: "#/definitions/dimension"
+      ux_design:
+        $ref: "#/definitions/dimension"
+      technical:
+        $ref: "#/definitions/dimension"
+      sustainability:
+        $ref: "#/definitions/dimension"
+      elevation:
+        $ref: "#/definitions/dimension"
+  pipeline_unlock:
+    type: object
+    additionalProperties:
+      type: object
+      properties:
+        requires:
+          type: object
+          additionalProperties:
+            type: number
+        approved:
+          type: boolean
+  conversation_level:
+    enum: [explore, clarify, product, elevation_ux, technical, sustainability, ready_for_batch]
+definitions:
+  dimension:
+    type: object
+    required: [level, score, gaps]
+    properties:
+      level:
+        type: integer
+        minimum: 0
+        maximum: 4
+      score:
+        type: number
+        minimum: 0
+        maximum: 1
+      gaps:
+        type: array
+        items: { type: string }

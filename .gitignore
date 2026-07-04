@@ -1,0 +1,29 @@
+# Session outputs
+.sky/sessions/*
+!templates/sessions/
+
+outputs/*
+!outputs/.gitkeep
+
+# RAG index (PR 4)
+.sky/rag/index/
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.idea/
+*.swp
+*.swo
+
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Node/Python artifacts (future tooling)
+node_modules/
+__pycache__/
+.venv/
+dist/
+
+harness-report.json

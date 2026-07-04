@@ -1,0 +1,9 @@
+id: sky-plan
+name: Sky Plan
+description: Pipeline batch pós-brief com task graph e roadmap.
+inputs:
+  slug: kebab-case
+  stage: optional
+steps:
+  - read: .sky/sessions/{slug}/maturity.yaml
+  - check: pipeline_unlock

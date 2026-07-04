@@ -1,0 +1,64 @@
+# Catálogo neutro de desafios planetários — para conexão sky-elevator
+# Uso: sugerir alinhamento, não impor. Atualizar com fontes verificáveis (ONU, OMS, etc.)
+version: "1.0"
+updated: 2026-07-04
+source_note: |
+  Referência para GAP (Global Alignment Potential). Agente cita challenge_id
+  ao propor humanity_connections — sem tom prescritivo.
+
+challenges:
+  - id: CH-CLIMATE
+    title: Ação climática e resiliência local
+    domains: [environment, energy, food_systems]
+    connection_prompts:
+      - Como o produto reduz desperdício ou fortalece práticas locais sustentáveis?
+      - Há dados que ajudem comunidades a adaptar-se a eventos extremos?
+
+  - id: CH-HEALTH
+    title: Saúde e bem-estar comunitário
+    domains: [public_health, mental_health, access]
+    connection_prompts:
+      - O app facilita cuidado mútuo ou acesso a informação de saúde confiável?
+      - Evita alarmismo e promove ação consciente?
+
+  - id: CH-EDUCATION
+    title: Educação e literacia digital digna
+    domains: [learning, digital_inclusion]
+    connection_prompts:
+      - Ensina algo que permanece? Respeita ritmo e contexto local?
+      - Reduz barreiras de acesso (idioma, conectividade fraca)?
+
+  - id: CH-INEQUALITY
+    title: Redução de desigualdades e inclusão
+    domains: [economic, social, accessibility]
+    connection_prompts:
+      - Quem ficaria de fora sem esforço explícito de inclusão?
+      - Há caminho gratuito ou de baixo custo para quem mais precisa?
+
+  - id: CH-LOCAL-ECONOMY
+    title: Economia local e autonomia comunitária
+    domains: [local_commerce, cooperatives, fair_exchange]
+    connection_prompts:
+      - O produto fortalece vínculos econômicos no território, não só extração?
+      - Evita marketplace agressivo ou dependência de plataforma única?
+
+  - id: CH-PEACE
+    title: Coesão social e diálogo
+    domains: [governance, moderation, conflict]
+    connection_prompts:
+      - Facilita encontro e mediação sem polarização algorítmica?
+      - Moderação e transparência estão no desenho?
+
+  - id: CH-BIODIVERSITY
+    title: Biodiversidade e lugares vivos
+    domains: [territory, ecology, maps]
+    connection_prompts:
+      - Respeita o lugar como referência (território neutro, geográfico)?
+      - Mapas e dados servem ao cuidado do bioma local?
+
+  - id: CH-OPEN-KNOWLEDGE
+    title: Conhecimento aberto e soberania de dados
+    domains: [privacy, data_governance, interoperability]
+    connection_prompts:
+      - Usuário controla seus dados? Exportação e portabilidade?
+      - Evita vigilância ou dark patterns?

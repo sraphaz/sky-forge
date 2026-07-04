@@ -1,0 +1,6 @@
+id: security-compliance
+name: Security Compliance
+description: Consultivo — LGPD, auth, secrets; obrigatório em tier Enterprise.
+type: domain
+autonomy:
+  - consult_post

@@ -1,0 +1,30 @@
+id: growth
+title: Growth
+description: Usuários reais, escala moderada, custo previsível.
+
+stack_defaults:
+  backend: [dotnet_api, node_fastify, rails]
+  frontend_web: [nextjs]
+  mobile: [flutter_bff]
+  auth: [clerk, auth0, custom_jwt]
+  database: [postgres_managed, planetscale]
+  hosting: [railway, render, fly_io]
+  observability: [sentry, better_stack]
+
+cost_estimate_monthly_usd: "50–500"
+
+trade_offs:
+  pros:
+    - Postgres gerenciado
+    - CI/CD básico
+    - Auth SaaS maduro
+  cons:
+    - Custo cresce com uso
+    - Requer monitoramento
+
+sustainability_minimum: 0.50
+
+when_to_use:
+  - Product-market fit em validação
+  - Primeiros pagantes
+  - 100–10k usuários

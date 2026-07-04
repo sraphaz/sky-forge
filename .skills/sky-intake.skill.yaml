@@ -1,0 +1,18 @@
+id: sky-intake
+name: Sky Intake
+description: Sessão conversacional; atualiza .sky/sessions/{slug}/ e dimensões incluindo elevation e ux_design.
+inputs:
+  slug: kebab-case
+  mode: new | resume
+steps:
+  - script: scripts/sky/new-session.ps1 -Slug {slug}
+  - read: docs/_meta/INTAKE_PROTOCOL.md
+  - read: docs/_meta/SKY_MERIT_INDICES.md
+  - read: docs/_meta/MATURITY_MODEL.md
+  - read: .sky/sessions/{slug}/maturity.yaml
+  - read: .sky/sessions/{slug}/sky-merits.yaml
+  - agent: conduzir conversa; atualizar artefatos
+  - script: scripts/sky/validate-maturity.ps1 -Slug {slug}
+guardrails:
+  ai_suggested_requires_confirmation: true
+  respect_open_to_elevation: true

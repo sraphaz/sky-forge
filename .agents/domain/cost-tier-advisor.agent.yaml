@@ -1,0 +1,10 @@
+id: cost-tier-advisor
+name: Cost Tier Advisor
+description: Consultivo — recomenda tier MVP/Growth/Enterprise com matriz de custo e trade-offs.
+type: domain
+autonomy:
+  - consult_post
+references:
+  - docs/tiers/mvp-free.yaml
+  - docs/tiers/growth.yaml
+  - docs/tiers/enterprise.yaml

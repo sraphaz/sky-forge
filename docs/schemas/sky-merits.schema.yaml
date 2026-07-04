@@ -1,0 +1,78 @@
+$id: https://sky-forge.dev/schemas/sky-merits.schema.yaml
+title: Sky Merit Indices
+type: object
+required: [version, slug, policies, indices]
+properties:
+  version:
+    type: string
+  slug:
+    type: string
+  sky_score:
+    type: number
+    minimum: 0
+    maximum: 100
+  elevation_level:
+    enum: [ground, rise, horizon, sky]
+  policies:
+    type: object
+    properties:
+      open_to_elevation: { type: boolean, default: true }
+      open_to_humanity_connections: { type: boolean, default: true }
+      open_to_ux_dignity_review: { type: boolean, default: true }
+  weights:
+    type: object
+    description: Pesos dos índices no SKY_SCORE
+  indices:
+    type: object
+    properties:
+      SPI:
+        $ref: "#/definitions/index"
+      HCE:
+        $ref: "#/definitions/index"
+      GAP:
+        $ref: "#/definitions/index"
+      CWB:
+        $ref: "#/definitions/index"
+      UXD:
+        $ref: "#/definitions/index"
+  elevation_suggestions:
+    type: array
+    items:
+      type: object
+      required: [id, title, ai_suggested]
+      properties:
+        id: { type: string }
+        title: { type: string }
+        description: { type: string }
+        challenge_id: { type: string }
+        impact_indices: { type: array, items: { type: string } }
+        ai_suggested: { type: boolean }
+        user_confirmed: { type: boolean, nullable: true }
+        scope: { enum: [mvp, post_mvp, optional] }
+  humanity_connections:
+    type: array
+    items:
+      type: object
+      properties:
+        challenge_id: { type: string }
+        product_feature: { type: string }
+        connection_rationale: { type: string }
+        ai_suggested: { type: boolean }
+  ux_design:
+    type: object
+    properties:
+      principles: { type: array, items: { type: string } }
+      accessibility_target: { type: string, default: "WCAG 2.1 AA" }
+      excitation_level: { enum: [low, medium], default: low }
+      design_tokens_required: { type: boolean, default: true }
+definitions:
+  index:
+    type: object
+    required: [score]
+    properties:
+      score:
+        type: number
+        minimum: 0
+        maximum: 100
+      rationale: { type: string }
+      evidence: { type: array, items: { type: string } }

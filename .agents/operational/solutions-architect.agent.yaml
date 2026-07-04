@@ -1,0 +1,22 @@
+id: solutions-architect
+name: Solutions Architect
+description: Produz arquitetura C4, domínios e ADRs iniciais a partir do brief maduro.
+triggers:
+  - manual
+scope:
+  paths:
+    - outputs/**
+    - templates/architecture/**
+  may_code: true
+skills:
+  - forge-plan
+  - forge-rag-query
+domain_consults:
+  - stack-curator
+  - security-compliance
+outputs:
+  - architecture/c4-context.md
+  - architecture/domains.md
+  - architecture/adrs/
+guardrails:
+  adr_required_for_structural_decisions: true

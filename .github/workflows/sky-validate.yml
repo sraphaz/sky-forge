@@ -1,0 +1,26 @@
+name: Forge Validate
+on:
+  push:
+    paths:
+      - 'docs/specs/**'
+      - 'scripts/**'
+      - '.agents/**'
+  pull_request:
+    paths:
+      - 'docs/specs/**'
+      - 'scripts/**'
+      - '.agents/**'
+
+jobs:
+  harness:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate specs
+        shell: pwsh
+        run: ./scripts/harness/validate-specs.ps1
+      - name: Validate example maturity template
+        shell: pwsh
+        run: ./scripts/sky/validate-maturity.ps1 -Slug example-horta-ci-test
+        continue-on-error: true
+        # template only — copy not required if dimensions in template file
