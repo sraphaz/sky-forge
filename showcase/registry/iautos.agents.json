@@ -1,12 +1,12 @@
 ﻿{
     "slug":  "iautos",
-    "published_at":  "2026-07-04T23:58:36.1428144Z",
+    "published_at":  "2026-07-05T00:08:23.7155538Z",
     "journey_phase":  "implement",
     "metrics":  {
                     "last_agent":  "orchestrator",
                     "last_action":  "choreography.resolve",
                     "last_outcome":  "ok",
-                    "total_events":  321
+                    "total_events":  330
                 },
     "choreography":  {
                          "matched_rules":  [
@@ -266,87 +266,6 @@
                         ],
     "events":  [
                    {
-                       "ts":  "2026-07-04T23:46:23.4284926Z",
-                       "agent_id":  "orchestrator",
-                       "action":  "session.read",
-                       "outcome":  "ok",
-                       "autonomy_level":  "observe",
-                       "human_gate":  null,
-                       "details":  "hook_stop"
-                   },
-                   {
-                       "ts":  "2026-07-04T23:46:23.6765339Z",
-                       "agent_id":  "orchestrator",
-                       "action":  "choreography.resolve",
-                       "outcome":  "ok",
-                       "autonomy_level":  "route",
-                       "human_gate":  null,
-                       "details":  "{\"matched_rules\":[],\"files\":[\".sky/sessions/iautos\"]}"
-                   },
-                   {
-                       "ts":  "2026-07-04T23:47:17.0601860Z",
-                       "agent_id":  "orchestrator",
-                       "action":  "session.read",
-                       "outcome":  "ok",
-                       "autonomy_level":  "observe",
-                       "human_gate":  null,
-                       "details":  "hook_stop"
-                   },
-                   {
-                       "ts":  "2026-07-04T23:47:17.1933166Z",
-                       "agent_id":  "orchestrator",
-                       "action":  "choreography.resolve",
-                       "outcome":  "ok",
-                       "autonomy_level":  "route",
-                       "human_gate":  null,
-                       "details":  "{\"matched_rules\":[],\"files\":[\".sky/sessions/iautos\"]}"
-                   },
-                   {
-                       "ts":  "2026-07-04T23:50:22.4954662Z",
-                       "agent_id":  "orchestrator",
-                       "action":  "choreography.resolve",
-                       "outcome":  "ok",
-                       "autonomy_level":  "route",
-                       "human_gate":  null,
-                       "details":  "{\"matched_rules\":[\"intake-sessions\"],\"files\":[\".sky/sessions/iautos\"]}"
-                   },
-                   {
-                       "ts":  "2026-07-04T23:50:26.1888802Z",
-                       "agent_id":  "orchestrator",
-                       "action":  "choreography.resolve",
-                       "outcome":  "ok",
-                       "autonomy_level":  "route",
-                       "human_gate":  null,
-                       "details":  "{\"matched_rules\":[\"intake-sessions\"],\"files\":[\".sky/sessions/iautos\"]}"
-                   },
-                   {
-                       "ts":  "2026-07-04T23:50:33.7151990Z",
-                       "agent_id":  "repo-scaffolder",
-                       "action":  "workspace.link",
-                       "outcome":  "ok",
-                       "autonomy_level":  "side_effect",
-                       "human_gate":  null,
-                       "details":  ""
-                   },
-                   {
-                       "ts":  "2026-07-04T23:52:22.4356981Z",
-                       "agent_id":  "orchestrator",
-                       "action":  "session.read",
-                       "outcome":  "ok",
-                       "autonomy_level":  "observe",
-                       "human_gate":  null,
-                       "details":  "hook_stop"
-                   },
-                   {
-                       "ts":  "2026-07-04T23:52:22.7559320Z",
-                       "agent_id":  "orchestrator",
-                       "action":  "choreography.resolve",
-                       "outcome":  "ok",
-                       "autonomy_level":  "route",
-                       "human_gate":  null,
-                       "details":  "{\"matched_rules\":[],\"files\":[\".sky/sessions/iautos\"]}"
-                   },
-                   {
                        "ts":  "2026-07-04T23:52:24.0861280Z",
                        "agent_id":  "orchestrator",
                        "action":  "session.read",
@@ -528,6 +447,87 @@
                    },
                    {
                        "ts":  "2026-07-04T23:58:34.3138517Z",
+                       "agent_id":  "orchestrator",
+                       "action":  "choreography.resolve",
+                       "outcome":  "ok",
+                       "autonomy_level":  "route",
+                       "human_gate":  null,
+                       "details":  "{\"matched_rules\":[\"intake-sessions\"],\"files\":[\".sky/sessions/iautos\"]}"
+                   },
+                   {
+                       "ts":  "2026-07-04T23:58:36.1376593Z",
+                       "agent_id":  "orchestrator",
+                       "action":  "choreography.resolve",
+                       "outcome":  "ok",
+                       "autonomy_level":  "route",
+                       "human_gate":  null,
+                       "details":  "{\"matched_rules\":[\"intake-sessions\"],\"files\":[\".sky/sessions/iautos\"]}"
+                   },
+                   {
+                       "ts":  "2026-07-04T23:58:50.8280900Z",
+                       "agent_id":  "orchestrator",
+                       "action":  "session.read",
+                       "outcome":  "ok",
+                       "autonomy_level":  "observe",
+                       "human_gate":  null,
+                       "details":  "hook_stop"
+                   },
+                   {
+                       "ts":  "2026-07-04T23:58:51.0571742Z",
+                       "agent_id":  "orchestrator",
+                       "action":  "choreography.resolve",
+                       "outcome":  "ok",
+                       "autonomy_level":  "route",
+                       "human_gate":  null,
+                       "details":  "{\"matched_rules\":[],\"files\":[\".sky/sessions/iautos\"]}"
+                   },
+                   {
+                       "ts":  "2026-07-05T00:04:53.2042477Z",
+                       "agent_id":  "orchestrator",
+                       "action":  "session.read",
+                       "outcome":  "ok",
+                       "autonomy_level":  "observe",
+                       "human_gate":  null,
+                       "details":  "hook_stop"
+                   },
+                   {
+                       "ts":  "2026-07-05T00:04:53.3468713Z",
+                       "agent_id":  "orchestrator",
+                       "action":  "choreography.resolve",
+                       "outcome":  "ok",
+                       "autonomy_level":  "route",
+                       "human_gate":  null,
+                       "details":  "{\"matched_rules\":[],\"files\":[\".sky/sessions/iautos\"]}"
+                   },
+                   {
+                       "ts":  "2026-07-05T00:06:11.2883438Z",
+                       "agent_id":  "orchestrator",
+                       "action":  "session.read",
+                       "outcome":  "ok",
+                       "autonomy_level":  "observe",
+                       "human_gate":  null,
+                       "details":  "hook_stop"
+                   },
+                   {
+                       "ts":  "2026-07-05T00:06:11.4217276Z",
+                       "agent_id":  "orchestrator",
+                       "action":  "choreography.resolve",
+                       "outcome":  "ok",
+                       "autonomy_level":  "route",
+                       "human_gate":  null,
+                       "details":  "{\"matched_rules\":[],\"files\":[\".sky/sessions/iautos\"]}"
+                   },
+                   {
+                       "ts":  "2026-07-05T00:08:19.9770582Z",
+                       "agent_id":  "repo-scaffolder",
+                       "action":  "workspace.sync_after_export",
+                       "outcome":  "ok",
+                       "autonomy_level":  "invoke_skill",
+                       "human_gate":  null,
+                       "details":  "[path]"
+                   },
+                   {
+                       "ts":  "2026-07-05T00:08:21.0616650Z",
                        "agent_id":  "orchestrator",
                        "action":  "choreography.resolve",
                        "outcome":  "ok",

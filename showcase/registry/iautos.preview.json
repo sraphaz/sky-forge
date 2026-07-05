@@ -1143,7 +1143,7 @@
                           "id":  "cloud-design",
                           "type":  "cloud-design",
                           "description":  "Protótipos visuais proprietários — apenas metadados no showcase público",
-                          "summary":  "5 protótipos Sky Cloud Design (metadados)",
+                          "summary":  "6 protótipos Sky Cloud Design (metadados)",
                           "label":  "Cloud Design",
                           "path":  "cloud-design/",
                           "children":  [
@@ -1158,6 +1158,13 @@
                                                "label":  "Diagramas C4 e decisões arquiteturais",
                                                "filename":  "arquitetura.dc.html",
                                                "id":  "arquitetura.dc",
+                                               "type":  "cloud-design-file",
+                                               "available":  true
+                                           },
+                                           {
+                                               "label":  "DESIGN_INVENTORY",
+                                               "filename":  "DESIGN_INVENTORY.yaml",
+                                               "id":  "DESIGN_INVENTORY",
                                                "type":  "cloud-design-file",
                                                "available":  true
                                            },
@@ -1189,14 +1196,14 @@
                              "available":  true,
                              "file":  "iautos-package.zip",
                              "url_path":  "packages/iautos-package.zip",
-                             "size_bytes":  163715,
-                             "size_human":  "160 KB",
+                             "size_bytes":  198970,
+                             "size_human":  "194 KB",
                              "package_completeness":  "full",
                              "overall_readiness":  0.9,
-                             "exported_at":  "2026-07-04T23:58:26.9347461Z",
-                             "zipped_at":  "2026-07-04T23:58:35.9407770Z"
+                             "exported_at":  "2026-07-05T00:08:19.7271944Z",
+                             "zipped_at":  "2026-07-05T00:08:23.4707456Z"
                          },
     "public":  true,
-    "published_at":  "2026-07-04T23:58:36.0567605Z",
+    "published_at":  "2026-07-05T00:08:23.5955238Z",
     "outputs_dir":  "C:\\Users\\rapha\\CursorRepos\\sky-forge\\outputs\\iautos"
 }

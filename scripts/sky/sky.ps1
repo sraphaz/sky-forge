@@ -9,8 +9,18 @@
 [CmdletBinding()]
 param(
     [Parameter(Position = 0, Mandatory = $true)]
-    [ValidateSet('intake', 'status', 'approve', 'run', 'validate', 'export', 'elevate', 'benchmark', 'publish', 'sync', 'showcase', 'agents', 'audit', 'choreograph', 'architect', 'link', 'link-sync', 'pull-spec')]
+    [ValidateSet('intake', 'status', 'approve', 'run', 'validate', 'export', 'elevate', 'benchmark', 'publish', 'sync', 'showcase', 'agents', 'audit', 'choreograph', 'architect', 'link', 'link-sync', 'pull-spec', 'integrate-dc')]
     [string]$Command,
+
+    [Parameter()]
+    [string]$Screen,
+
+    [Parameter()]
+    [string]$SourcePath,
+
+    [Parameter()]
+    [ValidateSet('screens', 'institutional', 'platform', 'mobile', 'sky-forge')]
+    [string]$Folder = 'screens',
 
     [Parameter()]
     [string]$WorkspacePath,
@@ -280,5 +290,15 @@ switch ($Command) {
         if ($Slug) {
             Invoke-AgentAudit $Slug 'repo-scaffolder' 'workspace.pull_spec' 'invoke_skill' 'ok'
         }
+    }
+    'integrate-dc' {
+        if (-not $Slug -or -not $Screen -or -not $SourcePath) {
+            throw 'integrate-dc requires -Slug, -Screen and -SourcePath'
+        }
+        $iArgs = @{ Slug = $Slug; Screen = $Screen; SourcePath = $SourcePath }
+        if ($Folder) { $iArgs.Folder = $Folder }
+        if ($Public) { $iArgs.Sync = $true }
+        & (Join-Path $PSScriptRoot 'integrate-dc.ps1') @iArgs
+        Invoke-AgentAudit $Slug 'showcase-curator' 'design.integrate_dc' 'side_effect' 'ok' "$Folder/$Screen"
     }
 }
