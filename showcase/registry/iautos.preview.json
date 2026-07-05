@@ -1143,7 +1143,7 @@
                           "id":  "cloud-design",
                           "type":  "cloud-design",
                           "description":  "Protótipos visuais proprietários — apenas metadados no showcase público",
-                          "summary":  "6 protótipos Sky Cloud Design (metadados)",
+                          "summary":  "9 protótipos Sky Cloud Design (metadados)",
                           "label":  "Cloud Design",
                           "path":  "cloud-design/",
                           "children":  [
@@ -1176,6 +1176,13 @@
                                                "available":  true
                                            },
                                            {
+                                               "label":  "handoff navigation.dc",
+                                               "filename":  "handoff-navigation.dc.html",
+                                               "id":  "handoff-navigation.dc",
+                                               "type":  "cloud-design-file",
+                                               "available":  true
+                                           },
+                                           {
                                                "label":  "Handoff resumido",
                                                "filename":  "handoff.dc.html",
                                                "id":  "handoff.dc",
@@ -1183,9 +1190,23 @@
                                                "available":  true
                                            },
                                            {
+                                               "label":  "produto mercado.dc",
+                                               "filename":  "produto-mercado.dc.html",
+                                               "id":  "produto-mercado.dc",
+                                               "type":  "cloud-design-file",
+                                               "available":  true
+                                           },
+                                           {
                                                "label":  "Site institucional white-label (referência)",
                                                "filename":  "site-bonomi.dc.html",
                                                "id":  "site-bonomi.dc",
+                                               "type":  "cloud-design-file",
+                                               "available":  true
+                                           },
+                                           {
+                                               "label":  "support",
+                                               "filename":  "support.js",
+                                               "id":  "support",
                                                "type":  "cloud-design-file",
                                                "available":  true
                                            }
@@ -1196,14 +1217,14 @@
                              "available":  true,
                              "file":  "iautos-package.zip",
                              "url_path":  "packages/iautos-package.zip",
-                             "size_bytes":  198970,
-                             "size_human":  "194 KB",
+                             "size_bytes":  383843,
+                             "size_human":  "375 KB",
                              "package_completeness":  "full",
                              "overall_readiness":  0.9,
                              "exported_at":  "2026-07-05T00:08:19.7271944Z",
-                             "zipped_at":  "2026-07-05T00:08:23.4707456Z"
+                             "zipped_at":  "2026-07-05T02:02:10.8125663Z"
                          },
     "public":  true,
-    "published_at":  "2026-07-05T00:08:23.5955238Z",
+    "published_at":  "2026-07-05T02:02:10.9604364Z",
     "outputs_dir":  "C:\\Users\\rapha\\CursorRepos\\sky-forge\\outputs\\iautos"
 }

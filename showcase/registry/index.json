@@ -22,12 +22,12 @@
                                                   "available":  true,
                                                   "file":  "iautos-package.zip",
                                                   "url_path":  "packages/iautos-package.zip",
-                                                  "size_bytes":  198970,
-                                                  "size_human":  "194 KB",
+                                                  "size_bytes":  383843,
+                                                  "size_human":  "375 KB",
                                                   "package_completeness":  "full",
                                                   "overall_readiness":  0.9,
                                                   "exported_at":  "2026-07-05T00:08:19.7271944Z",
-                                                  "zipped_at":  "2026-07-05T00:08:23.4707456Z"
+                                                  "zipped_at":  "2026-07-05T02:02:10.8125663Z"
                                               },
                          "agents_file":  "iautos.agents.json"
                      }
