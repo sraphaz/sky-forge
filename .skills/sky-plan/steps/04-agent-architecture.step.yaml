@@ -1,0 +1,20 @@
+# Step 04 — Arquitetura agêntica (Arah)
+id: 04-agent-architecture
+skill: sky-agent-architecture
+load: on_demand
+fresh_context: recommended
+
+agent: solutions-architect
+invoke_skill: sky-agent-architecture
+
+read:
+  - .sky/sessions/{slug}/architecture/c4-components.md
+  - templates/architecture/agents/README.md
+
+write:
+  - .sky/sessions/{slug}/architecture/agent-architecture.md
+  - .sky/sessions/{slug}/architecture/agent-graph.md
+  - .sky/sessions/{slug}/architecture/agents/
+  - .sky/sessions/{slug}/architecture/specs/agent-harness.spec.yaml
+
+next: 05-test-strategy

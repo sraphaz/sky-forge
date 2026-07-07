@@ -2,7 +2,8 @@ id: solutions-architect
 name: Solutions Architect
 description: |
   Coordena especificação arquitetural — delega C4 (c4-modeler), jornadas
-  (journey-sequence-modeler) e revisão craft (clean-craft-advisor).
+  (journey-sequence-modeler), arquitetura agêntica da solução (padrão Arah)
+  e revisão craft (clean-craft-advisor).
 triggers:
   - manual
   - maturity_gate
@@ -16,11 +17,14 @@ skills:
   - sky-plan
   - sky-c4-model
   - sky-journey-sequences
+  - sky-agent-architecture
+  - sky-test-architecture
   - sky-clean-craft
 domain_consults:
   - stack-curator
   - security-compliance
   - clean-craft-advisor
+  - test-architect
   - c4-modeler
   - journey-sequence-modeler
 handoff_to:
@@ -34,6 +38,11 @@ outputs:
   - architecture/c4-summary.md
   - architecture/domains.md
   - architecture/context-flow.md
+  - architecture/agent-architecture.md
+  - architecture/agent-graph.md
+  - architecture/agents/
+  - architecture/specs/agent-harness.spec.yaml
+  - testing/test-strategy.md
   - architecture/sequences/
   - architecture/craft-review.md
   - architecture/adrs/

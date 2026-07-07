@@ -53,7 +53,7 @@ Chegada (sky-host) → intake-conductor (conversa)
 | `c4-modeler` | **C4 L1/L2/L3** + domains + resumo |
 | `journey-sequence-modeler` | **Sequências** + fluxograma de contexto |
 | `prompt-assembler` | Prompts avançados + export |
-| `repo-scaffolder` | Scaffold `AGENTS.md` do app novo |
+| `repo-scaffolder` | Scaffold `AGENTS.md` do app novo; sugere ARAH Harness quando plausível |
 
 ### Domínio (consultivos)
 
@@ -91,6 +91,24 @@ Chegada (sky-host) → intake-conductor (conversa)
 | `sky-rag-index` / `sky-rag-query` | PR 4 |
 | `learn-from-outcome` | Retroalimentação |
 
+## Profiles e plugins (Onda 1)
+
+O core é **agnóstico de marca**. Extensibilidade via:
+
+| Path | Função |
+|------|--------|
+| `profiles/` | O que gerar e gates por tipo de entrega (`consulting-handoff`, etc.) |
+| `schemas/sky-forge/` | Contratos dos artefatos exportados |
+| `plugins/examples/` | Adapters opcionais (removíveis sem quebrar CI) |
+| `examples/sky-forge-packages/` | Fixtures de validação |
+
+```powershell
+./scripts/sky/validate-profile.ps1 -Profile consulting-handoff -PackagePath examples/sky-forge-packages/surya-workspace-mvp -FixtureMode
+./scripts/sky/check-core-agnostic.ps1
+```
+
+Docs: [PROFILES.md](docs/_meta/PROFILES.md) · [PLUGINS.md](docs/_meta/PLUGINS.md) · [CONSULTING_HANDOFF_PROFILE.md](docs/_meta/CONSULTING_HANDOFF_PROFILE.md)
+
 ## Comandos
 
 ```powershell
@@ -109,6 +127,8 @@ Chegada (sky-host) → intake-conductor (conversa)
 ./scripts/sky/sky.ps1 agents -Slug <slug>
 ./scripts/sky/sky.ps1 audit -Slug <slug>
 ```
+
+**Repo agentic:** `sky status` e export geram `agentic-repo-recommendation.yaml`. Se tier `recommended` ou `suggested`, instale [ARAH Harness](https://github.com/sraphaz/arah-harness) no repo-alvo — [catálogo](docs/recommendations/agentic-repo.catalog.yaml).
 
 Autonomia e auditoria: [AGENT_AUTONOMY.md](docs/_meta/AGENT_AUTONOMY.md) · [AGENT_OBSERVABILITY.md](docs/_meta/AGENT_OBSERVABILITY.md)
 

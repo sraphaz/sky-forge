@@ -14,6 +14,9 @@
 outputs/*
 !outputs/.gitkeep
 
+# ZIPs de pacote gerados para download local no showcase (meta em showcase/registry/*.package.json)
+apps/showcase/public/packages/*.zip
+
 # RAG index (PR 4)
 .sky/rag/index/
 

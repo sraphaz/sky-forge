@@ -1,0 +1,9 @@
+# Step 07 — Export do pacote
+id: 07-export
+skill: sky-export
+load: on_demand
+
+script: scripts/sky/export-package.ps1 -Slug {slug}
+requires_gate: package
+
+next: null

@@ -1,0 +1,19 @@
+# Step 01 — Maturidade e gate
+id: 01-maturity-gate
+skill: sky-plan
+load: on_demand
+fresh_context: recommended
+
+read:
+  - .sky/sessions/{slug}/maturity.yaml
+  - .sky/sessions/{slug}/approvals.yaml
+
+check:
+  - pipeline_unlock.architecture
+  - gate architecture approved
+
+output: gate_status.yaml
+next: 02-c4-model
+
+guardrails:
+  skip_if_gate_missing: true

@@ -1,0 +1,30 @@
+id: test-architect
+name: Test Architect
+description: |
+  Consultivo (TEA) — estratégia de testes risk-based a partir de NFRs, ux-spec e RFs.
+  Deriva pirâmide de testes, critérios a11y (axe/Playwright) e gates de CI.
+type: domain
+autonomy:
+  - consult
+triggers:
+  - manual
+  - maturity_gate
+scope:
+  paths:
+    - .sky/sessions/**/nfr.yaml
+    - .sky/sessions/**/ux-spec.yaml
+    - .sky/sessions/**/testing/**
+    - outputs/**/testing/**
+  may_code: false
+skills:
+  - sky-test-architecture
+domain_consults: []
+handoff_to:
+  - solutions-architect
+  - repo-scaffolder
+outputs:
+  - testing/test-strategy.md
+guardrails:
+  max_autonomy: consult
+  no_side_effects: true
+  attribution: BMAD TEA module (patterns only)

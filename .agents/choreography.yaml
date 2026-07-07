@@ -170,7 +170,7 @@ rules:
         type: operational
         autonomy: [observe, activate]
         max_autonomy: activate
-        skills: [sky-plan, sky-c4-model, sky-journey-sequences]
+        skills: [sky-plan, sky-c4-model, sky-journey-sequences, sky-agent-architecture]
         requires_gate: [architecture]
       - id: c4-modeler
         type: operational
@@ -197,6 +197,30 @@ rules:
         type: domain
         autonomy: [consult]
         max_autonomy: consult
+      - id: test-architect
+        type: domain
+        autonomy: [consult]
+        max_autonomy: consult
+        skills: [sky-test-architecture]
+
+  - id: quality-spec
+    when: [manual, path_change, maturity_gate]
+    paths:
+      - .sky/sessions/**/nfr.yaml
+      - .sky/sessions/**/ux-spec.yaml
+      - .sky/sessions/**/testing/**
+      - outputs/**/testing/**
+    maturity_min: 0.55
+    agents:
+      - id: test-architect
+        type: domain
+        autonomy: [consult]
+        max_autonomy: consult
+        skills: [sky-test-architecture]
+      - id: ux-design-specialist
+        type: operational
+        autonomy: [consult]
+        max_autonomy: consult
 
   - id: agent-ops
     when: [manual]
@@ -215,15 +239,54 @@ co_activation:
   - primary: intake-conductor
     consult: [sky-elevator, ux-design-specialist, cost-tier-advisor]
     on_phase: [elevate, shape]
+    party: elevation-party
   - primary: delivery-steward
-    consult: [security-compliance]
+    consult: [security-compliance, test-architect]
     on_phase: [deliver]
+    party: deliver-party
   - primary: showcase-curator
     route_after: sky-host
     on_phase: [showcase]
   - primary: solutions-architect
-    consult: [c4-modeler, journey-sequence-modeler, clean-craft-advisor, stack-curator, security-compliance]
+    consult: [c4-modeler, journey-sequence-modeler, clean-craft-advisor, test-architect, stack-curator, security-compliance]
     on_phase: [specify, elevate]
+    party: architecture-party
   - primary: c4-modeler
     consult: [clean-craft-advisor, stack-curator]
     on_phase: [specify]
+  - primary: repo-scaffolder
+    consult: [test-architect, security-compliance]
+    on_phase: [implement]
+    party: implement-party
+
+# Party Mode — sessão multi-especialista mediada por sky-host (padrão BMAD, adaptado)
+# sky-host sintetiza consultas em até 4 opções; não substitui uma decisão por turno.
+party_mode:
+  policy: |
+    Reúne consultas paralelas de domínio. O host apresenta síntese — nunca export + publish
+    no mesmo turno. Ativado por fase UX (journey.yaml current_phase).
+  sessions:
+    - id: elevation-party
+      label: Elevação colaborativa
+      host: sky-host
+      primary: intake-conductor
+      consult: [sky-elevator, ux-design-specialist, cost-tier-advisor, market-benchmark]
+      on_phase: [shape, elevate]
+    - id: architecture-party
+      label: Especificação arquitetural
+      host: sky-host
+      primary: solutions-architect
+      consult: [c4-modeler, journey-sequence-modeler, clean-craft-advisor, test-architect, stack-curator, security-compliance]
+      on_phase: [specify]
+    - id: deliver-party
+      label: Entrega do pacote
+      host: sky-host
+      primary: delivery-steward
+      consult: [security-compliance, test-architect, showcase-curator]
+      on_phase: [deliver]
+    - id: implement-party
+      label: Implementação guiada
+      host: sky-host
+      primary: repo-scaffolder
+      consult: [test-architect, security-compliance, prompt-assembler]
+      on_phase: [implement]

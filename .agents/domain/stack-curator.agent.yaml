@@ -1,9 +1,12 @@
 id: stack-curator
 name: Stack Curator
-description: Consultivo — stack por tier, tipo de app e integrações do catálogo.
+description: Consultivo — stack por tier, tipo de app e integrações do catálogo. Sugere ARAH Harness quando repo agentic for plausível.
 type: domain
 autonomy:
   - consult_post
 references:
   - docs/integrations/catalog.yaml
+  - docs/recommendations/agentic-repo.catalog.yaml
   - docs/tiers/
+consult:
+  - suggest-agentic-repo.ps1

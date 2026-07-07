@@ -1,0 +1,20 @@
+# Step 03 — Jornadas e sequências
+id: 03-journey-sequences
+skill: sky-journey-sequences
+load: on_demand
+fresh_context: recommended
+
+agent: journey-sequence-modeler
+invoke_skill: sky-journey-sequences
+
+read:
+  - .sky/sessions/{slug}/architecture/c4-containers.md
+
+write:
+  - .sky/sessions/{slug}/architecture/context-flow.md
+  - .sky/sessions/{slug}/architecture/sequences/
+
+next: 04-agent-architecture
+skip_unless:
+  - has_rf_epic: [E3, E4]
+  - or_container: [Agent, Copilot]

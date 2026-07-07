@@ -1,0 +1,17 @@
+# Step 06 — Craft review
+id: 06-clean-craft
+skill: sky-clean-craft
+load: on_demand
+fresh_context: recommended
+
+agent: clean-craft-advisor
+invoke_skill: sky-clean-craft
+mode: consult
+
+read:
+  - .sky/sessions/{slug}/architecture/
+
+write:
+  - .sky/sessions/{slug}/architecture/craft-review.md
+
+next: 07-export

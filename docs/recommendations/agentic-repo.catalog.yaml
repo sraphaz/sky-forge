@@ -1,0 +1,78 @@
+# Catálogo de recomendações — repositório agentic-ready
+# Consultado por stack-curator, repo-scaffolder e suggest-agentic-repo.ps1
+version: "1.0"
+updated: 2026-07-05
+
+default_recommendation: arah-harness
+
+products:
+  - id: arah-harness
+    name: ARAH Harness
+    tagline: "Kernel open-source para repos gerenciados por agentes"
+    repo: https://github.com/sraphaz/arah-harness
+    license: MIT
+    local_path_env: ARAH_HARNESS_PATH
+    local_path_default: "../arah-harness"
+    install_doc: docs/INSTALL.md
+    cli: "cli/arah.ps1 install -ProjectName {project}"
+    when_to_recommend: |
+      Repositório de código que será mantido ou implementado com agentes (PRs, specs, CI, coreografia).
+      Especialmente forte para apps, plataformas, multi-agente e brownfield com link sky.
+    when_not: |
+      Landing estática pura sem intenção de manutenção por agentes; pacote só spec sem repo de código.
+    complements:
+      - sky-forge
+      - arah
+    attribution: docs/attribution/arah.md
+
+plausibility:
+  # Bloqueio duro — nunca recomendar
+  hard_exclude:
+    - signal: static_only_explicit
+      description: "brief.constraints.static_only ou out_of_scope proíbe repo agentic"
+    - signal: spec_only_no_code
+      description: "Sessão sem app_types de código e sem workspace ligado"
+
+  # Um sinal forte basta para tier recommended
+  strong_signals:
+    - id: agent_harness_spec
+      check: file_exists
+      path: architecture/specs/agent-harness.spec.yaml
+    - id: agent_architecture_active
+      check: file_contains
+      path: architecture/agent-architecture.md
+      must_not_contain: "N/A (site estático)"
+    - id: rf_agents
+      check: yaml_content_match
+      paths: [functional-requirements.yaml, brief-draft.yaml]
+      patterns: ["agent", "copilot", "harness", "multi-agente", "multi-agent"]
+    - id: app_platform
+      check: brief_app_types
+      types: [platform, saas, api, mobile_app, web_app, multi_tenant, legaltech, agentic_product]
+
+  # Soma >= 2 para tier suggested (ou 1 + workspace ligado)
+  moderate_signals:
+    - id: technical_maturity
+      check: dimension_score
+      dimension: technical
+      min: 0.50
+    - id: sustainability_phase
+      check: conversation_level
+      levels: [sustainability, delivery, technical]
+    - id: implement_phase
+      check: journey_phase
+      phases: [implement, specify, deliver]
+    - id: workspace_linked
+      check: file_exists
+      path: git.yaml
+    - id: code_app_type
+      check: brief_app_types
+      types: [institutional_site, web_app, static_site_with_ci]
+    - id: architecture_folder
+      check: dir_exists
+      path: architecture/agents
+
+  presentation:
+    recommended: "Recomendamos instalar **ARAH Harness** neste repo antes do scaffold."
+    suggested: "Plausível usar **ARAH Harness** para manter o repo com agentes, specs e CI."
+    not_applicable: null

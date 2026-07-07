@@ -1,0 +1,22 @@
+id: sky-agent-architecture
+name: Sky Agent Architecture
+description: |
+  Especifica arquitetura agêntica da solução (padrão Arah) — manifests,
+  coreografia, grafo e harness spec-driven. Complementa C4 quando há IA multi-agente.
+inputs:
+  slug: kebab-case
+steps:
+  - read: .sky/sessions/{slug}/functional-requirements.yaml
+  - read: .sky/sessions/{slug}/architecture/c4-containers.md
+  - read: .sky/sessions/{slug}/architecture/c4-components.md
+  - read: .sky/sessions/{slug}/architecture/domains.md
+  - read: templates/architecture/agents/README.md
+  - agent: solutions-architect — agent-architecture.md, agents/*.agent.yaml, choreography.yaml, agent-graph.md
+  - agent: security-compliance — revisar guardrails e HITL (consult)
+  - write: .sky/sessions/{slug}/architecture/agents/
+  - write: .sky/sessions/{slug}/architecture/specs/agent-harness.spec.yaml
+guardrails:
+  requires_architecture_gate: true
+  after_c4: true
+  attribution: docs/attribution/arah.md
+  solution_agents_not_sky_forge: true

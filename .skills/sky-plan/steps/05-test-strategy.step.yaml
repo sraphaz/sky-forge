@@ -1,0 +1,19 @@
+# Step 05 — Estratégia de testes (TEA consultivo)
+id: 05-test-strategy
+skill: sky-test-architecture
+load: on_demand
+fresh_context: recommended
+
+agent: test-architect
+invoke_skill: sky-test-architecture
+mode: consult
+
+read:
+  - .sky/sessions/{slug}/nfr.yaml
+  - .sky/sessions/{slug}/ux-spec.yaml
+  - .sky/sessions/{slug}/functional-requirements.yaml
+
+write:
+  - .sky/sessions/{slug}/testing/test-strategy.md
+
+next: 06-clean-craft

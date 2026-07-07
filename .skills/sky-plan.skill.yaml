@@ -1,16 +1,28 @@
 id: sky-plan
 name: Sky Plan
-description: Pipeline batch pós-brief — arquitetura C4, jornadas e craft review.
+description: Pipeline batch pós-brief — arquitetura C4, jornadas, agentes, testes e craft.
 inputs:
   slug: kebab-case
   stage: optional
+steps_dir: .skills/sky-plan/steps
+load_policy: on_demand
+step_order:
+  - 01-maturity-gate
+  - 02-c4-model
+  - 03-journey-sequences
+  - 04-agent-architecture
+  - 05-test-strategy
+  - 06-clean-craft
+  - 07-export
 steps:
-  - read: .sky/sessions/{slug}/maturity.yaml
-  - check: pipeline_unlock
-  - agent: c4-modeler via sky-c4-model — C4 L1/L2/L3 + domains + ADRs
-  - agent: journey-sequence-modeler via sky-journey-sequences — context-flow + sequences
-  - agent: clean-craft-advisor via sky-clean-craft — craft-review.md
-  - script: scripts/sky/export-package.ps1 -Slug {slug}
+  - step: 01-maturity-gate
+  - step: 02-c4-model
+  - step: 03-journey-sequences
+  - step: 04-agent-architecture
+  - step: 05-test-strategy
+  - step: 06-clean-craft
+  - step: 07-export
 guardrails:
   requires_architecture_gate: true
   order: c4_before_sequences
+  fresh_context_between_steps: recommended

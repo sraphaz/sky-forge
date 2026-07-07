@@ -1,0 +1,22 @@
+# Step 02 — C4 L1/L2/L3
+id: 02-c4-model
+skill: sky-c4-model
+load: on_demand
+fresh_context: recommended
+
+agent: c4-modeler
+invoke_skill: sky-c4-model
+
+read:
+  - .sky/sessions/{slug}/brief-draft.yaml
+  - .sky/sessions/{slug}/functional-requirements.yaml
+  - .sky/sessions/{slug}/integrations.yaml
+
+write:
+  - .sky/sessions/{slug}/architecture/c4-context.md
+  - .sky/sessions/{slug}/architecture/c4-containers.md
+  - .sky/sessions/{slug}/architecture/c4-components.md
+  - .sky/sessions/{slug}/architecture/domains.md
+  - .sky/sessions/{slug}/architecture/c4-summary.md
+
+next: 03-journey-sequences
