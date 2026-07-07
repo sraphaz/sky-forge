@@ -1,0 +1,34 @@
+# FIXTURE — assumptions.yaml (schema sky-forge/assumptions 0.1.0)
+demand_ref: dem-2026-001
+assumptions:
+  - id: a-01
+    assumption: "Um repo git como fonte de verdade aguenta a operação de ~10 pessoas"
+    basis: "volume de escrita baixo (dezenas de arquivos/dia no pior caso)"
+    impact_if_wrong: "introduzir índice com sync (SQLite) — refatoração média"
+    confidence: high
+    owner: raphael
+    review_at: "após 5 demandas reais"
+    status: active
+  - id: a-02
+    assumption: "Cliente não precisa logar no MVP (recebe documentos exportados)"
+    basis: "volume inicial baixo; aceite acontece em reunião"
+    impact_if_wrong: "criar acesso de convidado — escopo novo, proposta nova"
+    confidence: medium
+    owner: raphael
+    review_at: "primeira demanda externa"
+    status: active
+  - id: a-03
+    assumption: "GitHub API é suficiente e estável para a camada git"
+    basis: "uso amplamente documentado; rate limits folgados para o volume"
+    impact_if_wrong: "acionar caminho Gitea self-host (já previsto na camada de abstração)"
+    confidence: high
+    owner: raphael
+    status: active
+  - id: a-04
+    assumption: "O modelo 70/20/10 será validado sem mudanças estruturais no registro financeiro"
+    basis: "registro é neutro (split configurável); a validação é sobre o repasse, não o registro"
+    impact_if_wrong: "ajustar campos do FinancialRecord; migração simples de yaml"
+    confidence: medium
+    owner: raphael
+    review_at: "antes da 1ª repartição real"
+    status: active

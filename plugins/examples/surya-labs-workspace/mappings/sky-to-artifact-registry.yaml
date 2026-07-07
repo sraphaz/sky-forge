@@ -1,0 +1,18 @@
+# Mapeamento: artefatos de handoff → Artifact registry
+
+from:
+  - handoff-solution.yaml
+  - risks-and-open-questions.yaml
+  - acceptance-criteria.yaml
+  - tooling-frugality.yaml
+  - market-benchmark.yaml
+  - assumptions.yaml
+to: ArtifactRegistry
+artifact_types:
+  handoff-solution: handoff_package
+  assumptions: assumptions
+  market-benchmark: market_evidence
+  risks-and-open-questions: risk_register
+  acceptance-criteria: approval_gate
+  tooling-frugality: tooling_strategy
+notes: "Cada entrada registra source package_id, sha256, version"

@@ -1,0 +1,17 @@
+# FIXTURE — brief.yaml (schema sky-forge/brief 0.1.0)
+demand_ref: dem-2026-001
+title: "Surya Labs Workspace — MVP"
+intent: "Operar a consultoria com um sistema próprio onde demandas, propostas, aprovações e histórico viram arquivos versionados, com humano decidindo em todo gate."
+origin: interna
+requester: {name: Raphael Silva, role: steward}
+context: "A casa tem protótipos de design (Workspace Surya.dc.html), docs de processo e um pacote documental estruturante — mas opera sem sistema. Cada demanda real hoje atravessa e-mail e arquivos soltos."
+desired_outcome: "Uma demanda real percorre received→closed com trilha auditável completa e zero planilha paralela."
+not_wanted:
+  - "ERP/CRM completo"
+  - "substituto de Jira/Figma"
+  - "chat avançado"
+  - "automação bancária"
+initial_questions:
+  - "o board mostra a máquina canônica ou o ciclo narrativo da casa?"
+  - "índice derivado (SQLite) já no MVP?"
+language: pt-BR

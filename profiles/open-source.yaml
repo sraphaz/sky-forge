@@ -1,0 +1,36 @@
+# destino: sky-forge/profiles/open-source.yaml
+# Projeto público: governança e contribuição fazem parte da especificação.
+
+id: open-source
+name: "Open Source"
+extends: generic-product
+description: "Especificação de projeto público: além do produto, decide-se licença, governança e caminho de contribuição."
+use_when:
+  - "o repositório nascerá público"
+  - "espera-se contribuição externa (agora ou depois)"
+avoid_when:
+  - "código de cliente ou dados sensíveis no escopo"
+
+artifacts:
+  required: [brief, requirements, architecture, assumptions,
+             risks-and-open-questions, tooling-frugality, professional-validation-needed]
+  optional: [market-benchmark, ux-spec, data-model]
+
+stages:
+  - {id: intake,       artifacts: [brief],                                exit_gate: intent_confirmed}
+  - {id: requirements, artifacts: [requirements]}
+  - {id: architecture, artifacts: [architecture, tooling-frugality],      exit_gate: scope_reviewed}
+  - {id: governance,   artifacts: [professional-validation-needed],       exit_gate: governance_defined}
+
+gates:
+  - {id: intent_confirmed,  approver: responsible_owner,
+     checks: ["por que público está declarado", "quem mantém está definido"]}
+  - {id: scope_reviewed,    approver: technical_lead,
+     checks: ["dependências só com licenças compatíveis", "sem segredo/dado de terceiros no escopo"]}
+  - {id: governance_defined, approver: maintainer,
+     checks: ["licença escolhida (item em professional-validation se houver dúvida)", "modelo de decisão declarado"]}
+
+validation_rules:
+  - {id: license_addressed,  rule: "professional-validation-needed contém item topic~licenciamento OU architecture declara licença decidida", on_fail: block}
+  - {id: no_paid_core,       rule: "nenhuma tool com cost_band high no caminho essencial",             on_fail: block}
+  - {id: harness_recommend,  rule: "se houver handoff-solution, harness_profile == open-source",       on_fail: warn}

@@ -1,0 +1,38 @@
+# tooling-frugality.schema.yaml — estratégia de ferramentas: custo, alternativas, lock-in
+# Gerado na arquitetura. REGRA DURA: toda ferramenta com custo > 0 exige alternativa.
+
+schema: sky-forge/tooling-frugality
+version: 0.1.0
+
+fields:
+  demand_ref:  {type: string, required: true}
+  principles:  {type: list<string>, required: true}   # ex.: repo-first, exportabilidade, sem lock-in
+  tools:
+    type: list, required: true
+    item:
+      name:         {type: string, required: true}
+      purpose:      {type: string, required: true}
+      cost:         {type: string, required: true}    # "0", "US$X/mês", "por uso"
+      cost_band:    {type: enum[free, low, medium, high], required: true}
+      alternative:  {type: string, required_if: "cost_band != free"}   # REGRA DURA
+      lock_in_risk: {type: enum[none, low, medium, high], required: true}
+      exit_path:    {type: string}                    # como sair (export, migração)
+      decision:     {type: enum[adopt, avoid, defer], required: true}
+      rationale:    {type: string}
+  monthly_target: {type: string}                      # teto de custo recorrente alvo
+
+validations_expected:
+  - "tool com cost_band != free e sem alternative → bloqueia export"
+  - "tool com lock_in_risk=high exige exit_path"
+
+example:
+  demand_ref: dem-2026-014
+  principles: ["fonte de verdade em repositório", "ferramenta paga só com alternativa", "exportável sempre"]
+  tools:
+    - {name: "GitHub", purpose: "repos + CI", cost: "0 (plano free)", cost_band: free,
+       lock_in_risk: low, exit_path: "git é portátil; Gitea self-host", decision: adopt}
+    - {name: "Provedor SMS", purpose: "alertas", cost: "por uso", cost_band: low,
+       alternative: "segundo provedor homologado; e-mail como fallback",
+       lock_in_risk: medium, exit_path: "interface de envio trocável", decision: adopt,
+       rationale: "núcleo da proposta de valor"}
+  monthly_target: "< R$50 por cliente"

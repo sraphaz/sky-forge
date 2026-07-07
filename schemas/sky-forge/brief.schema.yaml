@@ -1,0 +1,34 @@
+# destino: sky-forge/schemas/brief.schema.yaml
+# O artefato inicial: a intenção registrada no intake. Curto por natureza.
+
+schema: sky-forge/brief
+version: 0.1.0
+
+fields:
+  demand_ref:  {type: string, required: true}
+  title:       {type: string, required: true}          # nome curto da demanda
+  intent:      {type: string, required: true}          # a intenção em 1–3 frases honestas
+  origin:      {type: string, required: true}          # de onde veio (opaco p/ o core)
+  requester:
+    name:      {type: string, required: true}
+    role:      {type: string}
+  context:     {type: string}                          # situação atual, em texto livre
+  desired_outcome: {type: string, required: true}      # o que muda no mundo se der certo
+  not_wanted:  {type: list<string>}                    # anti-objetivos declarados cedo
+  initial_questions: {type: list<string>}              # perguntas abertas no dia 0
+  language:    {type: string, default: pt-BR}
+
+validations_expected:
+  - "intent não vazio e sem jargão de solução (intenção != feature)"
+  - "desired_outcome preenchido"
+
+example:
+  demand_ref: dem-2026-001
+  title: "Surya Labs Workspace — MVP"
+  intent: "Operar a consultoria com um sistema próprio onde demandas, propostas e aprovações viram arquivos versionados, com humano decidindo em todo gate."
+  origin: interna
+  requester: {name: Raphael Silva, role: steward}
+  context: "A casa opera hoje com documentos soltos e protótipos de design; falta o sistema operacional."
+  desired_outcome: "Uma demanda percorre received→closed com trilha auditável completa."
+  not_wanted: ["ERP/CRM", "substituto de Jira", "chat avançado"]
+  initial_questions: ["board colapsa estados narrativos ou operacionais?"]

@@ -1,0 +1,38 @@
+# destino: sky-forge/profiles/internal-corporate.yaml
+# Projeto interno corporativo: stakeholders, compliance e dados desde a especificação.
+
+id: internal-corporate
+name: "Internal Corporate"
+extends: generic-product
+description: "Especificação para ambiente corporativo interno: mapeamento de stakeholders, classificação de dados e ganchos de compliance antes de qualquer construção."
+use_when:
+  - "projeto interno com múltiplas áreas e aprovação formal"
+  - "dados pessoais/sensíveis prováveis no escopo"
+avoid_when:
+  - "protótipo exploratório sem dado real (usar startup-mvp)"
+
+artifacts:
+  required: [brief, consulting-brief, requirements, ux-spec, architecture,
+             assumptions, risks-and-open-questions, professional-validation-needed,
+             delivery-boundaries]
+  optional: [market-benchmark, data-model, tooling-frugality]
+
+stages:
+  - {id: intake,       artifacts: [brief, consulting-brief],               exit_gate: intent_confirmed}
+  - {id: requirements, artifacts: [requirements]}
+  - {id: ux,           artifacts: [ux-spec]}
+  - {id: architecture, artifacts: [architecture],                          exit_gate: scope_reviewed}
+  - {id: compliance,   artifacts: [professional-validation-needed, delivery-boundaries], exit_gate: compliance_reviewed}
+
+gates:
+  - {id: intent_confirmed,   approver: sponsor,
+     checks: ["sponsor formal identificado", "stakeholders com decision_power mapeados em consulting-brief"]}
+  - {id: scope_reviewed,     approver: technical_lead,
+     checks: ["requisitos não funcionais de segurança presentes", "dados pessoais identificados nos requisitos"]}
+  - {id: compliance_reviewed, approver: compliance_owner,
+     checks: ["itens LGPD/regulatórios roteados em professional-validation-needed", "fronteiras de responsabilidade claras"]}
+
+validation_rules:
+  - {id: stakeholders_mapped, rule: "consulting-brief.stakeholders tem >=1 item com decision_power=decides", on_fail: block}
+  - {id: data_flagged,        rule: "se requisitos citam dado pessoal, existe item LGPD em professional-validation-needed", on_fail: block}
+  - {id: boundaries_required, rule: "delivery-boundaries presente com excluded não vazio",                    on_fail: block}

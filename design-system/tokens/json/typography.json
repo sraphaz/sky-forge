@@ -1,0 +1,30 @@
+{
+  "$schema_note": "Derivado de tokens/typography.css + fonts. Fonte display CANÔNICA: Cormorant Garamond (decisão em AGENT_READY_DESIGN_SYSTEM §1). destino: design-system/tokens/json/",
+  "$version": "0.1.0",
+  "families": {
+    "display": { "stack": "\"Cormorant Garamond\", Georgia, \"Times New Roman\", serif", "weights": [400, 500], "note": "nunca bold — a escala é a ênfase" },
+    "body": { "stack": "\"DM Sans\", \"Helvetica Neue\", system-ui, sans-serif", "weights": [400, 500, 600], "note": "400 corpo, 500 ui, 600 raríssimo" },
+    "mono": { "stack": "\"JetBrains Mono\", \"SF Mono\", Menlo, monospace", "weights": [400, 500], "note": "eyebrows UPPERCASE, rótulos, datas, código" }
+  },
+  "scale": {
+    "hero": { "rem": 5.25, "px": 84, "use": "só H1 do hero" },
+    "4xl": { "rem": 4, "px": 64, "use": "títulos de página" },
+    "3xl": { "rem": 3, "px": 48, "use": "títulos de seção" },
+    "2xl": { "rem": 2.25, "px": 36, "use": "subseção, citações" },
+    "xl": { "rem": 1.75, "px": 28, "use": "destaque editorial" },
+    "lg": { "rem": 1.375, "px": 22, "use": "lead" },
+    "md": { "rem": 1.125, "px": 18, "use": "corpo longo" },
+    "base": { "rem": 1, "px": 16, "use": "corpo/ui" },
+    "sm": { "rem": 0.875, "px": 14, "use": "ui secundária" },
+    "xs": { "rem": 0.75, "px": 12, "use": "mono labels (sempre caps+tracking)" }
+  },
+  "leading": { "display": 1.14, "tight": 1.2, "body": 1.65, "loose": 1.8 },
+  "tracking": { "display": "0.005em", "body": "0", "caps": "0.18em", "capsWide": "0.3em" },
+  "measure": { "body": "68ch", "narrow": "34ch" },
+  "rules": [
+    "display nunca em bold; ênfase por escala ou itálico",
+    "UPPERCASE só em rótulos mono com tracking caps",
+    "sentence case em títulos; nunca Title Case",
+    "texto mínimo: 16px UI, 24px em slides 1920×1080, 12pt impresso"
+  ]
+}

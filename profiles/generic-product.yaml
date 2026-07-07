@@ -1,0 +1,33 @@
+# destino: sky-forge/profiles/generic-product.yaml
+# Profile base — especificar um produto sem contexto comercial. Os demais estendem este.
+
+id: generic-product
+name: "Generic Product"
+description: "Maturação padrão: da intenção a requisitos, UX e arquitetura, sem camada comercial."
+use_when:
+  - "especificar um produto ou feature sem relação de consultoria"
+  - "base para outros profiles (extends)"
+avoid_when:
+  - "há contratante e proposta envolvidos (usar consulting-handoff)"
+
+artifacts:
+  required: [brief, requirements, ux-spec, architecture, assumptions, risks-and-open-questions]
+  optional: [market-benchmark, data-model, design-tokens, tooling-frugality]
+
+stages:
+  - {id: intake,       artifacts: [brief],                          exit_gate: intent_confirmed}
+  - {id: benchmark,    artifacts: [market-benchmark]}
+  - {id: requirements, artifacts: [requirements]}
+  - {id: ux,           artifacts: [ux-spec]}
+  - {id: architecture, artifacts: [architecture],                   exit_gate: scope_reviewed}
+
+gates:
+  - {id: intent_confirmed, approver: responsible_owner,
+     checks: ["o problema descrito é o problema real", "há interlocutor decisor"]}
+  - {id: scope_reviewed,   approver: technical_lead,
+     checks: ["requisitos coerentes e priorizados", "riscos registrados com severidade"]}
+
+validation_rules:
+  - {id: schema_valid,        rule: "todo artefato valida contra seu schema",              on_fail: block}
+  - {id: risks_have_severity, rule: "todo risco tem severity e mitigation ou acceptance",  on_fail: block}
+  - {id: assumptions_owned,   rule: "toda assumption tem owner e impact_if_wrong",         on_fail: warn}

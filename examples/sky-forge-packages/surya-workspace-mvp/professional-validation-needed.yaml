@@ -1,0 +1,27 @@
+# FIXTURE — professional-validation-needed.yaml (schema 0.1.0)
+demand_ref: dem-2026-001
+disclaimer: requires_licensed_professional
+items:
+  - id: pv-01
+    topic: "LGPD: bases legais para contatos de cliente e leads da esteira"
+    why_it_matters: "o Workspace registra dados pessoais desde a primeira demanda"
+    professional: advogado
+    before_stage: "primeira demanda externa no sistema"
+    blocking: true
+    context_refs: [architecture, requirements]
+    status: open
+  - id: pv-02
+    topic: "Modelo 70/20/10: forma jurídica do repasse entre colaboradores"
+    why_it_matters: "repasse informal pode caracterizar vínculo ou sociedade de fato"
+    professional: contador_e_advogado
+    before_stage: "primeira repartição real (gate financeiro)"
+    blocking: true
+    context_refs: [requirements]
+    status: open
+  - id: pv-03
+    topic: "Termos de uso do Workspace (colaboradores)"
+    why_it_matters: "acessos, responsabilidade por registro e log de ações"
+    professional: advogado
+    before_stage: "onboarding do primeiro colaborador externo"
+    blocking: false
+    status: open

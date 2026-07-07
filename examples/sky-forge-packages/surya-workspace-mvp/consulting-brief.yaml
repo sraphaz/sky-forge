@@ -1,0 +1,27 @@
+# FIXTURE — consulting-brief.yaml (schema sky-forge/consulting-brief 0.1.0)
+demand_ref: dem-2026-001
+client_context:
+  name: "Surya Labs (interna)"
+  segment: "consultoria de especificação e handoff"
+  maturity: exploratory
+problem:
+  statement: "O ciclo intenção→proposta→repo governado vive em e-mail e documentos soltos, sem trilha auditável."
+  evidence:
+    - "pacote documental estruturante existe, mas nada o operacionaliza"
+    - "gates da casa (contrato, nota, aceite) dependem de disciplina manual"
+  affected: ["steward", "colaboradores alistados", "clientes (indiretamente)"]
+success_criteria:
+  - "demanda-piloto completa no sistema com histórico reconstruível"
+  - "importação de pacote Sky-Forge em <5 min com diagnóstico claro"
+  - "nenhuma transição sem gate documental passa"
+constraints:
+  budget_band: "custo de infraestrutura ~zero"
+  deadline: "MVP utilizável antes da primeira demanda externa"
+  technical: ["repo-first (workspace-as-code)", "tokens do design system", "private-first"]
+  regulatory: ["dados de contato de clientes — LGPD"]
+stakeholders:
+  - {name: "Raphael (steward)", role: sponsor, decision_power: decides}
+  - {name: "Colaboradores da casa", role: usuários, decision_power: influences}
+relationship:
+  origin: interna
+  expectations: ["especificação executável; implementação em fase seguinte sob escopo aprovado"]

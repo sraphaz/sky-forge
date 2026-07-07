@@ -1,0 +1,47 @@
+# professional-validation-needed.schema.yaml — temas que exigem profissional habilitado
+# SEMPRE presente no profile consulting-handoff (pode exportar com items: []).
+# REGRA: nada aqui é parecer. disclaimer fixo e imutável.
+
+schema: sky-forge/professional-validation-needed
+version: 0.1.0
+
+fields:
+  demand_ref:   {type: string, required: true}
+  disclaimer:   {type: const, value: requires_licensed_professional, required: true}
+  items:
+    type: list, required: true                     # pode ser vazio; nunca ausente
+    item:
+      id:            {type: string}
+      topic:         {type: string, required: true}       # o tema em uma frase
+      why_it_matters:{type: string, required: true}       # risco se ignorado
+      professional:  {type: enum[contador, advogado, contador_e_advogado, outro], required: true}
+      before_stage:  {type: string, required: true}       # etapa antes da qual precisa de resposta
+      blocking:      {type: bool, required: true}         # true = trava avanço no consumidor
+      context_refs:  {type: list<string>}                 # artefatos relacionados
+      status:        {type: enum[open, routed, resolved], default: open}
+      routed_to:     {type: string}                       # advisor acionado
+      resolved_ref:  {type: string}                       # documento/registro da resposta
+
+validations_expected:
+  - "disclaimer == requires_licensed_professional (imutável)"
+  - "item blocking=true sem status routed/resolved gera aviso no export e trava proposta no consumidor"
+
+example:
+  demand_ref: dem-2026-014
+  disclaimer: requires_licensed_professional
+  items:
+    - id: pv-01
+      topic: "Tratamento de dados pessoais de agricultores (LGPD)"
+      why_it_matters: "coleta de telefone p/ SMS implica base legal e consentimento"
+      professional: advogado
+      before_stage: proposal_sent
+      blocking: true
+      context_refs: [requirements]
+      status: open
+    - id: pv-02
+      topic: "Emissão de nota para cooperativa (regime e retenções)"
+      why_it_matters: "define preço líquido e obrigações acessórias"
+      professional: contador
+      before_stage: proposal_sent
+      blocking: true
+      status: open

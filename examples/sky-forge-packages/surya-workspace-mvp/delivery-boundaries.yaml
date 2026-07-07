@@ -1,0 +1,20 @@
+# FIXTURE — delivery-boundaries.yaml (schema 0.1.0)
+demand_ref: dem-2026-001
+included:
+  - "pacote de especificação completo (14 artefatos)"
+  - "repo do workspace com harness consulting instalado"
+  - "backlog técnico derivado (issues por milestone)"
+excluded:
+  - "implementação do software"
+  - "operação contínua e suporte de produção"
+  - "migração de conteúdo legado (docs soltos existentes)"
+support_window:
+  duration: "30 dias após aceite interno"
+  covers: ["dúvidas sobre artefatos", "correção de inconsistência interna do pacote"]
+  excludes: ["novas features", "mudança de escopo"]
+handover_conditions:
+  - "acceptance-criteria todos verified|waived"
+  - "termo de aceite registrado no ledger"
+  - "doctor do harness ok no repo"
+after_handover: "implementação por milestones sob escopo aprovado (nova demanda interna, follows: dem-2026-001)"
+revision_policy: "nova versão do pacote via novo export; importação imutável no Workspace"

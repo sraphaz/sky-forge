@@ -1,0 +1,9 @@
+# Mapeamento: consulting-brief.yaml → DemandContext
+
+from: consulting-brief.yaml
+to: DemandContext
+entity_fields:
+  cliente: client
+  dor: pain
+  sucesso: success_criteria
+  restricoes: constraints

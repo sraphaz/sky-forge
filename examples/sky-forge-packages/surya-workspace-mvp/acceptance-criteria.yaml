@@ -1,0 +1,30 @@
+# FIXTURE — acceptance-criteria.yaml (schema 0.1.0)
+demand_ref: dem-2026-001
+criteria:
+  - id: ac-01
+    statement: "Especificação cobre todos os RFs must com arquitetura correspondente"
+    verification: "checklist requirements.yaml percorrida contra architecture.yaml na reunião de aceite"
+    owner: both
+    deliverable_ref: d1
+    status: pending
+  - id: ac-02
+    statement: "UX spec cobre as 6 views MVP e os 3 fluxos principais com estados de erro"
+    verification: "navegar protótipo canônico seguindo os fluxos f-import, f-gate, f-accept"
+    owner: consultant
+    deliverable_ref: d2
+    status: pending
+  - id: ac-03
+    statement: "Pacote fixture importa no validador do plugin sem erro; pacote corrompido falha com diagnóstico"
+    verification: "rodar validate-sky-package nas fixtures válida e inválida"
+    owner: consultant
+    deliverable_ref: d3
+    status: pending
+  - id: ac-04
+    statement: "Repo do workspace tem harness consulting instalado com doctor ok"
+    verification: "executar doctor-harness.ps1 e conferir harness-profile.yaml"
+    owner: consultant
+    deliverable_ref: d4
+    status: pending
+sign_off:
+  required_from: ["steward"]
+  recorded_in: "approval-ledger (gate handoff_acceptance)"

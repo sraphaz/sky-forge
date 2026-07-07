@@ -1,0 +1,46 @@
+# handoff-solution.schema.yaml — a solução entregável (fechamento da maturação)
+# Gate G4 (handoff_approved). REGRA DURA: exige acceptance-criteria válido no pacote.
+
+schema: sky-forge/handoff-solution
+version: 0.1.0
+
+fields:
+  demand_ref:        {type: string, required: true}
+  solution_summary:  {type: string, required: true}     # a solução em linguagem clara
+  architecture_refs: {type: list<string>, required: true}  # artefatos de arquitetura no pacote
+  spec_refs:         {type: list<string>, required: true}  # requisitos, ux-spec, data-model…
+  implementation_plan:
+    approach:        {type: string, required: true}     # como implementar com segurança
+    milestones:      {type: list<{id, name, outcome}>}
+    scope_basis:     {type: string, required: true}     # DEVE referenciar proposal-scope aprovado
+  repo_recommendation:
+    structure:       {type: string}                     # monorepo, apps/, etc.
+    stack_notes:     {type: list<string>}
+    harness_profile: {type: enum[minimal, consulting, product, enterprise, open-source], required: true}
+  operational_notes: {type: list<string>}               # deploy, custos, manutenção
+  open_risks_ref:    {type: string, required: true}     # aponta para risks-and-open-questions
+  acceptance_ref:    {type: string, required: true}     # aponta para acceptance-criteria
+
+validations_expected:
+  - "acceptance_ref resolve para acceptance-criteria válido (bloqueia export)"
+  - "implementation_plan.scope_basis referencia proposal-scope com gate proposal_ready"
+  - "repo_recommendation.harness_profile presente"
+
+example:
+  demand_ref: dem-2026-014
+  solution_summary: "Alertas térmicos por SMS com coletor local tolerante a queda de rede."
+  architecture_refs: [architecture]
+  spec_refs: [requirements, ux-spec, data-model]
+  implementation_plan:
+    approach: "milestones curtos; hardware fora do escopo; integração SMS por provedor trocável"
+    milestones:
+      - {id: m1, name: "Coleta e armazenamento local", outcome: "leituras persistidas offline"}
+      - {id: m2, name: "Alertas", outcome: "SMS disparado por regra simples"}
+    scope_basis: proposal-scope@v1 (gate proposal_ready)
+  repo_recommendation:
+    structure: "repo único, apps/coletor + apps/alertas"
+    stack_notes: ["evitar dependência de nuvem obrigatória"]
+    harness_profile: consulting
+  operational_notes: ["custo mensal alvo < R$50", "provedor SMS com alternativa listada em tooling-frugality"]
+  open_risks_ref: risks-and-open-questions
+  acceptance_ref: acceptance-criteria

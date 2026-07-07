@@ -1,0 +1,14 @@
+{
+  "$schema_note": "Derivado de tokens/spacing.css (bloco raios). Formas calmas, quase retas. destino: design-system/tokens/json/",
+  "$version": "0.1.0",
+  "radius": {
+    "sm": { "px": 6, "use": "chips, selos, inputs discretos" },
+    "md": { "px": 12, "use": "cards, blocos de código, quotes" },
+    "lg": { "px": 20, "use": "contêineres grandes, modais" },
+    "full": { "px": 999, "use": "RESERVADO: sol e fotos (recorte circular com anel)" }
+  },
+  "rules": [
+    "o círculo é reservado ao sol e às fotos — nunca decorativo",
+    "sem raios intermediários; escolher entre 6/12/20"
+  ]
+}

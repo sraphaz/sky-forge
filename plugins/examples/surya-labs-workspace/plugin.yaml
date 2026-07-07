@@ -1,0 +1,97 @@
+# plugin.yaml — Plugin Surya Labs Workspace para Sky-Forge
+# Declaração do adapter que permite ao Workspace consumir pacotes do Sky-Forge.
+# Vive no repo surya-labs-workspace (integrations/sky-forge/plugin.yaml).
+# Pode ser espelhado como exemplo em sky-forge/plugins/examples/ — opcional e removível.
+
+plugin:
+  id: surya-labs-workspace
+  name: "Surya Labs Workspace Adapter"
+  version: 0.1.0
+  owner: surya-labs
+  direction: consumer            # este plugin CONSOME pacotes; nunca estende a geração
+
+compatibility:
+  sky_forge_core: ">=0.3.0 <1.0.0"
+  profiles:
+    - consulting-handoff        # único profile suportado no MVP
+
+requires:                        # artefatos que o pacote DEVE conter
+  - brief.yaml
+  - consulting-brief.yaml
+  - proposal-scope.yaml
+  - handoff-solution.yaml
+  - risks-and-open-questions.yaml
+  - professional-validation-needed.yaml
+  - acceptance-criteria.yaml
+  - tooling-frugality.yaml
+optional:
+  - market-benchmark.yaml
+  - assumptions.yaml
+  - delivery-boundaries.yaml
+  - data-model.yaml
+  - design-tokens.json
+
+mappings:                        # origem → entidade do Workspace
+  - from: brief.yaml
+    to: Demand
+    notes: "título, intenção, origem; cria ou enriquece a demanda"
+  - from: consulting-brief.yaml
+    to: DemandContext
+  - from: proposal-scope.yaml
+    to: Proposal
+    state: proposal_draft
+  - from: handoff-solution.yaml
+    to: Artifact
+    artifact_type: handoff_package
+  - from: risks-and-open-questions.yaml
+    to: RiskRegister
+  - from: professional-validation-needed.yaml
+    to: ValidationChecklist
+  - from: acceptance-criteria.yaml
+    to: ApprovalGate
+    gate: handoff_acceptance
+  - from: tooling-frugality.yaml
+    to: ToolingStrategy
+  - from: market-benchmark.yaml
+    to: MarketEvidence
+  - from: assumptions.yaml
+    to: Artifact
+    artifact_type: assumptions
+  - from: delivery-boundaries.yaml
+    to: Proposal
+    merge: limits                # popula campos limit_* da proposta
+
+templates:                       # tradução de linguagem/formato (dados, não código)
+  locale: pt-BR
+  proposal_document: templates/proposta-surya.md
+  handoff_summary: templates/resumo-handoff.md
+  tone: "claro, técnico, sem hype"
+
+policies:                        # validações da casa na importação
+  - id: out_of_scope_required
+    rule: "proposal-scope.out_of_scope não pode ser vazio"
+    on_fail: block
+  - id: validation_items_routed
+    rule: "itens blocking criam pendência para advisor externo antes de proposal_sent"
+    on_fail: block
+  - id: acceptance_verifiable
+    rule: "todo criterion tem verification e owner"
+    on_fail: block
+  - id: hash_verified
+    rule: "sha256 de cada artefato confere com o manifesto do pacote"
+    on_fail: block
+  - id: language_normalized
+    rule: "resumos traduzidos pt-BR; original preservado em raw"
+    on_fail: warn
+
+produces:                        # artefatos gerados no Workspace após importação
+  - workspace-demand.yaml
+  - artifact-registry.yaml       # entrada por artefato: versão, sha256, source
+  - approval-ledger.yaml         # gates pendentes criados
+  - proposal-record.yaml
+  - repository-link.yaml         # placeholder até repo_linked
+
+does_not_modify:                 # limites explícitos
+  - sky-forge-core
+  - pacote de origem (importação imutável; revisão = novo export/versão)
+  - estados de demanda (transições são do Workspace, com gates humanos)

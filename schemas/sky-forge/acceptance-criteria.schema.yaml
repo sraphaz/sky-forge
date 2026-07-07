@@ -1,0 +1,46 @@
+# acceptance-criteria.schema.yaml — critérios verificáveis de aceite do handoff
+# Gerado antes do export. Todo critério tem verificação objetiva e dono.
+# Consumidores mapeiam para gates de aprovação (ex.: Surya → ApprovalGate handoff_acceptance).
+
+schema: sky-forge/acceptance-criteria
+version: 0.1.0
+
+fields:
+  demand_ref: {type: string, required: true}
+  criteria:
+    type: list, required: true, min_items: 1
+    item:
+      id:           {type: string, required: true}
+      statement:    {type: string, required: true}   # afirmação verificável, sem adjetivos vagos
+      verification: {type: string, required: true}   # COMO se verifica (passo objetivo)
+      owner:        {type: enum[client, consultant, both], required: true}
+      deliverable_ref: {type: string}                # id em proposal-scope.deliverables
+      status:       {type: enum[pending, verified, failed, waived], default: pending}
+      verified_by:  {type: string}
+      verified_at:  {type: datetime}
+      notes:        {type: string}
+  sign_off:
+    required_from: {type: list<string>, required: true}   # quem assina o aceite
+    recorded_in:   {type: string}                         # onde o consumidor registra (ledger)
+
+validations_expected:
+  - "todo criterion tem verification não vazia e owner"
+  - "criteria referenciam deliverables existentes quando deliverable_ref presente"
+  - "status=waived exige notes (justificativa)"
+
+example:
+  demand_ref: dem-2026-014
+  criteria:
+    - id: ac-01
+      statement: "Especificação cobre todos os requisitos priorizados como must"
+      verification: "checklist de requirements.yaml percorrida item a item na reunião de aceite"
+      owner: both
+      deliverable_ref: d1
+    - id: ac-02
+      statement: "Protótipo de UX navegável cobre os 3 fluxos principais"
+      verification: "cliente executa os 3 fluxos sem instrução"
+      owner: client
+      deliverable_ref: d2
+  sign_off:
+    required_from: ["client_sponsor", "responsible_consultant"]
+    recorded_in: "approval-ledger do consumidor"

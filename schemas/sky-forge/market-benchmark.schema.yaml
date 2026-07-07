@@ -1,0 +1,37 @@
+# destino: sky-forge/schemas/market-benchmark.schema.yaml
+# Evidência de mercado com fontes datadas e confiança declarada — nunca "verdade".
+
+schema: sky-forge/market-benchmark
+version: 0.1.0
+
+fields:
+  demand_ref:  {type: string, required: true}
+  scope_note:  {type: string, required: true}          # o que o benchmark cobriu (e o que não)
+  confidence:  {type: enum[low, medium, high], required: true}
+  references:
+    type: list, required: true, min_items: 1
+    item:
+      name:        {type: string, required: true}
+      kind:        {type: enum[product, article, standard, repo, other], required: true}
+      url:         {type: string}
+      accessed_at: {type: date, required: true}        # fontes datadas, sempre
+      relevance:   {type: string, required: true}      # por que importa para ESTA demanda
+      confidence:  {type: enum[low, medium, high], default: medium}
+  patterns:    {type: list<string>}                    # padrões observados no espaço
+  gaps:        {type: list<string>}                    # o que ninguém resolve bem
+  implications: {type: list<string>}                   # o que isso muda em requisitos/arquitetura
+
+validations_expected:
+  - "toda reference tem accessed_at e relevance"
+  - "confidence=high exige >=3 references"
+
+example:
+  demand_ref: dem-2026-001
+  scope_note: "Ferramentas de PSA/consultoria e workspaces repo-first; não cobre ERPs."
+  confidence: medium
+  references:
+    - {name: "GitHub Projects", kind: product, url: "https://github.com/features/issues",
+       accessed_at: 2026-07-01, relevance: "board nativo de repo — candidato a espelho externo", confidence: high}
+  patterns: ["PSAs acoplam financeiro cedo demais", "poucas opções tratam docs como fonte de verdade"]
+  gaps: ["import estruturado de pacotes de especificação"]
+  implications: ["adapter próprio em vez de PSA de mercado"]

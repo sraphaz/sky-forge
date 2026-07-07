@@ -1,0 +1,32 @@
+{
+  "$schema_note": "Derivado de tokens/effects.css. Luz em vez de sombra (Noite); sombra quente (Dia). destino: design-system/tokens/json/",
+  "$version": "0.1.0",
+  "noite": {
+    "shadowCard": "0 0 0 1px {border.faint}",
+    "shadowCardHover": "0 0 0 1px {border.hairline}, 0 0 48px {luz.fraca}",
+    "glowAccent": "0 0 64px {luz.dourada}",
+    "glowText": "0 0 24px rgba(230, 205, 146, 0.35)",
+    "focusShadow": "0 0 0 2px {bg.page}, 0 0 0 4px {focusRing}",
+    "blurVeil": "saturate(1.1) blur(14px)",
+    "gradients": {
+      "amanhecer": "radial-gradient(ellipse 80% 55% at 50% 108%, {luz.dourada}, transparent 70%)",
+      "ceu": "linear-gradient(180deg, #0a0e14 0%, #121a26 55%, #1a2332 100%)",
+      "veu": "linear-gradient(180deg, {bg.scrim}, transparent)"
+    }
+  },
+  "dia": {
+    "shadowCard": "0 0 0 1px {border.faint}, 0 2px 8px rgba(90, 70, 30, 0.05)",
+    "shadowCardHover": "0 0 0 1px {border.hairline}, 0 12px 40px rgba(90, 70, 30, 0.12)",
+    "glowAccent": "0 12px 48px rgba(156, 127, 62, 0.22)",
+    "glowText": "none",
+    "gradients": {
+      "ceu": "linear-gradient(180deg, #f6f1e7 0%, #f3ecdd 55%, #ede5d4 100%)"
+    }
+  },
+  "rules": [
+    "hairlines 1px em vez de sombras para divisão",
+    "elevação no tema noite é SEMPRE luz (glow dourado), nunca box-shadow preto",
+    "luminescências permitidas: partículas em espiral ascendente, poeira de estrelas, ondas lentas (18s+)",
+    "proibido: mandala overlay, neon, saturação exagerada"
+  ]
+}

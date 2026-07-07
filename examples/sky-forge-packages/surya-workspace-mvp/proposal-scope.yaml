@@ -1,0 +1,27 @@
+# FIXTURE — proposal-scope.yaml (schema sky-forge/proposal-scope 0.1.0)
+demand_ref: dem-2026-001
+summary: "Especificar e preparar o Workspace Surya MVP: pacote técnico completo + repo governado pronto para implementação por fases."
+deliverables:
+  - {id: d1, name: "Especificação técnica", description: "requisitos priorizados + arquitetura + modelo de domínio",
+     artifact_refs: [requirements, architecture], acceptance_ref: ac-01}
+  - {id: d2, name: "UX spec", description: "views MVP, fluxos e estados, sobre o protótipo canônico",
+     artifact_refs: [ux-spec], acceptance_ref: ac-02}
+  - {id: d3, name: "Contratos de integração", description: "schemas do import Sky-Forge + plugin declarado",
+     artifact_refs: [handoff-solution], acceptance_ref: ac-03}
+  - {id: d4, name: "Repo governado", description: "repositório com Ara Harness profile consulting instalado",
+     artifact_refs: [handoff-solution], acceptance_ref: ac-04}
+phases:
+  - {id: f1, name: "Maturação e especificação", deliverables: [d1, d2, d3], duration_estimate: "concluída neste pacote"}
+  - {id: f2, name: "Preparação de repositório", deliverables: [d4], duration_estimate: "1 semana"}
+out_of_scope:
+  - "implementação do software (fase futura, novo acordo interno)"
+  - "views F2 (conversa/harness-chat, email, agenda, acordos)"
+  - "ERP/CRM, substituto de Jira/Figma, marketplace"
+  - "execução de repasse financeiro (só registro)"
+  - "login de cliente e multi-tenancy"
+prerequisites:
+  - "repo de conteúdo criado na org da casa"
+  - "decisão de provider (GitHub) confirmada"
+dependencies:
+  - "Ara Harness v0.1 extraído (plano próprio)"
+revision_policy: "mudança de escopo gera nova versão da proposta; nada é implícito"

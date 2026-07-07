@@ -1,0 +1,36 @@
+# destino: sky-forge/profiles/startup-mvp.yaml
+# Velocidade com dívida explícita — nunca dívida silenciosa.
+
+id: startup-mvp
+name: "Startup MVP"
+extends: generic-product
+description: "Especificação mínima para um MVP: premissas agressivas assumidas por escrito, fronteiras curtas, dívida técnica declarada."
+use_when:
+  - "validar hipótese de produto rápido, com time pequeno"
+  - "orçamento/tempo curtos e tolerância a retrabalho consciente"
+avoid_when:
+  - "dados sensíveis ou compliance pesado (usar internal-corporate/enterprise)"
+  - "contratante externo esperando handoff formal (usar consulting-handoff)"
+
+artifacts:
+  required: [brief, requirements, ux-spec, architecture, assumptions,
+             risks-and-open-questions, delivery-boundaries, tooling-frugality]
+  optional: [market-benchmark, data-model]
+
+stages:
+  - {id: intake,       artifacts: [brief],                                exit_gate: intent_confirmed}
+  - {id: requirements, artifacts: [requirements]}
+  - {id: ux,           artifacts: [ux-spec]}
+  - {id: architecture, artifacts: [architecture, tooling-frugality, delivery-boundaries], exit_gate: scope_reviewed}
+
+gates:
+  - {id: intent_confirmed, approver: responsible_owner,
+     checks: ["hipótese a validar declarada em uma frase", "critério de invalidação definido"]}
+  - {id: scope_reviewed,   approver: technical_lead,
+     checks: ["dívida assumida listada em assumptions", "o que NÃO entra está em delivery-boundaries"]}
+
+validation_rules:
+  - {id: hypothesis_declared,  rule: "brief.intent contém hipótese e critério de invalidação",        on_fail: block}
+  - {id: debt_is_explicit,     rule: "assumptions inclui >=1 item com impact_if_wrong preenchido",     on_fail: block}
+  - {id: boundaries_required,  rule: "delivery-boundaries.excluded não vazio",                         on_fail: block}
+  - {id: free_tools_first,     rule: "toda tool com cost_band != free tem alternative",                on_fail: warn}

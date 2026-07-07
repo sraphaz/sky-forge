@@ -1,0 +1,21 @@
+{
+  "$schema_note": "Derivado de tokens/motion.css. Contemplativo: tudo respira, deriva ou amanhece — nada salta ou pisca. destino: design-system/tokens/json/",
+  "$version": "0.1.0",
+  "easing": {
+    "breath": { "value": "cubic-bezier(0.37, 0, 0.24, 1)", "use": "respiração: simétrica, ciclos ambientes" },
+    "dawn": { "value": "cubic-bezier(0.22, 0.61, 0.36, 1)", "use": "entradas: amanhecer" }
+  },
+  "duration": {
+    "quick": { "ms": 200, "use": "hover, foco" },
+    "calm": { "ms": 600, "use": "revelar seções, troca de tema" },
+    "drift": { "ms": 1600, "use": "entradas de hero" },
+    "breath": { "ms": 9000, "use": "ciclo de respiração (glow, partículas)" },
+    "sky": { "ms": 18000, "use": "ondas de luz atravessando" }
+  },
+  "rules": [
+    "ciclos ambientes: 9–18s, nunca menos",
+    "hovers 200ms; revelações 600ms com ease dawn",
+    "prefers-reduced-motion: congelar em 1 frame estático (obrigatório)",
+    "cards elevam por luz (glow), nunca por translação"
+  ]
+}

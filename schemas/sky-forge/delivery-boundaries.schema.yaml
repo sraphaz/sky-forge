@@ -1,0 +1,33 @@
+# destino: sky-forge/schemas/delivery-boundaries.schema.yaml
+# Fronteiras de entrega: onde a responsabilidade desta fase começa e termina.
+
+schema: sky-forge/delivery-boundaries
+version: 0.1.0
+
+fields:
+  demand_ref: {type: string, required: true}
+  included:   {type: list<string>, required: true, min_items: 1}   # o que ESTA entrega cobre
+  excluded:   {type: list<string>, required: true, min_items: 1}   # o que explicitamente NÃO cobre
+  support_window:
+    duration:  {type: string, required: true}          # ex.: "30 dias após aceite"
+    covers:    {type: list<string>, required: true}    # o que o suporte inclui (ex.: dúvidas sobre o pacote)
+    excludes:  {type: list<string>}                    # ex.: implementação, novas features
+  handover_conditions: {type: list<string>, required: true}  # condições para a entrega ser considerada feita
+  after_handover:      {type: string}                  # o que acontece depois (novo acordo, nada, retainer)
+  revision_policy:     {type: string, required: true}  # como mudanças são tratadas (nova versão, novo acordo)
+
+validations_expected:
+  - "included e excluded não vazios"
+  - "handover_conditions verificáveis (sem adjetivos vagos)"
+
+example:
+  demand_ref: dem-2026-001
+  included: ["pacote de especificação completo", "repo com harness instalado", "reunião de aceite"]
+  excluded: ["implementação do software", "operação contínua", "migração de dados legados"]
+  support_window:
+    duration: "30 dias após aceite"
+    covers: ["dúvidas sobre artefatos", "correção de inconsistência interna do pacote"]
+    excludes: ["novas features", "mudança de escopo"]
+  handover_conditions: ["acceptance-criteria todos verified|waived", "termo de aceite registrado"]
+  after_handover: "implementação assistida sob novo acordo, se contratada"
+  revision_policy: "mudança de escopo gera nova versão da proposta; nada é implícito"

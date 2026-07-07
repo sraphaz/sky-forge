@@ -1,0 +1,17 @@
+# FIXTURE — architecture.yaml (artefato core)
+demand_ref: dem-2026-001
+approach: "workspace-as-code: repo git de conteúdo como fonte de verdade; UI Next.js como janela; agentes propõem commits; índice derivado reconstruível."
+components:
+  - {id: content-repo, name: "Repo de conteúdo", tech: "git (GitHub privado)", role: "fonte de verdade: demandas/, pessoas/, conhecimento/, propostas/"}
+  - {id: ui,           name: "Workspace UI",     tech: "Next.js + tokens do design system", role: "views MVP; leitura/escrita via camada git"}
+  - {id: git-layer,    name: "Camada git",       tech: "lib TS (provider API)", role: "commits assinados, lock otimista, abstração de provider"}
+  - {id: adapter,      name: "Adapter Sky-Forge", tech: "TS CLI + lib", role: "integrations/sky-forge/: validar→mapear→registrar"}
+  - {id: state-machine, name: "Máquina de estados", tech: "TS puro + testes", role: "transições válidas + gates (RF02/RF03)"}
+  - {id: ledger,       name: "Ledger/histórico", tech: "arquivos append-only + hash encadeado", role: "approvals + history events"}
+  - {id: harness-probe, name: "Leitor de harness", tech: "TS", role: "lê harness-profile.yaml dos repos vinculados (status real)"}
+decisions_ref: ["ADR-0002-workspace-as-code", "ADR-0003-file-contracts-first", "ADR-0005-imported-artifacts-immutable", "ADR-0006-human-gates-before-agent-actions"]
+integration_level: "nível 1 — arquivos em repo (sem webhooks/API no MVP)"
+data:
+  personal_data: ["contatos de cliente (nome, email)", "RSVP de ritos (efêmero)"]
+  classification_ref: "docs/security/DATA_CLASSIFICATION.md"
+non_goals: ["multi-tenancy", "API pública", "tempo real colaborativo"]

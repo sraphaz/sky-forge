@@ -1,0 +1,28 @@
+{
+  "$schema_note": "Derivado de tokens/spacing.css. Base 4px; generosidade é o luxo. destino: design-system/tokens/json/",
+  "$version": "0.1.0",
+  "base": 4,
+  "scale": {
+    "1": { "rem": 0.25, "px": 4 },
+    "2": { "rem": 0.5, "px": 8 },
+    "3": { "rem": 0.75, "px": 12 },
+    "4": { "rem": 1, "px": 16 },
+    "6": { "rem": 1.5, "px": 24 },
+    "8": { "rem": 2, "px": 32 },
+    "12": { "rem": 3, "px": 48 },
+    "16": { "rem": 4, "px": 64 },
+    "24": { "rem": 6, "px": 96 },
+    "32": { "rem": 8, "px": 128 },
+    "40": { "rem": 10, "px": 160, "note": "respiro entre capítulos" }
+  },
+  "layout": {
+    "container": "1200px",
+    "containerText": "760px",
+    "gutter": "clamp(1.25rem, 4vw, 3rem)"
+  },
+  "touchTarget": "44px",
+  "rules": [
+    "respiro entre capítulos: 96–160px",
+    "múltiplos de 4 sempre; sem valores mágicos"
+  ]
+}

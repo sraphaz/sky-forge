@@ -1,0 +1,35 @@
+# destino: sky-forge/schemas/assumptions.schema.yaml
+# Premissas assumidas por escrito — dívida consciente, nunca silenciosa.
+
+schema: sky-forge/assumptions
+version: 0.1.0
+
+fields:
+  demand_ref: {type: string, required: true}
+  assumptions:
+    type: list, required: true, min_items: 1
+    item:
+      id:              {type: string, required: true}
+      assumption:      {type: string, required: true}   # o que estamos assumindo como verdade
+      basis:           {type: string, required: true}   # em que se apoia (evidência, experiência, aposta)
+      impact_if_wrong: {type: string, required: true}   # o que quebra se for falsa
+      confidence:      {type: enum[low, medium, high], required: true}
+      owner:           {type: string, required: true}
+      review_at:       {type: string}                   # quando revisitar (etapa ou data)
+      status:          {type: enum[active, confirmed, invalidated], default: active}
+
+validations_expected:
+  - "toda assumption tem basis e impact_if_wrong (sem 'achismos' anônimos)"
+  - "assumption invalidated exige nota de consequência no run"
+
+example:
+  demand_ref: dem-2026-001
+  assumptions:
+    - id: a-01
+      assumption: "Um repo git como fonte de verdade aguenta a operação de ~10 pessoas"
+      basis: "volume de escrita baixo (dezenas de arquivos/dia no pior caso)"
+      impact_if_wrong: "migrar índice para banco com sync — custo de refatoração médio"
+      confidence: high
+      owner: raphael
+      review_at: "após 5 demandas reais"
+      status: active

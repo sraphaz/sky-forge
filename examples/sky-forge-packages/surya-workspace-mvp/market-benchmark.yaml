@@ -1,0 +1,31 @@
+# FIXTURE — market-benchmark.yaml (schema sky-forge/market-benchmark 0.1.0)
+demand_ref: dem-2026-001
+scope_note: "Ferramentas de operação de consultoria (PSA), boards de repo e abordagens docs-as-code. Não cobre ERPs nem CRMs."
+confidence: medium
+references:
+  - name: "GitHub Projects"
+    kind: product
+    url: "https://github.com/features/issues"
+    accessed_at: 2026-07-01
+    relevance: "board nativo do provider — candidato a espelho externo, não a fonte de verdade"
+    confidence: high
+  - name: "ADR (Architecture Decision Records)"
+    kind: standard
+    url: "https://adr.github.io"
+    accessed_at: 2026-07-01
+    relevance: "padrão consolidado de decisão versionada — adotado pelo harness"
+    confidence: high
+  - name: "PSAs de mercado (categoria)"
+    kind: product
+    accessed_at: 2026-07-02
+    relevance: "acoplam financeiro/CRM cedo; nenhum trata pacote de especificação como entidade"
+    confidence: medium
+patterns:
+  - "docs-as-code cresce em times técnicos; UI como janela sobre repo é viável"
+  - "PSAs assumem folha/utilização — não servem a rede sob demanda"
+gaps:
+  - "import estruturado de pacotes de especificação com gates humanos"
+  - "financeiro por repartição de entrega (não por hora)"
+implications:
+  - "construir adapter próprio (plugin) em vez de adotar PSA"
+  - "board = projeção do frontmatter; nunca estado próprio"

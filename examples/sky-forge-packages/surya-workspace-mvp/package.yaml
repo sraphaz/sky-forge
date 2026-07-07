@@ -1,0 +1,39 @@
+# FIXTURE — pacote de exemplo (dogfooding: a demanda é o próprio Workspace MVP)
+# destino: sky-forge/examples/sky-forge-packages/surya-workspace-mvp/package.yaml
+# NOTA: sha256 ilustrativos ("fixture:"). Um export real calcula hashes; o validador
+# do plugin aceita o prefixo "fixture:" apenas em modo teste.
+
+package_id: pkg-surya-workspace-mvp-v1
+contract_version: 0.1.0
+profile: consulting-handoff
+profile_version: 0.1.0
+demand_ref: dem-2026-001
+created_at: 2026-07-06T18:00:00-03:00
+created_by: raphael
+run_ref: runs/2026/surya-workspace-mvp
+
+artifacts:
+  - {name: brief,                          file: brief.yaml,                          schema_version: 0.1.0, sha256: "fixture:brief", status: final}
+  - {name: consulting-brief,               file: consulting-brief.yaml,               schema_version: 0.1.0, sha256: "fixture:cbrief", status: final}
+  - {name: market-benchmark,               file: market-benchmark.yaml,               schema_version: 0.1.0, sha256: "fixture:bench", status: final}
+  - {name: requirements,                   file: requirements.yaml,                   schema_version: 0.1.0, sha256: "fixture:req", status: final}
+  - {name: ux-spec,                        file: ux-spec.yaml,                        schema_version: 0.1.0, sha256: "fixture:ux", status: final}
+  - {name: architecture,                   file: architecture.yaml,                   schema_version: 0.1.0, sha256: "fixture:arch", status: final}
+  - {name: assumptions,                    file: assumptions.yaml,                    schema_version: 0.1.0, sha256: "fixture:asm", status: final}
+  - {name: risks-and-open-questions,       file: risks-and-open-questions.yaml,       schema_version: 0.1.0, sha256: "fixture:risk", status: final}
+  - {name: proposal-scope,                 file: proposal-scope.yaml,                 schema_version: 0.1.0, sha256: "fixture:scope", status: final}
+  - {name: delivery-boundaries,            file: delivery-boundaries.yaml,            schema_version: 0.1.0, sha256: "fixture:bound", status: final}
+  - {name: tooling-frugality,              file: tooling-frugality.yaml,              schema_version: 0.1.0, sha256: "fixture:tool", status: final}
+  - {name: professional-validation-needed, file: professional-validation-needed.yaml, schema_version: 0.1.0, sha256: "fixture:pval", status: final}
+  - {name: acceptance-criteria,            file: acceptance-criteria.yaml,            schema_version: 0.1.0, sha256: "fixture:acc", status: final}
+  - {name: handoff-solution,               file: handoff-solution.yaml,               schema_version: 0.1.0, sha256: "fixture:handoff", status: final}
+
+gates:
+  - {id: intent_confirmed, passed_by: raphael, at: 2026-06-28T10:00:00-03:00, notes: "intenção = operar a casa, não construir ERP"}
+  - {id: scope_reviewed,   passed_by: raphael, at: 2026-07-02T15:00:00-03:00}
+  - {id: proposal_ready,   passed_by: raphael, at: 2026-07-04T11:00:00-03:00, notes: "out_of_scope conferido"}
+  - {id: handoff_approved, passed_by: raphael, at: 2026-07-06T17:30:00-03:00}
+
+validation:
+  profile_rules_passed: true
+  report_file: validation-report.txt

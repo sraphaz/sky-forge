@@ -1,0 +1,9 @@
+# Mapeamento: brief.yaml → Demand (Workspace)
+
+from: brief.yaml
+to: Demand
+entity_fields:
+  titulo: title
+  intencao: intent
+  origem: origin
+notes: "Cria ou enriquece demanda; slug derivado do título"

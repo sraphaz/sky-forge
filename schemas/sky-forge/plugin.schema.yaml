@@ -1,0 +1,47 @@
+# plugin.schema.yaml — contrato conceitual de um plugin/adapter do Sky-Forge
+# Plugins CONSOMEM pacotes exportados; nunca rodam dentro da geração do core.
+# Exemplo completo real: plugins/surya-labs-workspace/plugin.yaml
+
+schema: sky-forge/plugin
+version: 0.1.0
+
+fields:
+  plugin:
+    id:          {type: string, required: true}
+    name:        {type: string, required: true}
+    version:     {type: semver, required: true}
+    owner:       {type: string, required: true}
+    direction:   {type: enum[consumer], required: true}  # única direção permitida hoje
+
+  compatibility:
+    sky_forge_core: {type: semver_range, required: true}
+    profiles:       {type: list<string>, required: true} # profiles suportados
+
+  requires:      {type: list<string>, required: true}    # artefatos obrigatórios no pacote
+  optional:      {type: list<string>}
+
+  mappings:      # tradução declarativa origem → destino do consumidor
+    type: list
+    item:
+      from:      {type: string, required: true}          # nome do artefato
+      to:        {type: string, required: true}          # entidade/arquivo destino
+      state:     {type: string}                          # estado inicial no destino, se houver
+      merge:     {type: string}                          # campo-alvo quando funde em entidade existente
+      notes:     {type: string}
+
+  templates:     {type: map}                             # locale, docs, tom — dados do consumidor
+  policies:      # validações do consumidor na importação
+    type: list
+    item:
+      id:        {type: string}
+      rule:      {type: string}
+      on_fail:   {type: enum[block, warn]}
+
+  produces:      {type: list<string>}                    # artefatos gerados no destino
+  does_not_modify: {type: list<string>, required: true}  # limites explícitos (core, pacote origem, …)
+
+validations_expected:
+  - "direction=consumer é obrigatório (não há hooks de geração)"
+  - "todo `from` de mappings existe em requires ou optional"
+  - "does_not_modify inclui 'sky-forge-core'"
+  - "compatibility.profiles não vazio"

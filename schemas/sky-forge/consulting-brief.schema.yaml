@@ -1,0 +1,44 @@
+# consulting-brief.schema.yaml — contexto de consultoria de uma demanda
+# Gerado no intake, logo após o brief. Revisado pelo consultor responsável (gate G1).
+
+schema: sky-forge/consulting-brief
+version: 0.1.0
+
+fields:
+  demand_ref:      {type: string, required: true}     # id externo da demanda (opaco p/ o core)
+  client_context:                                     # quem é o contratante (sem dados sensíveis desnecessários)
+    name:          {type: string, required: true}
+    segment:       {type: string}
+    maturity:      {type: enum[exploratory, defined, operating], required: true}
+  problem:
+    statement:     {type: string, required: true}     # a dor, em uma frase honesta
+    evidence:      {type: list<string>}               # como sabemos que é real
+    affected:      {type: list<string>}               # quem sofre o problema
+  success_criteria: {type: list<string>, required: true}  # o que o contratante chamaria de sucesso
+  constraints:
+    budget_band:   {type: string}                     # faixa, nunca compromisso
+    deadline:      {type: string}
+    technical:     {type: list<string>}
+    regulatory:    {type: list<string>}               # itens daqui alimentam professional-validation-needed
+  stakeholders:
+    type: list
+    item: {name: string, role: string, decision_power: enum[decides, influences, informed]}
+  relationship:
+    origin:        {type: string}                     # como a demanda chegou
+    expectations:  {type: list<string>}               # o que o contratante espera desta fase
+
+example:
+  demand_ref: dem-2026-014
+  client_context: {name: "Cooperativa AgroVale", segment: "agro", maturity: exploratory}
+  problem:
+    statement: "Perda térmica em estufas sem monitoramento gera desperdício recorrente."
+    evidence: ["relatos de 3 agricultores", "perda estimada não medida — hipótese"]
+    affected: ["agricultores cooperados"]
+  success_criteria: ["alertas simples por telefone", "instalação sem técnico"]
+  constraints:
+    budget_band: "exploratório"
+    technical: ["conectividade rural instável"]
+    regulatory: ["dados de produtores — LGPD"]
+  stakeholders:
+    - {name: "Direção da cooperativa", role: sponsor, decision_power: decides}
+  relationship: {origin: esteira, expectations: ["clareza de viabilidade antes de investir"]}

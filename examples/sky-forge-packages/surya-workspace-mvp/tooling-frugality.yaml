@@ -1,0 +1,19 @@
+# FIXTURE — tooling-frugality.yaml (schema 0.1.0)
+demand_ref: dem-2026-001
+principles:
+  - "fonte de verdade em repositório"
+  - "ferramenta paga só com alternativa declarada"
+  - "exportável sempre; sem lock-in"
+tools:
+  - {name: "GitHub (repos+CI+auth)", purpose: "provider git e identidade da casa", cost: "0 (free)",
+     cost_band: free, lock_in_risk: low, exit_path: "git é portátil; Gitea self-host documentado", decision: adopt}
+  - {name: "Vercel", purpose: "hosting do workspace UI", cost: "0 (hobby)", cost_band: free,
+     lock_in_risk: low, exit_path: "Next.js self-host via Docker", decision: adopt}
+  - {name: "API Claude (agentes)", purpose: "rascunhos, validações assistidas", cost: "por uso",
+     cost_band: low, alternative: "modelos locais para validação mecânica; templates sem IA como fallback",
+     lock_in_risk: medium, exit_path: "camada de provider configurável", decision: adopt,
+     rationale: "motor dos agentes; orçamento por agente no harness"}
+  - {name: "SaaS de board (Jira etc.)", purpose: "gestão de tarefas", cost: "US$~8/user/mês",
+     cost_band: medium, alternative: "GitHub Projects espelhado; board próprio no Workspace",
+     lock_in_risk: high, exit_path: "n/a", decision: avoid, rationale: "board é projeção do frontmatter"}
+monthly_target: "< R$100 no total da casa (fora API por uso)"

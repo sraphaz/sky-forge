@@ -1,0 +1,71 @@
+# profile.schema.yaml — contrato conceitual de um profile do Sky-Forge
+# Um profile declara O QUE gerar, EM QUE ORDEM, com QUAIS gates e validações.
+# Formato conceitual (vira JSON Schema/validador na implementação).
+
+schema: sky-forge/profile
+version: 0.1.0
+
+fields:
+  id:            {type: string, required: true}   # ex.: consulting-handoff
+  name:          {type: string, required: true}
+  extends:       {type: string, required: false}  # composição: herda de outro profile (ex.: base)
+  description:   {type: string, required: true}
+  use_when:      {type: list<string>, required: true}
+  avoid_when:    {type: list<string>, required: true}
+
+  artifacts:
+    required:    {type: list<artifact_ref>, required: true}   # nome do artefato + etapa
+    optional:    {type: list<artifact_ref>}
+
+  stages:        # ordem de geração; cada etapa lista artefatos e gate de saída
+    type: list
+    item:
+      id:        {type: string}                   # intake | benchmark | requirements | ux | architecture | proposal | handoff
+      artifacts: {type: list<string>}
+      exit_gate: {type: string, required: false}  # id de gate humano
+
+  gates:         # gates humanos do profile
+    type: list
+    item:
+      id:        {type: string}                   # ex.: intent_confirmed
+      approver:  {type: string}                   # papel genérico (ex.: responsible_consultant)
+      checks:    {type: list<string>}             # o que o humano confere
+
+  validation_rules:   # regras duras avaliadas no export
+    type: list
+    item:
+      id:        {type: string}
+      rule:      {type: string}                   # expressão legível; implementação decide engine
+      on_fail:   {type: enum[block, warn]}
+
+example:
+  id: consulting-handoff
+  name: "Consulting Handoff"
+  extends: base
+  description: "Especificação e handoff governável antes de implementação."
+  use_when: ["ambiguidade alta de escopo", "decisão go/no-go pendente"]
+  avoid_when: ["bug fix pontual", "protótipo descartável"]
+  artifacts:
+    required: [brief, consulting-brief, market-benchmark, requirements, ux-spec,
+               architecture, assumptions, risks-and-open-questions, proposal-scope,
+               delivery-boundaries, tooling-frugality, professional-validation-needed,
+               acceptance-criteria, handoff-solution]
+    optional: [data-model, design-tokens, agent-graph]
+  stages:
+    - {id: intake,       artifacts: [brief, consulting-brief],            exit_gate: intent_confirmed}
+    - {id: benchmark,    artifacts: [market-benchmark]}
+    - {id: requirements, artifacts: [requirements]}
+    - {id: ux,           artifacts: [ux-spec]}
+    - {id: architecture, artifacts: [architecture, tooling-frugality],    exit_gate: scope_reviewed}
+    - {id: proposal,     artifacts: [proposal-scope, delivery-boundaries], exit_gate: proposal_ready}
+    - {id: handoff,      artifacts: [acceptance-criteria, handoff-solution], exit_gate: handoff_approved}
+  gates:
+    - {id: intent_confirmed, approver: responsible_consultant, checks: ["problema descrito = problema real"]}
+    - {id: scope_reviewed,   approver: technical_lead,         checks: ["requisitos coerentes", "riscos registrados"]}
+    - {id: proposal_ready,   approver: commercial_lead,        checks: ["out_of_scope fechado", "fronteiras claras"]}
+    - {id: handoff_approved, approver: client_and_lead,        checks: ["critérios verificáveis", "pacote íntegro"]}
+  validation_rules:
+    - {id: out_of_scope_required,  rule: "proposal-scope.out_of_scope não vazio",              on_fail: block}
+    - {id: acceptance_before_handoff, rule: "handoff-solution exige acceptance-criteria válido", on_fail: block}
+    - {id: paid_tool_alternative,  rule: "toda tool com custo > 0 tem alternative",             on_fail: block}
+    - {id: no_definitive_legal,    rule: "professional-validation-needed presente (pode ser vazio)", on_fail: block}

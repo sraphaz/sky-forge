@@ -1,0 +1,57 @@
+{
+  "$schema_note": "Derivado de tokens/colors.css (fonte canônica). Regenerar por script; não editar à mão. destino: design-system/tokens/json/",
+  "$version": "0.1.0",
+  "primitives": {
+    "noite": { "void": "#0a0e14", "surface": "#121820", "raised": "#1a2332" },
+    "areia": { "100": "#f5f0e8", "300": "#c8c4bc", "500": "#9a9590" },
+    "ouro": { "300": "#e6cd92", "500": "#c9a962", "700": "#8f7433" },
+    "verde": { "500": "#4a7c59" },
+    "azul": { "500": "#3d6b8e" }
+  },
+  "themes": {
+    "noite": {
+      "$default": true,
+      "colorScheme": "dark",
+      "bg": { "page": "#0a0e14", "surface": "#121820", "raised": "#1a2332", "scrim": "rgba(10, 14, 20, 0.78)" },
+      "text": { "display": "#f5f0e8", "body": "#c8c4bc", "muted": "#9a9590", "onAccent": "#0a0e14" },
+      "accent": { "primary": "#c9a962", "hover": "#e6cd92", "secondary": "#4a7c59", "tertiary": "#3d6b8e" },
+      "border": { "hairline": "rgba(245, 240, 232, 0.14)", "faint": "rgba(245, 240, 232, 0.07)", "active": "rgba(201, 169, 98, 0.55)" },
+      "focusRing": "#c9a962",
+      "luz": { "dourada": "rgba(201, 169, 98, 0.16)", "fraca": "rgba(201, 169, 98, 0.07)" }
+    },
+    "dia": {
+      "$selector": "[data-theme=\"light\"]",
+      "colorScheme": "light",
+      "bg": { "page": "#f6f1e7", "surface": "#fdfaf3", "raised": "#ede5d4", "scrim": "rgba(246, 241, 231, 0.82)" },
+      "text": { "display": "#161d29", "body": "#414a5a", "muted": "#7d7668", "onAccent": "#faf6ec" },
+      "accent": { "primary": "#9c7f3e", "hover": "#7c6229", "secondary": "#3d6b4c", "tertiary": "#336082" },
+      "border": { "hairline": "rgba(22, 29, 41, 0.16)", "faint": "rgba(22, 29, 41, 0.08)", "active": "rgba(156, 127, 62, 0.6)" },
+      "focusRing": "#9c7f3e",
+      "luz": { "dourada": "rgba(156, 127, 62, 0.14)", "fraca": "rgba(156, 127, 62, 0.06)" }
+    }
+  },
+  "roles": {
+    "$note": "cores por papel (workspace: pessoas, board, chips)",
+    "comercial": "#c9a962",
+    "portfolio": "#8ba7c7",
+    "arquitetura": "#63a695",
+    "engenhariaIA": "#a08cc0",
+    "designMidia": "#c08f9a",
+    "testes": "#7fae8e",
+    "lideranca": "#d19a5b",
+    "admin": "#9a9590"
+  },
+  "ecosystemLegend": {
+    "$note": "constante em todos os diagramas do ecossistema",
+    "skyForge": "#3d6b8e",
+    "surya": "#c9a962",
+    "araHarness": "#4a7c59",
+    "raphael": "#f5f0e8",
+    "cliente": "#9a9590"
+  },
+  "rules": [
+    "cores somente via tokens — hex hardcoded é falha de review",
+    "saturação sempre baixa; ouro lidera, verde e azul servem",
+    "tema noite é default; toda tela funciona nos dois temas"
+  ]
+}

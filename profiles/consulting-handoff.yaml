@@ -1,0 +1,51 @@
+# destino: sky-forge/profiles/consulting-handoff.yaml
+# Profile genérico de consultoria — spec e handoff antes de implementação.
+# Detalhamento: docs/sky-forge/CONSULTING_HANDOFF_PROFILE.md. NÃO contém nada de marca.
+
+id: consulting-handoff
+name: "Consulting Handoff"
+extends: generic-product
+description: "Leva uma intenção até um pacote de handoff governável: escopo, arquitetura, UX, riscos, critérios de aceite e recomendação de governança — sem escrever o software."
+use_when:
+  - "ambiguidade alta de escopo, stakeholders ou viabilidade"
+  - "decisão go/no-go pendente; material auditável necessário"
+  - "implementação será de outro time, ou depois, sob novo acordo"
+avoid_when:
+  - "bug fix ou feature pontual com escopo claro"
+  - "protótipo descartável (usar startup-mvp ou nada)"
+  - "não há interlocutor decisor para passar gates"
+  - "contratante espera código como entregável primário desta fase"
+
+artifacts:
+  required: [brief, consulting-brief, market-benchmark, requirements, ux-spec,
+             architecture, assumptions, risks-and-open-questions, proposal-scope,
+             delivery-boundaries, tooling-frugality, professional-validation-needed,
+             acceptance-criteria, handoff-solution]
+  optional: [data-model, content-inventory, design-tokens, agent-graph]
+
+stages:
+  - {id: intake,       artifacts: [brief, consulting-brief],                 exit_gate: intent_confirmed}
+  - {id: benchmark,    artifacts: [market-benchmark]}
+  - {id: requirements, artifacts: [requirements]}
+  - {id: ux,           artifacts: [ux-spec]}
+  - {id: architecture, artifacts: [architecture, tooling-frugality],         exit_gate: scope_reviewed}
+  - {id: proposal,     artifacts: [proposal-scope, delivery-boundaries],     exit_gate: proposal_ready}
+  - {id: handoff,      artifacts: [acceptance-criteria, handoff-solution],   exit_gate: handoff_approved}
+
+gates:
+  - {id: intent_confirmed, approver: responsible_consultant,
+     checks: ["problema descrito = problema real", "expectativas da fase alinhadas (spec, não código)"]}
+  - {id: scope_reviewed,   approver: technical_lead,
+     checks: ["requisitos coerentes", "riscos registrados", "ferramentas com alternativa"]}
+  - {id: proposal_ready,   approver: commercial_lead,
+     checks: ["out_of_scope fechado e não vazio", "fronteiras de entrega claras", "validações externas encaminhadas"]}
+  - {id: handoff_approved, approver: client_and_lead,
+     checks: ["critérios de aceite verificáveis", "pacote íntegro (hashes)", "harness_profile recomendado"]}
+
+validation_rules:
+  - {id: out_of_scope_required,     rule: "proposal-scope.out_of_scope não vazio",                        on_fail: block}
+  - {id: acceptance_before_handoff, rule: "handoff-solution.acceptance_ref resolve para artefato válido",  on_fail: block}
+  - {id: scope_basis_approved,      rule: "implementation_plan.scope_basis referencia proposal-scope com gate proposal_ready", on_fail: block}
+  - {id: no_definitive_legal,       rule: "professional-validation-needed presente com disclaimer imutável", on_fail: block}
+  - {id: paid_tool_alternative,     rule: "toda tool com cost_band != free tem alternative",               on_fail: block}
+  - {id: no_blocking_open_questions, rule: "zero open_questions com blocking=true no export",              on_fail: block}

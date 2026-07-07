@@ -1,0 +1,24 @@
+# FIXTURE — handoff-solution.yaml (schema 0.1.0)
+demand_ref: dem-2026-001
+solution_summary: "Workspace repo-first: repo de conteúdo como fonte de verdade, UI Next.js como janela, adapter Sky-Forge por arquivos, gates humanos travando transições, ledger append-only."
+architecture_refs: [architecture]
+spec_refs: [requirements, ux-spec]
+implementation_plan:
+  approach: "milestones curtos; máquina de estados e ledger primeiro (testáveis puros); UI sobre camada git estável; agentes só depois dos gates"
+  milestones:
+    - {id: m0, name: "Scaffold + contratos", outcome: "repo, CI, schemas validando fixtures"}
+    - {id: m1, name: "Núcleo de domínio", outcome: "máquina de estados + ledger + import adapter passando testes"}
+    - {id: m2, name: "Views MVP", outcome: "6 views navegáveis sobre repo real"}
+    - {id: m3, name: "Gates + harness probe", outcome: "transições travadas por documento; status de harness real"}
+  scope_basis: "proposal-scope@v1 (gate proposal_ready 2026-07-04)"
+repo_recommendation:
+  structure: "repo único surya-labs-workspace: apps/workspace + integrations/sky-forge + schemas/ + docs/"
+  stack_notes:
+    - "Next.js + TypeScript estrito; tokens do design system (nunca hardcode)"
+    - "domínio puro sem framework (máquina de estados, ledger) para testabilidade"
+  harness_profile: consulting
+operational_notes:
+  - "deploy Vercel hobby ou Docker self-host"
+  - "custo alvo ~zero; API de modelos por uso com orçamento por agente"
+open_risks_ref: risks-and-open-questions
+acceptance_ref: acceptance-criteria

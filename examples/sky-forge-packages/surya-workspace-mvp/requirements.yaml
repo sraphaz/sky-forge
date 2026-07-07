@@ -1,0 +1,26 @@
+# FIXTURE — requirements.yaml (artefato core; espelha PRODUCT_SPEC §11–12)
+demand_ref: dem-2026-001
+functional:   # prioridade MoSCoW
+  - {id: RF01, must: true,  text: "criar/editar demanda com origem (esteira|email|indicacao|interna)"}
+  - {id: RF02, must: true,  text: "transições de estado apenas pelas válidas; inválida é erro"}
+  - {id: RF03, must: true,  text: "bloquear transição sem gate documental exigido (passed)"}
+  - {id: RF04, must: true,  text: "importar pacote Sky-Forge (validar→mapear→registrar) atomicamente"}
+  - {id: RF05, must: true,  text: "exibir diff/resumo do que a importação criou"}
+  - {id: RF06, must: true,  text: "gerar rascunho de proposta de proposal-scope + template da casa"}
+  - {id: RF07, must: true,  text: "registrar aprovação com identidade, timestamp e hash do documento"}
+  - {id: RF08, must: true,  text: "vincular repo e registrar RepositoryLink"}
+  - {id: RF09, must: true,  text: "disparar instalação do Harness e refletir status real"}
+  - {id: RF10, must: true,  text: "registrar aceite de handoff contra acceptance-criteria"}
+  - {id: RF11, must: false, text: "alistamento livre com evento no log"}
+  - {id: RF12, must: false, text: "financeiro simples por etapa com split e refs"}
+  - {id: RF13, must: true,  text: "itens blocking de validação externa impedem proposal_sent"}
+  - {id: RF14, must: true,  text: "histórico append-only reconstruível (demanda e global)"}
+  - {id: RF15, must: false, text: "exportar demanda completa como pasta md/yaml"}
+non_functional:
+  - {id: RNF01, text: "fonte de verdade em arquivos versionados; índice derivado reconstruível"}
+  - {id: RNF02, text: "nenhuma ação de agente sem aprovação humana registrada"}
+  - {id: RNF03, text: "private-first: sem rastreadores; telemetria mínima e visível"}
+  - {id: RNF04, text: "WCAG 2.1 AA nos temas Noite/Dia; UI só via tokens"}
+  - {id: RNF05, text: "log append-only com hash encadeado"}
+  - {id: RNF06, text: "operável por 1 pessoa; infraestrutura ~zero"}
+  - {id: RNF07, text: "exportabilidade total"}

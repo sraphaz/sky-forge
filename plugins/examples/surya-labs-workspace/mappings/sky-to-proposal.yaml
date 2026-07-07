@@ -1,0 +1,14 @@
+# Mapeamento: proposal-scope + delivery-boundaries → Proposal
+
+from:
+  - proposal-scope.yaml
+  - delivery-boundaries.yaml
+to: Proposal
+state: proposal_draft
+merge:
+  limits_from: delivery-boundaries.yaml
+entity_fields:
+  summary: resumo
+  out_of_scope: fora_escopo
+  deliverables: entregaveis
+  phases: fases

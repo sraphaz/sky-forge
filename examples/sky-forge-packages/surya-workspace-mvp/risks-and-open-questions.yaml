@@ -1,0 +1,22 @@
+# FIXTURE — risks-and-open-questions.yaml (schema 0.1.0)
+demand_ref: dem-2026-001
+risks:
+  - {id: r-01, description: "concorrência de escrita no repo workspace-as-code",
+     severity: medium, likelihood: medium,
+     mitigation: "lock otimista por arquivo; equipe pequena no MVP", owner: raphael, status: mitigated}
+  - {id: r-02, description: "dependência da API do GitHub (rate limit, mudanças)",
+     severity: medium, likelihood: low,
+     mitigation: "camada git abstrata; Gitea self-host como saída", owner: raphael, status: mitigated}
+  - {id: r-03, description: "repartição financeira sem validação profissional",
+     severity: high, likelihood: medium,
+     mitigation: "MVP registra e NÃO executa repasse; gate financeiro travado até validação externa",
+     owner: raphael, status: mitigated}
+  - {id: r-04, description: "escopo crescer para ERP/CRM por conveniência",
+     severity: medium, likelihood: medium,
+     mitigation: "não-escopo é contrato no PRODUCT_SPEC; mudanças exigem revisão do spec",
+     owner: raphael, status: open}
+open_questions:
+  - {id: q-01, question: "índice derivado (SQLite) já no MVP ou só arquivos?",
+     blocking: false, owner: raphael, due_stage: "M1 da implementação", status: open}
+  - {id: q-02, question: "algoritmo e âncora do hash encadeado do histórico",
+     blocking: false, owner: raphael, due_stage: "M2 da implementação", status: open}

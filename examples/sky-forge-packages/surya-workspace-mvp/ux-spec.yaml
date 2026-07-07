@@ -1,0 +1,22 @@
+# FIXTURE — ux-spec.yaml (artefato core; protótipo canônico: Workspace Surya.dc.html)
+demand_ref: dem-2026-001
+prototype_ref: "design-project: Workspace Surya.dc.html (9 views navegáveis)"
+design_system_ref: "design-project: tokens/ + guidelines/ (Noite default, Dia via data-theme)"
+views_mvp:
+  - {id: demandas,   name: "Demandas",      spec: "board por estado da máquina canônica; contagem por coluna; card = demand-card"}
+  - {id: demanda,    name: "Demanda",       spec: "detalhe: artefatos (registry), gates (approval-gate), riscos, checklist de validação, log"}
+  - {id: pessoas,    name: "Pessoas",       spec: "registry com papéis (cores por papel), alistamentos"}
+  - {id: propostas,  name: "Propostas",     spec: "lista + estado; valores visíveis só a signatários"}
+  - {id: conhecimento, name: "Conhecimento", spec: "árvore conhecimento/ renderizada"}
+  - {id: config,     name: "Configurações", spec: "conexão de repo, provider, integrações"}
+views_f2: [conversa-harness, email, agenda-ritos, acordos]
+flows:
+  - {id: f-import,  name: "Importar pacote", steps: "escolher pasta → validação (relatório) → resumo do que será criado → confirmar → human_review"}
+  - {id: f-gate,    name: "Passar gate",     steps: "abrir gate → conferir documento exigido → identidade + registro → transição liberada"}
+  - {id: f-accept,  name: "Aceite handoff",  steps: "percorrer criteria → verified/failed/waived → termo → closed"}
+accessibility:
+  - "foco visível (--focus-shadow) em todo interativo"
+  - "board navegável por teclado; estado anunciado (aria-live)"
+  - "AA nos dois temas; alvo ≥44px"
+states_ui:
+  - "loading: mono discreto; empty: convite de ação; error: diagnóstico legível com caminho do arquivo"

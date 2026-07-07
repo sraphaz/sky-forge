@@ -1,0 +1,43 @@
+# destino: sky-forge/schemas/risks-and-open-questions.schema.yaml
+# Riscos e perguntas abertas — contínuo durante o run, consolidado no export.
+
+schema: sky-forge/risks-and-open-questions
+version: 0.1.0
+
+fields:
+  demand_ref: {type: string, required: true}
+  risks:
+    type: list, required: true                          # pode ser vazio; nunca ausente
+    item:
+      id:          {type: string, required: true}
+      description: {type: string, required: true}
+      severity:    {type: enum[low, medium, high], required: true}
+      likelihood:  {type: enum[low, medium, high], required: true}
+      mitigation:  {type: string}                       # obrigatório se severity=high…
+      accepted_by: {type: string}                       # …salvo aceitação explícita nomeada
+      owner:       {type: string, required: true}
+      status:      {type: enum[open, mitigated, accepted, closed], default: open}
+  open_questions:
+    type: list, required: true
+    item:
+      id:        {type: string, required: true}
+      question:  {type: string, required: true}
+      blocking:  {type: bool, required: true}           # true bloqueia export (profile consulting)
+      owner:     {type: string, required: true}
+      due_stage: {type: string}                         # etapa até a qual precisa de resposta
+      answer:    {type: string}
+      status:    {type: enum[open, answered, dropped], default: open}
+
+validations_expected:
+  - "risco high sem mitigation exige accepted_by (bloqueia export)"
+  - "open_question blocking=true com status=open bloqueia export no profile consulting-handoff"
+
+example:
+  demand_ref: dem-2026-001
+  risks:
+    - {id: r-01, description: "concorrência de escrita no repo workspace-as-code",
+       severity: medium, likelihood: medium, mitigation: "lock otimista por arquivo; equipe pequena no MVP",
+       owner: raphael, status: mitigated}
+  open_questions:
+    - {id: q-01, question: "índice derivado (SQLite) já no MVP ou depois?",
+       blocking: false, owner: raphael, due_stage: architecture, status: open}

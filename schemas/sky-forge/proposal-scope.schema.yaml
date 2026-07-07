@@ -1,0 +1,52 @@
+# proposal-scope.schema.yaml — escopo proposto de uma entrega de consultoria
+# Gerado após requisitos/UX/arquitetura estabilizarem. Gate G3 (proposal_ready).
+# REGRA DURA: out_of_scope não pode ser vazio — export falha.
+
+schema: sky-forge/proposal-scope
+version: 0.1.0
+
+fields:
+  demand_ref:     {type: string, required: true}
+  summary:        {type: string, required: true}      # o que está sendo proposto, em um parágrafo
+  deliverables:
+    type: list, required: true, min_items: 1
+    item:
+      id:         {type: string}
+      name:       {type: string}
+      description:{type: string}
+      artifact_refs: {type: list<string>}             # artefatos do pacote que compõem a entrega
+      acceptance_ref: {type: string}                  # id em acceptance-criteria
+  phases:
+    type: list, required: true, min_items: 1
+    item:
+      id:         {type: string}
+      name:       {type: string}
+      deliverables: {type: list<string>}              # ids
+      duration_estimate: {type: string}               # faixa, não promessa
+  out_of_scope:   {type: list<string>, required: true, min_items: 1}   # OBRIGATÓRIO não vazio
+  prerequisites:  {type: list<string>}                # o que o contratante precisa prover
+  dependencies:   {type: list<string>}                # externas (APIs, acessos, decisões)
+  revision_policy:{type: string}                      # como mudanças de escopo são tratadas
+
+validations_expected:
+  - "out_of_scope.length >= 1 (bloqueia export)"
+  - "todo deliverable tem acceptance_ref válido"
+  - "phases cobrem todos os deliverables"
+
+example:
+  demand_ref: dem-2026-014
+  summary: "Especificação e handoff de sistema de alertas térmicos para estufas."
+  deliverables:
+    - {id: d1, name: "Especificação técnica", description: "requisitos + arquitetura",
+       artifact_refs: [requirements, architecture], acceptance_ref: ac-01}
+    - {id: d2, name: "UX spec navegável", description: "fluxos e protótipo",
+       artifact_refs: [ux-spec], acceptance_ref: ac-02}
+  phases:
+    - {id: f1, name: "Maturação", deliverables: [d1, d2], duration_estimate: "3–5 semanas"}
+  out_of_scope:
+    - "implementação do software"
+    - "compra/instalação de sensores"
+    - "operação e suporte contínuos"
+  prerequisites: ["acesso a 2 agricultores para entrevista"]
+  dependencies: ["decisão da cooperativa sobre orçamento de hardware"]
+  revision_policy: "mudança de escopo gera nova versão da proposta; nada é implícito"
