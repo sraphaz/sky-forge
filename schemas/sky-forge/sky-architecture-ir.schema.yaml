@@ -1,0 +1,86 @@
+schema: sky-forge/architecture-ir
+version: 0.1.0
+
+purpose: >-
+  Renderer-neutral architecture representation derived from a validated Sky-Forge
+  package. It is the canonical visualization input; renderer-specific formats are
+  generated from it and remain disposable.
+
+fields:
+  metadata:
+    type: object
+    required: true
+    fields:
+      schema_version: {type: semver, required: true}
+      package_slug: {type: string, required: true}
+      generated_at: {type: datetime, required: true}
+      source_package_version: {type: string, required: true}
+      generator_version: {type: string, required: true}
+
+  system:
+    type: object
+    required: true
+    fields:
+      id: {type: identifier, required: true}
+      name: {type: string, required: true}
+      description: {type: string, required: true}
+      scope: {type: string}
+
+  elements:
+    type: list
+    required: true
+    item:
+      id: {type: identifier, required: true}
+      name: {type: string, required: true}
+      kind: {type: enum[person,system,container,component,agent,database,queue,external,policy,artifact], required: true}
+      description: {type: string}
+      technology: {type: string}
+      boundary_id: {type: identifier}
+      role: {type: string}
+      confidence: {type: enum[confirmed,inferred,unknown], required: true}
+      source_refs: {type: list<string>, required: true}
+      tags: {type: list<string>}
+
+  relationships:
+    type: list
+    required: true
+    item:
+      id: {type: identifier, required: true}
+      source: {type: identifier, required: true}
+      target: {type: identifier, required: true}
+      label: {type: string, required: true}
+      protocol: {type: string}
+      data_classification: {type: string}
+      confidence: {type: enum[confirmed,inferred,unknown], required: true}
+      source_refs: {type: list<string>, required: true}
+
+  boundaries:
+    type: list
+    item:
+      id: {type: identifier, required: true}
+      name: {type: string, required: true}
+      kind: {type: enum[system,trust,network,organization,data,domain], required: true}
+      members: {type: list<identifier>, required: true}
+      source_refs: {type: list<string>, required: true}
+
+  views:
+    type: list
+    required: true
+    item:
+      id: {type: identifier, required: true}
+      name: {type: string, required: true}
+      type: {type: enum[architecture,workflow,sequence,dataflow,lifecycle], required: true}
+      question_answered: {type: string, required: true}
+      include: {type: list<identifier>, required: true}
+      primary_path: {type: list<identifier>}
+      quality_profile: {type: enum[standard,showcase], required: true}
+      visual_preset: {type: enum[classic,signal-flow,blueprint], required: true}
+
+validations_expected:
+  - ids are unique inside each collection
+  - every relationship endpoint exists in elements
+  - every boundary member exists in elements
+  - every view include and primary_path reference exists in elements
+  - confirmed elements and relationships have at least one source_ref
+  - inferred elements and relationships are visibly identified in renderer mappings
+  - no renderer-specific coordinates, colors or SVG fields exist in this schema
