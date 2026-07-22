@@ -1,6 +1,6 @@
 # ADR-0007 — Archify como adapter de visualização pós-export
 
-- **Status:** Proposed
+- **Status:** Accepted
 - **Data:** 2026-07-21
 - **Decisores:** Sky-Forge maintainers
 

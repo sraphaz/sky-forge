@@ -238,20 +238,30 @@ Em modo `--json`, retornar resumo estruturado para agentes e CI.
 
 A demanda só está concluída quando:
 
-- [ ] o comando Node funciona em Windows, Linux e macOS;
-- [ ] o wrapper PowerShell funciona no Windows;
-- [ ] a IR é gerada e validada;
-- [ ] ao menos uma fixture produz architecture HTML válido;
-- [ ] workflow é produzido a partir de evidência real;
-- [ ] sequence é produzida ou omitida de maneira explicável;
-- [ ] `archify validate`, `render` e `check` são executados;
-- [ ] erros retornam código não zero;
-- [ ] manifesto registra proveniência e hashes;
-- [ ] testes automatizados passam;
-- [ ] `check-core-agnostic.ps1` continua passando;
-- [ ] documentação inclui bootstrap e troubleshooting;
-- [ ] nenhuma dependência obrigatória foi introduzida no core;
-- [ ] nenhum artefato confirmado foi criado sem evidência.
+- [x] o comando Node funciona em Windows, Linux e macOS;
+- [x] o wrapper PowerShell funciona no Windows;
+- [x] a IR é gerada e validada;
+- [x] ao menos uma fixture produz architecture HTML válido;
+- [x] workflow é produzido a partir de evidência real;
+- [x] sequence é produzida ou omitida de maneira explicável;
+- [x] `archify validate`, `render` e `check` são executados;
+- [x] erros retornam código não zero;
+- [x] manifesto registra proveniência e hashes;
+- [x] testes automatizados passam;
+- [x] `check-core-agnostic.ps1` continua passando;
+- [x] documentação inclui bootstrap e troubleshooting;
+- [x] nenhuma dependência obrigatória foi introduzida no core;
+- [x] nenhum artefato confirmado foi criado sem evidência.
+
+### Evidência desta implementação (2026-07-21)
+
+- `npm test` em `plugins/examples/archify`: 17/17 passando
+- `./scripts/sky/check-core-agnostic.ps1`: OK
+- `./scripts/sky/validate-profile.ps1 -Profile consulting-handoff -PackagePath examples/sky-forge-packages/surya-workspace-mvp -FixtureMode`: OK
+- Diagrama real: `.tmp/archify/surya-workspace-mvp/archify/system.architecture.html` (SVG presente; validate/render/check passed)
+- Workflow real a partir de gates/milestones do pacote surya; sequence omitida com warning (sem `sequences.yaml`)
+- Pin Archify: `2.11.0` / `ed0efcc763d358b78df845182b5ed24a9d165a1c` em `ARCHIFY.lock.json`
+- Nota: macOS/Linux não foram executados nesta máquina Windows; o CLI Node é multiplataforma por construção (`node:test`, paths via `node:path`)
 
 ## Entrega esperada do Cursor
 

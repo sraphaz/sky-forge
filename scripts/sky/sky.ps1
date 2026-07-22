@@ -9,7 +9,7 @@
 [CmdletBinding()]
 param(
     [Parameter(Position = 0, Mandatory = $true)]
-    [ValidateSet('intake', 'status', 'approve', 'run', 'validate', 'export', 'elevate', 'benchmark', 'publish', 'sync', 'showcase', 'agents', 'audit', 'choreograph', 'architect', 'link', 'link-sync', 'pull-spec', 'integrate-dc')]
+    [ValidateSet('intake', 'status', 'approve', 'run', 'validate', 'export', 'elevate', 'benchmark', 'publish', 'sync', 'showcase', 'agents', 'audit', 'choreograph', 'architect', 'link', 'link-sync', 'pull-spec', 'integrate-dc', 'visualize')]
     [string]$Command,
 
     [Parameter()]
@@ -63,7 +63,24 @@ param(
     [string[]]$ChangedFiles,
 
     [Parameter()]
-    [int]$Last = 20
+    [int]$Last = 20,
+
+    [Parameter()]
+    [string]$PackagePath,
+
+    [Parameter()]
+    [string]$OutputPath,
+
+    [Parameter()]
+    [ValidateSet('archify')]
+    [string]$Renderer = 'archify',
+
+    [Parameter()]
+    [string]$Views = 'architecture,workflow,sequence',
+
+    [Parameter()]
+    [ValidateSet('standard', 'showcase')]
+    [string]$Quality = 'standard'
 )
 
 $ErrorActionPreference = 'Stop'
@@ -300,5 +317,20 @@ switch ($Command) {
         if ($Public) { $iArgs.Sync = $true }
         & (Join-Path $PSScriptRoot 'integrate-dc.ps1') @iArgs
         Invoke-AgentAudit $Slug 'showcase-curator' 'design.integrate_dc' 'side_effect' 'ok' "$Folder/$Screen"
+    }
+    'visualize' {
+        # Optional post-export renderer. Missing plugin exits 0 with guidance (core stays agnostic).
+        $vArgs = @{
+            Renderer = $Renderer
+            Views = $Views
+            Quality = $Quality
+        }
+        if ($Slug) { $vArgs.Slug = $Slug }
+        if ($PackagePath) { $vArgs.PackagePath = $PackagePath }
+        if ($OutputPath) { $vArgs.OutputPath = $OutputPath }
+        & (Join-Path $PSScriptRoot 'visualize.ps1') @vArgs
+        if ($Slug) {
+            Invoke-AgentAudit $Slug 'delivery-steward' 'visualize.archify' 'invoke_skill' 'ok' "renderer=$Renderer"
+        }
     }
 }

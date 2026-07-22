@@ -1,0 +1,5 @@
+demand_ref: fix-no-refs
+title: Confirmed Without Refs
+intent: Block confirmed elements lacking evidence.
+desired_outcome: IR validation failure.
+language: pt-BR

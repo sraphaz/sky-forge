@@ -1,0 +1,7 @@
+demand_ref: fix-complete-001
+implementation_plan:
+  milestones:
+    - {id: m0, name: "Scaffold", outcome: "contracts green"}
+    - {id: m1, name: "Domain core", outcome: "state machine + ledger"}
+    - {id: m2, name: "Views", outcome: "MVP screens"}
+    - {id: m3, name: "Gates", outcome: "human approvals enforced"}

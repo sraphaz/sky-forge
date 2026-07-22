@@ -1,0 +1,5 @@
+demand_ref: fix-bad-rel
+components:
+  - {id: web, name: "Web", tech: "Next.js", role: "ui"}
+relationships:
+  - {id: web-to-missing, source: web, target: missing-api, label: "calls", confidence: confirmed, source_refs: ["architecture.yaml#/relationships/web-to-missing"]}

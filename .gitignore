@@ -39,4 +39,7 @@ __pycache__/
 .venv/
 dist/
 
+# Local scratch / generated previews
+.tmp/
+
 harness-report.json

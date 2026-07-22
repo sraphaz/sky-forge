@@ -13,5 +13,6 @@ Plugins **não** rodam dentro da geração do core. Consumidores externos (ex.: 
 | Pasta | Descrição |
 |-------|-----------|
 | `examples/surya-labs-workspace/` | Adapter opcional — mapeia `consulting-handoff` → entidades de workspace |
+| `examples/archify/` | Adapter opcional pós-export — Sky Architecture IR → Archify HTML |
 
 Remova `plugins/examples/` para validar que o core permanece agnóstico.

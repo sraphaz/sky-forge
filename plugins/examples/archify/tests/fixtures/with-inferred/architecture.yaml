@@ -1,0 +1,6 @@
+demand_ref: fix-inferred
+components:
+  - {id: web, name: "Web", tech: "Next.js", role: "ui"}
+  - {id: api, name: "API", tech: "Node", role: "backend"}
+relationships:
+  - {id: likely-call, source: web, target: api, label: "likely HTTPS", confidence: inferred, source_refs: ["architecture.yaml#/relationships/likely-call"]}

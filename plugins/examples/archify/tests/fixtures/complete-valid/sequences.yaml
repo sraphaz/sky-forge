@@ -1,0 +1,14 @@
+sequences:
+  - name: Import package path
+    question: How does an operator import a Sky package?
+    participants:
+      - {id: operator, name: Operator, role: human steward}
+      - {id: ui, name: Workspace UI, role: import wizard}
+      - {id: adapter, name: Sky adapter, role: validate and map}
+      - {id: content-repo, name: Content repo, role: store files}
+    steps:
+      - {id: s1, from: operator, to: ui, label: "choose folder"}
+      - {id: s2, from: ui, to: adapter, label: "validate package"}
+      - {id: s3, from: adapter, to: content-repo, label: "write artifacts"}
+      - {id: s4, from: adapter, to: ui, label: "validation report"}
+      - {id: s5, from: ui, to: operator, label: "confirm import"}

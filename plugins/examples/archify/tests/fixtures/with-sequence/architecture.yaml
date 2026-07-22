@@ -1,0 +1,4 @@
+demand_ref: fix-seq
+components:
+  - {id: client, name: "Client", tech: "browser", role: "caller"}
+  - {id: api, name: "API", tech: "service", role: "callee"}

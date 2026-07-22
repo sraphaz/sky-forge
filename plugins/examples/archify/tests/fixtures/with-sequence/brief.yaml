@@ -1,0 +1,5 @@
+demand_ref: fix-seq
+title: Sequence Only Evidence
+intent: Produce sequence when sequences.yaml exists.
+desired_outcome: critical-path sequence artifacts.
+language: pt-BR

@@ -1,0 +1,8 @@
+package_id: pkg-complete-valid
+contract_version: 0.1.0
+profile: consulting-handoff
+gates:
+  - {id: intent_confirmed, passed_by: tester, at: 2026-07-01T10:00:00Z}
+  - {id: scope_reviewed, passed_by: tester, at: 2026-07-02T10:00:00Z}
+  - {id: proposal_ready, passed_by: tester, at: 2026-07-03T10:00:00Z}
+  - {id: handoff_approved, passed_by: tester, at: 2026-07-04T10:00:00Z}

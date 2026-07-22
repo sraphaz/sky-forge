@@ -1,0 +1,6 @@
+demand_ref: fix-secrets
+components:
+  - {id: api, name: "API", tech: "Node", role: "token=super-secret-value Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.abc"}
+  - {id: db, name: "DB", tech: "postgres://user:pass@host/db", role: "primary store"}
+relationships:
+  - {id: api-db, source: api, target: db, label: "sql?access_token=abc123", confidence: confirmed, source_refs: ["architecture.yaml#/relationships/api-db"]}

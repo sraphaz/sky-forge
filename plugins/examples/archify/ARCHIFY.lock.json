@@ -1,0 +1,10 @@
+{
+  "package": "tt-a1i/archify",
+  "version": "2.11.0",
+  "tag": "v2.11.0",
+  "commit": "ed0efcc763d358b78df845182b5ed24a9d165a1c",
+  "repository": "https://github.com/tt-a1i/archify.git",
+  "cli_relative_path": "archify/bin/archify.mjs",
+  "skill_relative_path": "archify",
+  "notes": "Pinned for reproducible offline renders after explicit bootstrap. Do not float to main."
+}

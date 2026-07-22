@@ -1,0 +1,5 @@
+demand_ref: fix-missing-arch
+title: Missing Architecture
+intent: Fail closed when architecture.yaml is absent.
+desired_outcome: Actionable error.
+language: pt-BR

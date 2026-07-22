@@ -1,0 +1,9 @@
+sequences:
+  - name: Simple request
+    question: What is the request path?
+    participants:
+      - {id: client, name: Client}
+      - {id: api, name: API}
+    steps:
+      - {id: m1, from: client, to: api, label: "GET /health"}
+      - {id: m2, from: api, to: client, label: "200 OK"}
