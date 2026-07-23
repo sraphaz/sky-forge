@@ -34,7 +34,8 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
-$RepoRoot = Resolve-Path (Join-Path $PSScriptRoot '..\..')
+. (Join-Path $PSScriptRoot 'get-sky-config.ps1')
+$RepoRoot = Get-SkyRepoRoot
 
 if ($Renderer -ne 'archify') {
     throw "Unsupported renderer: $Renderer"
@@ -53,7 +54,9 @@ if (-not $PackagePath) {
     if (-not $Slug) {
         throw 'Provide -PackagePath or -Slug'
     }
+    # Prefer configured export dir (SKY_OUTPUTS_DIR / sky.config) — same as export-package.ps1
     $candidates = @(
+        (Get-SkyOutputDirForSlug $Slug),
         (Join-Path $RepoRoot ".sky\sessions\$Slug\export"),
         (Join-Path $RepoRoot ".sky\sessions\$Slug\package"),
         (Join-Path $RepoRoot "examples\sky-forge-packages\$Slug")

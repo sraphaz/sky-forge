@@ -60,6 +60,26 @@ test('complete valid package produces workflow and sequence evidence', () => {
   assert.ok(mapSequence(ir));
 });
 
+test('sequence messages exclude architecture topology edges', () => {
+  const pkg = loadPackage(path.join(fixtures, 'complete-valid'));
+  const { ir } = normalizeIr(pkg, { generatedAt: FIXED_AT });
+  const seq = mapSequence(ir);
+  assert.ok(seq);
+  // sequences.yaml has 5 steps; architecture also has operator-ui / adapter-repo
+  // between the same participant IDs — those must not appear as sequence messages.
+  assert.equal(seq.messages.length, 5);
+  const labels = seq.messages.map((m) => m.label);
+  assert.deepEqual(labels, [
+    'choose folder',
+    'validate package',
+    'write artifacts',
+    'validation report',
+    'confirm import',
+  ]);
+  assert.ok(!labels.includes('approve'));
+  assert.ok(!labels.includes('import files'));
+});
+
 test('missing architecture.yaml fails with actionable error', () => {
   assert.throws(
     () => loadPackage(path.join(fixtures, 'missing-architecture')),

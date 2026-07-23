@@ -16,8 +16,13 @@ export function mapSequence(ir, { qualityProfile = 'standard' } = {}) {
 
   if (participants.length < 2) return null;
 
+  // Only sequence evidence — do not pull architecture/workflow topology edges
+  // that happen to share participant IDs (see architecture.mjs source_refs filter).
   const messagesSource = (ir.relationships || []).filter(
-    (rel) => include.has(rel.source) && include.has(rel.target),
+    (rel) =>
+      include.has(rel.source) &&
+      include.has(rel.target) &&
+      (rel.source_refs || []).some((ref) => String(ref).startsWith('sequences.yaml')),
   );
   if (!messagesSource.length) return null;
 
