@@ -1,0 +1,5 @@
+demand_ref: fix-inferred
+title: With Inferred Relationship
+intent: Preserve inferred relationships and list them in the manifest.
+desired_outcome: Manifest inferences populated.
+language: pt-BR

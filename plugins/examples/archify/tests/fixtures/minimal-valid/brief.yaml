@@ -1,0 +1,5 @@
+demand_ref: fix-min-001
+title: Minimal Valid Package
+intent: Prove architecture visualization from a tiny confirmed package.
+desired_outcome: Architecture IR and Archify architecture diagram.
+language: pt-BR

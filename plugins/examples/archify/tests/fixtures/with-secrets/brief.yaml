@@ -1,0 +1,5 @@
+demand_ref: fix-secrets
+title: Sanitization Package
+intent: Ensure secrets never reach diagram labels.
+desired_outcome: Redacted strings in IR and Archify JSON.
+language: pt-BR

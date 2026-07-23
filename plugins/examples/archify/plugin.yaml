@@ -1,0 +1,67 @@
+plugin:
+  id: archify-visualization
+  name: Archify Visualization Adapter
+  version: 0.1.0
+  owner: sky-forge-community
+  direction: consumer
+
+compatibility:
+  sky_forge_core: ">=1.1.0 <2.0.0"
+  profiles:
+    - consulting-handoff
+    - default
+
+requires:
+  - architecture.yaml
+  - brief.yaml
+
+optional:
+  - sequences.yaml
+  - integrations.yaml
+  - ux-spec.yaml
+  - sky-merits.yaml
+  - agentic-repo-recommendation.yaml
+
+mappings:
+  - from: architecture.yaml
+    to: intermediate/sky-architecture-ir.yaml
+    notes: Normalize components, relationships, boundaries, views and provenance.
+  - from: intermediate/sky-architecture-ir.yaml
+    to: archify/system.architecture.json
+    notes: Render the bounded high-level system view.
+  - from: intermediate/sky-architecture-ir.yaml
+    to: archify/delivery.workflow.json
+    notes: Render the solution delivery and approval workflow when evidence exists.
+  - from: sequences.yaml
+    to: archify/critical-path.sequence.json
+    notes: Render critical interaction sequences when the optional artifact exists.
+
+policies:
+  - id: no-invented-topology
+    rule: Every rendered node and relationship must reference a source artifact path or be marked inferred.
+    on_fail: block
+  - id: confirmed-requires-evidence
+    rule: Elements marked confirmed require at least one source_ref.
+    on_fail: block
+  - id: bounded-architecture-view
+    rule: Default architecture view should contain 8 to 12 primary nodes; additional detail belongs in cards or named views.
+    on_fail: warn
+  - id: private-by-default
+    rule: Generated artifacts remain private unless the source package is approved for public showcase.
+    on_fail: block
+
+produces:
+  - intermediate/sky-architecture-ir.yaml
+  - archify/system.architecture.json
+  - archify/system.architecture.html
+  - archify/delivery.workflow.json
+  - archify/delivery.workflow.html
+  - archify/critical-path.sequence.json
+  - archify/critical-path.sequence.html
+  - archify/manifest.yaml
+
+does_not_modify:
+  - sky-forge-core
+  - source-package
+  - architecture-decisions
+  - human-approval-state

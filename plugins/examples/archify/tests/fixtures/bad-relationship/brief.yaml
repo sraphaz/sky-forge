@@ -1,0 +1,5 @@
+demand_ref: fix-bad-rel
+title: Bad Relationship
+intent: Catch dangling relationship endpoints.
+desired_outcome: IR validation failure.
+language: pt-BR

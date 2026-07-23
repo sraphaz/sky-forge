@@ -1,0 +1,20 @@
+demand_ref: fix-complete-001
+approach: "Repo-backed workspace with explicit topology."
+components:
+  - {id: content-repo, name: "Content repo", tech: "git", role: "source of truth"}
+  - {id: ui, name: "Workspace UI", tech: "Next.js", role: "operator window"}
+  - {id: git-layer, name: "Git layer", tech: "TypeScript lib", role: "commits and locks"}
+  - {id: adapter, name: "Sky adapter", tech: "TS CLI", role: "import Sky packages"}
+  - {id: state-machine, name: "State machine", tech: "TS pure", role: "valid transitions"}
+  - {id: ledger, name: "Ledger", tech: "append-only files", role: "audit history"}
+  - {id: harness-probe, name: "Harness probe", tech: "TS", role: "read harness status"}
+  - {id: operator, name: "Operator", tech: "human steward", role: "approve gates"}
+relationships:
+  - {id: ui-git, source: ui, target: git-layer, label: "read/write", confidence: confirmed, source_refs: ["architecture.yaml#/relationships/ui-git"]}
+  - {id: git-repo, source: git-layer, target: content-repo, label: "commits", confidence: confirmed, source_refs: ["architecture.yaml#/relationships/git-repo"]}
+  - {id: adapter-repo, source: adapter, target: content-repo, label: "import files", confidence: confirmed, source_refs: ["architecture.yaml#/relationships/adapter-repo"]}
+  - {id: ui-sm, source: ui, target: state-machine, label: "transition request", confidence: confirmed, source_refs: ["architecture.yaml#/relationships/ui-sm"]}
+  - {id: sm-ledger, source: state-machine, target: ledger, label: "append event", confidence: confirmed, source_refs: ["architecture.yaml#/relationships/sm-ledger"]}
+  - {id: operator-ui, source: operator, target: ui, label: "approve", confidence: confirmed, source_refs: ["architecture.yaml#/relationships/operator-ui"]}
+boundaries:
+  - {id: workspace, name: "Workspace system", kind: system, members: [ui, git-layer, adapter, state-machine, ledger, harness-probe], source_refs: ["architecture.yaml#/boundaries/workspace"]}

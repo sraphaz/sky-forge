@@ -25,3 +25,17 @@ Ver [EXTERNAL_WORKSPACE_INTEGRATION.md](./EXTERNAL_WORKSPACE_INTEGRATION.md).
 ```
 
 Core deve passar com `plugins/examples/` ausente.
+
+## Exemplo: Archify (visualização pós-export)
+
+Adapter opcional em `plugins/examples/archify/`. Não é dependência do core.
+
+```powershell
+cd plugins/examples/archify
+npm install
+node scripts/bootstrap-archify.mjs
+cd ../../..
+./scripts/sky/sky.ps1 visualize -PackagePath examples/sky-forge-packages/surya-workspace-mvp -Renderer archify
+```
+
+Ver `plugins/examples/archify/README.md` e ADR-0007.

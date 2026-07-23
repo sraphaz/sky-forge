@@ -1,0 +1,11 @@
+demand_ref: fix-min-001
+approach: "Two containers and one store with an explicit relationship."
+components:
+  - {id: web, name: "Web UI", tech: "Next.js", role: "user interface"}
+  - {id: api, name: "API", tech: "Node service", role: "application API"}
+  - {id: db, name: "Database", tech: "postgres", role: "system of record"}
+relationships:
+  - {id: web-to-api, source: web, target: api, label: "HTTPS", confidence: confirmed, source_refs: ["architecture.yaml#/relationships/web-to-api"]}
+  - {id: api-to-db, source: api, target: db, label: "SQL", confidence: confirmed, source_refs: ["architecture.yaml#/relationships/api-to-db"]}
+boundaries:
+  - {id: system-boundary, name: "Application boundary", kind: system, members: [web, api, db], source_refs: ["architecture.yaml#/boundaries/system-boundary"]}

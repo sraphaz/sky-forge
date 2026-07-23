@@ -1,0 +1,5 @@
+demand_ref: fix-complete-001
+title: Complete Valid Package
+intent: Cover architecture, workflow gates, and optional sequence.
+desired_outcome: All three Archify views when evidence exists.
+language: pt-BR

@@ -1,0 +1,3 @@
+demand_ref: fix-no-refs
+components:
+  - {id: web, name: "Web", tech: "Next.js", role: "ui"}
