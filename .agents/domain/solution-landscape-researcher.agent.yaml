@@ -16,7 +16,7 @@ references:
 inputs:
   - brief-draft.yaml
   - functional-requirements.yaml
-  - non-functional-requirements.yaml
+  - nfr.yaml
   - alternatives.yaml
   - market-benchmark.yaml
   - research.md
