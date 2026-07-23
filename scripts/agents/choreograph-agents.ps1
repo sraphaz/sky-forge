@@ -56,8 +56,14 @@ if ($Intent -and $intentPaths.ContainsKey($Intent)) {
 }
 
 $rules = @()
+$coActivation = @()
+$partyMode = @{ policy = ''; sessions = @() }
+$choreoRaw = ''
 if (Test-Path $ChoreoPath) {
-    $rules = Parse-ChoreographyRules -Raw (Get-Content $ChoreoPath -Raw)
+    $choreoRaw = Get-Content $ChoreoPath -Raw
+    $rules = Parse-ChoreographyRules -Raw $choreoRaw
+    $coActivation = Parse-CoActivation -Raw $choreoRaw
+    $partyMode = Parse-PartyMode -Raw $choreoRaw
 }
 
 $ranks = Get-AutonomyRanks -RepoRoot $RepoRoot
@@ -139,6 +145,17 @@ if ($CheckAutonomy -and $AgentId -and $Action) {
     }
 }
 
+$journeyPhase = $null
+if ($Slug) {
+    $journeyPath = Join-Path $RepoRoot ".sky\sessions\$Slug\journey.yaml"
+    if (Test-Path $journeyPath) {
+        $j = Get-Content $journeyPath -Raw
+        if ($j -match 'current_phase:\s*(\S+)') { $journeyPhase = $Matches[1] }
+    }
+}
+
+$activeParty = Resolve-ActiveParty -PartyMode $partyMode -CoActivation $coActivation -JourneyPhase $journeyPhase
+
 $result = [ordered]@{
     version = 3
     trigger = $Trigger
@@ -152,6 +169,12 @@ $result = [ordered]@{
     skills = $skillRuns
     gates_required = $gatesRequired
     autonomy_check = $autonomyCheck
+    co_activation = $coActivation
+    party_mode = [ordered]@{
+        policy = $partyMode.policy
+        sessions = $partyMode.sessions
+        active = $activeParty
+    }
 }
 
 $recordScript = Join-Path $RepoRoot 'scripts\sky\record-agent-event.ps1'
@@ -170,6 +193,9 @@ if ($Json) {
     Write-Host "Domain consults: $(($domainConsults | ForEach-Object { $_.id }) -join ', ')"
     Write-Host "Skills: $($skillRuns -join ', ')"
     Write-Host "Gates: $($gatesRequired -join ', ')"
+    if ($activeParty) {
+        Write-Host "Party Mode: $($activeParty.id) ($($activeParty.label)) — host: $($activeParty.host), primary: $($activeParty.primary)" -ForegroundColor Magenta
+    }
     if ($autonomyCheck) {
         $color = if ($autonomyCheck.allowed) { 'Green' } else { 'Red' }
         Write-Host "Autonomy $($autonomyCheck.action): $($autonomyCheck.allowed)" -ForegroundColor $color

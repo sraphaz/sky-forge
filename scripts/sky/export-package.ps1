@@ -35,7 +35,26 @@ $testingSrc = Join-Path $SessionDir 'testing'
 if (Test-Path $testingSrc) {
     Copy-Item -Path (Join-Path $testingSrc '*') -Destination (Join-Path $OutputDir 'testing') -Recurse -Force
 }
-$copyFiles = @('brief-draft.yaml', 'functional-requirements.yaml', 'nfr.yaml', 'integrations.yaml', 'maturity.yaml', 'sky-merits.yaml', 'ux-spec.yaml', 'ops.yaml', 'tier-pricing.yaml', 'technical-decisions.yaml', 'acceptance-criteria.yaml')
+
+$sessionPrompts = Join-Path $SessionDir 'prompts'
+if (Test-Path $sessionPrompts) {
+    $promptDest = Join-Path $OutputDir 'prompts'
+    New-Item -ItemType Directory -Path $promptDest -Force | Out-Null
+    Copy-Item -Path (Join-Path $sessionPrompts '*') -Destination $promptDest -Force
+}
+$sessionUploads = Join-Path $SessionDir 'uploads\photos'
+if (Test-Path $sessionUploads) {
+    $photoDest = Join-Path $OutputDir 'media\photos'
+    New-Item -ItemType Directory -Path $photoDest -Force | Out-Null
+    Copy-Item -Path (Join-Path $sessionUploads '*') -Destination $photoDest -Force
+}
+
+$suggestScript = Join-Path $PSScriptRoot 'suggest-agentic-repo.ps1'
+if (Test-Path $suggestScript) {
+    & $suggestScript -Slug $Slug -Quiet | Out-Null
+}
+
+$copyFiles = @('brief-draft.yaml', 'functional-requirements.yaml', 'nfr.yaml', 'integrations.yaml', 'maturity.yaml', 'sky-merits.yaml', 'ux-spec.yaml', 'ops.yaml', 'tier-pricing.yaml', 'technical-decisions.yaml', 'acceptance-criteria.yaml', 'agentic-repo-recommendation.yaml', 'media-assets.yaml', 'medium-articles.yaml')
 foreach ($f in $copyFiles) {
     $src = Join-Path $SessionDir $f
     if (Test-Path $src) {
@@ -101,6 +120,7 @@ artifacts:
   - cloud-design/screens/
   - design-redesign/
 next_step: ./scripts/sky/sky.ps1 link -Slug $Slug -WorkspacePath <app-repo> -PullSpec
+next_step_agentic: "Se agentic-repo-recommendation.yaml tier recommended|suggested — instalar ARAH Harness no repo-alvo antes do scaffold"
 next_step_alt: ./scripts/sky/sky.ps1 publish -Slug $Slug -Public
 "@
 Set-Content (Join-Path $OutputDir 'PACKAGE_MANIFEST.yaml') -Value $manifest -Encoding UTF8

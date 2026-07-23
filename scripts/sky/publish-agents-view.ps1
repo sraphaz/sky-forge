@@ -74,6 +74,8 @@ if (Test-Path $choreoScript) {
             domain_consults = @($c.domain_consults | ForEach-Object { $_.id })
             skills = @($c.skills)
             gates_required = @($c.gates_required)
+            co_activation = @($c.co_activation)
+            party_mode = $c.party_mode
         }
     }
 }

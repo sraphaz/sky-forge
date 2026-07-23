@@ -27,6 +27,17 @@ Shard por story: `stories/IA-*.yaml` — padrão BMAD context-engineered (ver `t
 - Testes em todo PR
 - Documentação no mesmo PR que código
 
+## ARAH Harness (quando recomendado)
+
+Se o pacote Sky-Forge incluir `spec/agentic-repo-recommendation.yaml` com tier `recommended` ou `suggested`, bootstrap deste repo com [ARAH Harness](https://github.com/sraphaz/arah-harness) **antes** de implementar stories:
+
+```powershell
+$HARNESS = if ($env:ARAH_HARNESS_PATH) { $env:ARAH_HARNESS_PATH } else { "$env:USERPROFILE\arah-harness" }
+powershell -File $HARNESS\cli\arah.ps1 install -ProjectName "{slug-do-projeto}"
+```
+
+Ver `spec/agentic-repo-recommendation.yaml` após `pull-spec`.
+
 ## Referências do pacote
 
 - Brief: `spec/brief.yaml` (sincronizado via `./scripts/sky.ps1 pull-spec`)

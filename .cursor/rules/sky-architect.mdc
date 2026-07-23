@@ -17,6 +17,17 @@ Roteamento: `solutions-architect` coordena; delega a agentes especializados.
 | `c4-modeler` | sky-c4-model | c4-context, c4-containers, c4-components, domains |
 | `journey-sequence-modeler` | sky-journey-sequences | context-flow, sequences/ |
 | `clean-craft-advisor` | sky-clean-craft | craft-review.md (consult) |
+| `solutions-architect` | sky-agent-architecture | agent-architecture, agents/, agent-graph, harness spec |
+
+## Arquitetura agêntica (Arah)
+
+Quando a solução tem copiloto, harness ou roster multi-agente (RF E3/E4):
+
+1. Produzir C4 primeiro (containers Agent/Copilot)
+2. Depois manifests em `architecture/agents/` — **agentes da solução**, não Sky-Forge
+3. `specs/agent-harness.spec.yaml` com aceite verificável
+
+Ver [arah.md](../../docs/attribution/arah.md) e `templates/architecture/agents/README.md`.
 
 ## Antes de produzir
 
@@ -27,8 +38,14 @@ Roteamento: `solutions-architect` coordena; delega a agentes especializados.
 ## Ordem
 
 ```
-c4-modeler (L1→L2→L3) → journey-sequence-modeler → clean-craft-advisor → export
+c4-modeler (L1→L2→L3) → journey-sequence-modeler → sky-agent-architecture (se IA) → clean-craft-advisor → export
 ```
+
+## Repo de implementação agentic
+
+Produto sem agentes runtime ainda pode ter **repo de código** mantido por agentes (site Astro, API, etc.).
+
+Após export ou na fase implement: ler `agentic-repo-recommendation.yaml`. Se plausível, sugerir [ARAH Harness](../../docs/recommendations/agentic-repo.catalog.yaml) via `repo-scaffolder` — complementa Sky-Forge, não substitui.
 
 ## Persistência
 

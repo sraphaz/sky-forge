@@ -16,7 +16,8 @@ Plugins são pacotes **externos** que consomem exports — nunca estendem a gera
 
 ## Integração workspace
 
-Ver [EXTERNAL_WORKSPACE_INTEGRATION.md](./EXTERNAL_WORKSPACE_INTEGRATION.md).
+- **Consumer:** [EXTERNAL_WORKSPACE_INTEGRATION.md](./EXTERNAL_WORKSPACE_INTEGRATION.md) — importa exports.
+- **Host (brownfield):** [HOST_PLUGIN_INTEGRATION.md](./HOST_PLUGIN_INTEGRATION.md) — `sky attach` no repo existente.
 
 ## CI
 

@@ -1,5 +1,17 @@
 import index from "../../../../showcase/registry/index.json";
 
+export type PackageDownloadMeta = {
+  available: boolean;
+  file: string;
+  url_path: string;
+  size_bytes: number;
+  size_human: string;
+  package_completeness?: string;
+  overall_readiness?: number;
+  exported_at?: string;
+  zipped_at?: string;
+};
+
 export type ProjectIndexEntry = {
   slug: string;
   title: string;
@@ -13,6 +25,7 @@ export type ProjectIndexEntry = {
   agents_file?: string;
   public?: boolean;
   gap_count?: number;
+  package_download?: PackageDownloadMeta | null;
 };
 
 export type AgentEvent = {
@@ -48,6 +61,32 @@ export type AgentsView = {
     domain_consults?: string[];
     skills?: string[];
     gates_required?: string[];
+    co_activation?: {
+      primary: string;
+      consult?: string[];
+      on_phase?: string[];
+      party?: string;
+      route_after?: string;
+    }[];
+    party_mode?: {
+      policy?: string;
+      sessions?: {
+        id: string;
+        label?: string;
+        host?: string;
+        primary?: string;
+        consult?: string[];
+        on_phase?: string[];
+      }[];
+      active?: {
+        id: string;
+        label?: string;
+        host?: string;
+        primary?: string;
+        consult?: string[];
+        on_phase?: string[];
+      } | null;
+    };
   };
   gates?: { id: string; approved: boolean }[];
   autonomy_levels?: { id: string; rank: number; label: string }[];
@@ -193,6 +232,7 @@ export type ProjectPreview = ProjectIndexEntry & {
   phases?: { id: string; title: string; status: string }[];
   pipeline?: { stage: string; approved: boolean }[];
   artifacts?: PackageArtifact[];
+  package_download?: PackageDownloadMeta | null;
   published_at?: string;
   outputs_dir?: string;
 };

@@ -11,6 +11,7 @@ Profiles declaram **o que gerar**, **em que ordem** e **com quais gates** num ex
 | `startup-mvp` | MVP com dívida explícita |
 | `open-source` | Projeto público |
 | `internal-corporate` | Projeto interno corporativo |
+| `platform-evolution` | Brownfield — avaliar e evoluir plataforma existente (plugin host) |
 
 Arquivos: `profiles/*.yaml` · Schema: `schemas/sky-forge/profile.schema.yaml`
 

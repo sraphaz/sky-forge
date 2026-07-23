@@ -11,6 +11,7 @@ interface Props {
 
 const { agents, projectTitle, slug } = Astro.props;
 const choreo = agents.choreography;
+const party = choreo?.party_mode?.active;
 const counts = agents.event_counts ?? { ok: 0, blocked: 0, other: 0 };
 ---
 
@@ -39,6 +40,26 @@ const counts = agents.event_counts ?? { ok: 0, blocked: 0, other: 0 };
     </div>
   )}
 </div>
+
+{party && (
+  <section class="panel party-panel">
+    <h3>Party Mode — sessão multi-especialista</h3>
+    <p class="panel-hint">
+      Mediado por <strong>{party.host ?? "sky-host"}</strong>. Consultas paralelas; o host sintetiza em até 4 opções.
+    </p>
+    <div class="party-active">
+      <span class="chip chip-party">{party.label ?? party.id}</span>
+      <span class="meta-row" style="margin-top: 0.5rem;">
+        Principal: <code>{party.primary}</code>
+      </span>
+      {party.consult && party.consult.length > 0 && (
+        <div class="meta-row" style="margin-top: 0.5rem;">
+          Consulta: {party.consult.map((c) => <span class="chip">{c}</span>)}
+        </div>
+      )}
+    </div>
+  </section>
+)}
 
 <div class="two-col">
   <section class="panel">

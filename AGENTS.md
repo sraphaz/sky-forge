@@ -121,6 +121,8 @@ Docs: [PROFILES.md](docs/_meta/PROFILES.md) · [PLUGINS.md](docs/_meta/PLUGINS.m
 ./scripts/sky/sky.ps1 export -Slug <slug>
 ./scripts/sky/sky.ps1 export -Slug <slug> -ForAI -Scope essential|spec|full
 ./scripts/sky/sky.ps1 link -Slug <slug> -WorkspacePath <app-repo> [-PullSpec]
+./scripts/sky/sky.ps1 attach -WorkspacePath <brownfield-repo>   # host plugin
+./scripts/sky/sky.ps1 assess -Slug <slug> -WorkspacePath <repo>
 ./scripts/sky/sky.ps1 pull-spec -Slug <slug>
 ./scripts/sky/sky.ps1 publish -Slug <slug> -Public
 ./scripts/sky/sky.ps1 showcase

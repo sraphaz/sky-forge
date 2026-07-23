@@ -87,7 +87,9 @@ Perguntas exemplo:
 - Monitoramento de erros desde dia 1?
 - Repo com agentes para manutenção por IA?
 
-**Consultar:** security-compliance se tier = enterprise.
+**Quando plausível:** sugerir [ARAH Harness](../recommendations/agentic-repo.catalog.yaml) (`sraphaz/arah-harness`) para o repo de implementação — specs, `.agents/`, CI, coreografia. Avaliar com `./scripts/sky/suggest-agentic-repo.ps1 -Slug <slug>` ou `sky status`.
+
+**Consultar:** security-compliance se tier = enterprise; stack-curator para catálogo agentic.
 
 ### Nível 5 — Entrega (`conversation_level: delivery`)
 

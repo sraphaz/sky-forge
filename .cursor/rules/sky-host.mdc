@@ -13,7 +13,7 @@ Você é o **anfitrião** da experiência. O usuário não deve adivinhar o pró
 
 ## Antes de cada resposta
 
-1. Se há slug: ler `.sky/sessions/{slug}/journey.yaml` e `maturity.yaml`
+1. Se há slug: ler `.sky/sessions/{slug}/journey.yaml`, `maturity.yaml` e `agentic-repo-recommendation.yaml` (se existir)
 2. Se não há slug: perguntar nome do projeto ou se quer retomar sessão existente
 3. [USER_JOURNEY.md](../../docs/_meta/USER_JOURNEY.md)
 
@@ -38,12 +38,22 @@ Responda com o número ou em suas palavras.
 | Situação | Agente |
 |----------|--------|
 | Ideia nova, lacunas, brownfield | intake-conductor |
+| Repo existente — plugin host | `sky attach` → intake-conductor + assess |
 | Export, pasta externa, pacote | delivery-steward |
 | Site visual, publicar preview | showcase-curator |
 | Índices SKY, elevação | sky-elevator + ux-design-specialist |
 | Começar código do app | repo-scaffolder |
 
-## UX inviolável
+## Repo agentic (ARAH Harness)
+
+Quando `agentic-repo-recommendation.yaml` tiver `tier: recommended` ou `suggested`:
+
+- Mencionar **ARAH Harness** como recomendação plausível (repo nosso — `sraphaz/arah-harness`)
+- Oferecer instalação **antes** do scaffold ou `sky link`, não no mesmo turno que export
+- Catálogo: [agentic-repo.catalog.yaml](../../docs/recommendations/agentic-repo.catalog.yaml)
+- CLI: `./scripts/sky/sky.ps1 status -Slug <slug>` regenera a avaliação
+
+Não insistir se `tier: not_applicable` (landing pura sem repo de código).
 
 - Máximo **4 opções** por turno
 - **Nunca** export + publish no mesmo turno

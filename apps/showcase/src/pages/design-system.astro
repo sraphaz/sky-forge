@@ -1,0 +1,96 @@
+---
+import LandingLayout from "../layouts/LandingLayout.astro";
+import MarketingNav from "../components/marketing/MarketingNav.astro";
+import MarketingFooter from "../components/marketing/MarketingFooter.astro";
+import { withBase } from "../lib/paths";
+
+const tokens = [
+  { name: "--bg0", value: "#060913", use: "fundo base", swatch: "#060913" },
+  { name: "--bg1", value: "#0A1124", use: "sidebar, seções", swatch: "#0A1124" },
+  { name: "--bg2", value: "#0E1830", use: "cards elevados", swatch: "#0E1830" },
+  { name: "--acc1", value: "#7FB8FF", use: "azul-céu", swatch: "#7FB8FF" },
+  { name: "--acc2", value: "#5FE3C4", use: "verde-aurora", swatch: "#5FE3C4" },
+  { name: "--text", value: "#EAF0FC", use: "texto principal", swatch: "#EAF0FC" },
+  { name: "--text2", value: "#9DA9C9", use: "corpo secundário", swatch: "#9DA9C9" },
+];
+---
+
+<LandingLayout
+  title="Design System"
+  description="Tokens, tipografia e componentes do Sky-Forge — UX digna, baixa excitação, WCAG AA."
+>
+  <MarketingNav active="design" />
+
+  <header class="mk-page-hero">
+    <div class="mk-page-hero-inner mk-container">
+      <p class="mk-kicker">DESIGN SYSTEM</p>
+      <h1>Três planos, dois acentos.</h1>
+      <p>
+        Sora para display, Manrope para UI, JetBrains Mono para dados. Cores sempre via tokens —
+        nunca hardcoded em componentes (guardrail UXD).
+      </p>
+    </div>
+  </header>
+
+  <section class="mk-section mk-container">
+    <p class="mk-kicker">01 · CORES</p>
+    <h2 class="mk-h2" style="margin-bottom: 1.25rem;">Tokens de superfície</h2>
+    {tokens.map((t) => (
+      <div class="mk-token-row">
+        <span class="mk-swatch" style={`background: ${t.swatch}`} />
+        <code style="font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; width: 5.5rem;">{t.name}</code>
+        <code style="font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: var(--text3); flex: 1;">{t.value}</code>
+        <span style="color: var(--text2); font-size: 0.82rem;">{t.use}</span>
+      </div>
+    ))}
+    <div class="mk-grad-bar">--grad · ação primária, texto-destaque, barras de índice</div>
+
+    <div style="margin-top: 3rem;">
+      <p class="mk-kicker">02 · TIPOGRAFIA</p>
+      <h2 class="mk-h2" style="margin-bottom: 1rem;">Três vozes</h2>
+      <div class="mk-stack">
+        <div class="mk-card">
+          <div>
+            <p class="mk-kicker">DISPLAY · Sora</p>
+            <p style="font-family: Sora, sans-serif; font-size: 1.75rem; font-weight: 600; margin: 0;">Eleve o que está sendo proposto.</p>
+          </div>
+        </div>
+        <div class="mk-card">
+          <div>
+            <p class="mk-kicker">TEXTO · Manrope</p>
+            <p class="mk-body" style="font-size: 1rem;">Cada ciclo deixa o sistema mais organizado — especificação, UX digna e prosperidade medidas em índices.</p>
+          </div>
+        </div>
+        <div class="mk-card">
+          <div>
+            <p class="mk-kicker">DADOS · JetBrains Mono</p>
+            <code style="font-family: 'JetBrains Mono', monospace; color: var(--acc2); font-size: 0.85rem;">
+              SKY_SCORE = 0.25×SPI + 0.20×HCE + …
+            </code>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top: 3rem;">
+      <p class="mk-kicker">03 · COMPONENTES</p>
+      <h2 class="mk-h2" style="margin-bottom: 1rem;">Blocos do sistema</h2>
+      <div class="mk-hero-actions" style="justify-content: flex-start; margin-bottom: 1rem;">
+        <span class="mk-btn mk-btn-primary">Primária</span>
+        <span class="mk-btn mk-btn-secondary">Secundária</span>
+      </div>
+      <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+        <span class="mk-project-chip">ai_suggested</span>
+        <span class="mk-project-chip" style="border-color: var(--acc2);">user_confirmed</span>
+        <span class="mk-project-chip" style="border-style: dashed;">documented</span>
+      </div>
+    </div>
+
+    <div class="mk-cta" style="margin-top: 3rem;">
+      <p class="mk-lead">Hub operacional usa tema claro minimal; marketing usa este sistema premium.</p>
+      <a href={withBase("/hub/")} class="mk-btn mk-btn-primary">Ver hub de projetos</a>
+    </div>
+  </section>
+
+  <MarketingFooter />
+</LandingLayout>

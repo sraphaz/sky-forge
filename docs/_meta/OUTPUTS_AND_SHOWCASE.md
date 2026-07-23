@@ -62,9 +62,30 @@ pnpm dev
 
 ## Deploy (GitHub Pages)
 
+O site institucional (`apps/showcase`) já está configurado para project Pages:
+
+- `site`: `https://sraphaz.github.io`
+- `base`: `/sky-forge`
+- URL esperada: `https://sraphaz.github.io/sky-forge/`
+
+### Automático (recomendado)
+
+Workflow [`.github/workflows/showcase-pages.yml`](../../.github/workflows/showcase-pages.yml):
+
+- Dispara em push em `main` quando mudam `apps/showcase/**` ou `showcase/registry/**`
+- Também via **Actions → Deploy Showcase → Run workflow**
+- Build Astro estático → artifact → `actions/deploy-pages`
+
+No GitHub: **Settings → Pages → Source = GitHub Actions** (uma vez).
+
+Fonte de design: `docs/design/high-premium/*.dc.html` (Claude Design). O que sobe no Pages é o Astro portado — **não** os `.dc.html` proprietários.
+
+### Manual
+
 ```powershell
 cd apps/showcase
-pnpm build
+pnpm install
+pnpm exec astro build
 # dist/ → GitHub Pages em /sky-forge
 ```
 

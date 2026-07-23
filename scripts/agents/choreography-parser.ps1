@@ -62,6 +62,86 @@ function Parse-ChoreographyRules {
     return $rules
 }
 
+function Parse-CoActivation {
+    param([string]$Raw)
+    $items = @()
+    $blocks = [regex]::Matches($Raw, '(?ms)^  - primary:\s*(\S+)\s*\r?\n(.*?)(?=^  - primary:|\nparty_mode:|\z)')
+    foreach ($b in $blocks) {
+        $body = $b.Groups[2].Value
+        $item = [ordered]@{
+            primary = $b.Groups[1].Value
+            consult = @()
+            on_phase = @()
+            party = $null
+            route_after = $null
+        }
+        if ($body -match 'consult:\s*\[([^\]]+)\]') {
+            $item.consult = ($Matches[1] -split ',') | ForEach-Object { $_.Trim() }
+        }
+        if ($body -match 'on_phase:\s*\[([^\]]+)\]') {
+            $item.on_phase = ($Matches[1] -split ',') | ForEach-Object { $_.Trim() }
+        }
+        if ($body -match 'party:\s*(\S+)') { $item.party = $Matches[1] }
+        if ($body -match 'route_after:\s*(\S+)') { $item.route_after = $Matches[1] }
+        $items += $item
+    }
+    return $items
+}
+
+function Parse-PartyMode {
+    param([string]$Raw)
+    $result = [ordered]@{ policy = ''; sessions = @() }
+    if ($Raw -notmatch '(?ms)^party_mode:\s*\r?\n(.*)$') { return $result }
+    $section = $Matches[1]
+    if ($section -match '(?ms)^  policy:\s*\|\s*\r?\n((?:    .+\r?\n)+)') {
+        $result.policy = ($Matches[1] -split "`n" | ForEach-Object { $_.Trim() } | Where-Object { $_ }) -join ' '
+    }
+    $sessionsBlock = ''
+    if ($section -match '(?ms)^  sessions:\s*\r?\n(.*)$') { $sessionsBlock = $Matches[1] }
+    $blocks = [regex]::Matches($sessionsBlock, '(?ms)^    - id:\s*(\S+)\s*\r?\n(.*?)(?=^    - id:|\z)')
+    foreach ($b in $blocks) {
+        $body = $b.Groups[2].Value
+        $session = [ordered]@{
+            id = $b.Groups[1].Value
+            label = ''
+            host = 'sky-host'
+            primary = ''
+            consult = @()
+            on_phase = @()
+        }
+        if ($body -match 'label:\s*(.+)') { $session.label = $Matches[1].Trim() }
+        if ($body -match 'host:\s*(\S+)') { $session.host = $Matches[1] }
+        if ($body -match 'primary:\s*(\S+)') { $session.primary = $Matches[1] }
+        if ($body -match 'consult:\s*\[([^\]]+)\]') {
+            $session.consult = ($Matches[1] -split ',') | ForEach-Object { $_.Trim() }
+        }
+        if ($body -match 'on_phase:\s*\[([^\]]+)\]') {
+            $session.on_phase = ($Matches[1] -split ',') | ForEach-Object { $_.Trim() }
+        }
+        $result.sessions += $session
+    }
+    return $result
+}
+
+function Resolve-ActiveParty {
+    param(
+        $PartyMode,
+        $CoActivation,
+        [string]$JourneyPhase
+    )
+    if (-not $JourneyPhase) { return $null }
+    foreach ($s in $PartyMode.sessions) {
+        if ($s.on_phase -contains $JourneyPhase) { return $s }
+    }
+    foreach ($c in $CoActivation) {
+        if ($c.on_phase -contains $JourneyPhase -and $c.party) {
+            $match = $PartyMode.sessions | Where-Object { $_.id -eq $c.party } | Select-Object -First 1
+            if ($match) { return $match }
+        }
+    }
+    return $null
+}
+
 function Test-PathMatchesGlob {
     param([string]$FilePath, [string]$Pattern)
     $normalized = $FilePath.Replace('\', '/')

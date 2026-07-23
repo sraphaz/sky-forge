@@ -21,7 +21,7 @@ function navActive(id: HubNavId, href: string): boolean {
 }
 
 const links: { id: HubNavId; href: string; label: string }[] = [
-  { id: "projetos", href: "/", label: "Projetos" },
+  { id: "projetos", href: "/hub/", label: "Projetos" },
   { id: "agentes", href: "/agentes/", label: "Agentes" },
   { id: "metodo", href: "/metodo/", label: "Método" },
   { id: "sobre", href: "/sobre/", label: "Sobre" },
@@ -44,7 +44,7 @@ const links: { id: HubNavId; href: string; label: string }[] = [
     ))}
     <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Alternar tema claro/escuro">
       <span class="theme-toggle-icon" aria-hidden="true">◐</span>
-      <span class="theme-toggle-label" id="theme-toggle-label">Escuro</span>
+      <span class="theme-toggle-label" id="theme-toggle-label">Claro</span>
     </button>
   </div>
 </nav>

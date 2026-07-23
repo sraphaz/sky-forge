@@ -1,81 +1,204 @@
 ---
-import BaseLayout from "../layouts/BaseLayout.astro";
-import HubHeader from "../components/HubHeader.astro";
-import ProjectCard from "../components/ProjectCard.astro";
-import GapsPanel from "../components/GapsPanel.astro";
-import { loadIndex, loadPreview } from "../lib/registry";
-import { extractGaps, gapCountForIndex } from "../lib/gaps";
+import LandingLayout from "../layouts/LandingLayout.astro";
+import MarketingNav from "../components/marketing/MarketingNav.astro";
+import MarketingFooter from "../components/marketing/MarketingFooter.astro";
+import {
+  landingPrinciples,
+  landingSteps,
+  landingIndices,
+  landingLevels,
+  landingMpiNote,
+  landscapeRoadmap,
+} from "../lib/landing-content";
 import { withBase } from "../lib/paths";
-
-const { projects } = loadIndex();
-const visible = projects.filter((p) => p.public !== false);
-const featured = visible[0];
-const rest = visible.slice(1);
-
-const featuredPreview = featured ? await loadPreview(featured.slug) : null;
-const featuredGaps = featuredPreview ? extractGaps(featuredPreview) : null;
-
-const projectsWithGaps = await Promise.all(
-  visible.map(async (p) => {
-    const preview = await loadPreview(p.slug);
-    const count = preview ? gapCountForIndex(preview) : p.gap_count ?? 0;
-    return { ...p, gap_count: count };
-  }),
-);
-const featuredWithGaps = projectsWithGaps[0];
-const restWithGaps = projectsWithGaps.slice(1);
 ---
 
-<BaseLayout
-  title="Hub de projetos"
-  description="Galeria de propostas elevadas pelo Sky-Forge — resumos sanitizados, índices SKY e maturidade."
-  navActive="projetos"
->
-  <HubHeader
-    kicker="GALERIA DE PROPOSTAS ELEVADAS"
-    title="O que falta — e o que já elevamos."
-    subtitle="Lacunas aparecem primeiro. Cada projeto publicado passou pelo funil com consentimento; o intake continua no Cursor."
-  />
+<LandingLayout title="Eleve o que está sendo proposto">
+  <MarketingNav active="landing" />
 
-  <main id="main-content" class="container sf-page">
-    {visible.length === 0 ? (
-      <div class="empty-state panel sf-panel" role="status">
-        <p class="sf-kicker">SEM PROJETOS PUBLICADOS</p>
-        <p><strong>Comece pela intenção.</strong></p>
-        <p class="panel-hint">Uma conversa em linguagem natural é suficiente. O funil organiza brief, UX, arquitetura e elevação — privacidade por padrão até você optar por publicar.</p>
-        <ol class="flow-list">
-          <li>Intake local: <code class="sf-code-inline">./scripts/sky/sky.ps1 intake -Slug meu-projeto</code></li>
-          <li>Export quando estiver pronto (pasta externa)</li>
-          <li>Publish só com opt-in: <code class="sf-code-inline">-Public</code></li>
-        </ol>
-        <p><a href={withBase("/sobre/")} class="btn-primary">Como a plataforma funciona →</a></p>
-      </div>
-    ) : (
-      <>
-        {featuredGaps && featuredGaps.total_count > 0 && featured && (
-          <div class="hub-gaps-first">
-            <GapsPanel slug={featured.slug} gaps={featuredGaps} variant="hero" />
-          </div>
-        )}
-
-        <div class="showcase-gallery">
-          {featuredWithGaps && <ProjectCard project={featuredWithGaps} featured gapCount={featuredWithGaps.gap_count} />}
-          <aside class="showcase-next-slot sf-panel">
-            <p class="sf-kicker">NOVO PROJETO</p>
-            <h3 class="showcase-next-title">Descreva a ideia — lacunas virão primeiro.</h3>
-            <p class="panel-hint">Intake local, privacidade por padrão. O showcase só mostra o que você publicar.</p>
-            <code class="cta-code">./scripts/sky/sky.ps1 intake -Slug meu-projeto</code>
-            <a href={withBase("/sobre/#instalacao-local")} class="btn-primary" style="margin-top: 0.75rem;">Entrar no funil →</a>
-          </aside>
+  <main id="main-content">
+    <header class="mk-hero">
+      <canvas id="landing-particles" class="mk-hero-canvas" aria-hidden="true" />
+      <div class="mk-hero-inner">
+        <p class="mk-kicker">SINTROPIA TECNOLÓGICA</p>
+        <h1 class="mk-hero-title">
+          Eleve o que está<br />sendo <span class="mk-grad-text">proposto</span>.
+        </h1>
+        <p class="mk-hero-lead">
+          Sky-Forge é a camada de inteligência entre a sua intenção e a produção de software.
+          Cada ciclo deixa o sistema mais organizado do que o encontrou — especificação, UX digna
+          e prosperidade humana medidas em índices, não em promessas.
+        </p>
+        <div class="mk-hero-actions">
+          <a href={withBase("/produto/")} class="mk-btn mk-btn-primary">Ver o funil</a>
+          <a href="#indices" class="mk-btn mk-btn-secondary">Ver índices SKY</a>
         </div>
-        {restWithGaps.length > 0 && (
-          <div class="grid sf-grid-secondary">
-            {restWithGaps.map((project) => (
-              <ProjectCard project={project} gapCount={project.gap_count} />
+        <p class="mk-hero-meta">
+          5 índices abertos + MPI · 6 dimensões · gates humanos · export verificável
+        </p>
+      </div>
+    </header>
+
+    <section id="manifesto" class="mk-section mk-container">
+      <div class="mk-split">
+        <div class="mk-split-aside">
+          <p class="mk-kicker">MANIFESTO</p>
+          <h2 class="mk-h2">Um sistema que prospera com a inteligência da vida.</h2>
+        </div>
+        <div class="mk-stack">
+          {landingPrinciples.map((p) => (
+            <article class="mk-card mk-card-hover">
+              <span class="mk-num">{p.num}</span>
+              <div>
+                <h3 class="mk-h3">{p.title}</h3>
+                <p class="mk-body">{p.body}</p>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section id="fluxo" class="mk-section mk-container">
+      <div class="mk-section-head">
+        <p class="mk-kicker">FUNIL ENTREGUE HOJE</p>
+        <h2 class="mk-h2 mk-center">Da intenção ao pacote verificável</h2>
+        <p class="mk-lead mk-center">
+          Fases reais do Sky-Forge — agentes, CLI e gates documentados em USER_JOURNEY.
+        </p>
+      </div>
+      <div class="mk-steps">
+        {landingSteps.map((s) => (
+          <div class="mk-step" style={`--lift: ${s.lift}px; --op: ${s.op}`}>
+            <div class="mk-step-card">
+              <span class="mk-num">{s.num}</span>
+              <h3 class="mk-h3">{s.title}</h3>
+              <p class="mk-body">{s.body}</p>
+            </div>
+            <div class="mk-step-bar" />
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <section id="paisagem-roadmap" class="mk-section mk-section-alt">
+      <div class="mk-container">
+        <div class="mk-roadmap-banner">
+          <div class="mk-roadmap-banner-top">
+            <p class="mk-kicker" style="margin: 0;">{landscapeRoadmap.title}</p>
+            <span class="mk-roadmap-badge">{landscapeRoadmap.badge}</span>
+          </div>
+          <h2 class="mk-h2" style="margin: 0.5rem 0 0.75rem;">{landscapeRoadmap.title}</h2>
+          <p class="mk-body" style="max-width: 46rem; margin: 0 0 1.25rem;">
+            {landscapeRoadmap.summary}
+          </p>
+          <p class="mk-kicker" style="margin-bottom: 0.5rem;">EQUIVALENTE HOJE</p>
+          <ul class="mk-roadmap-list">
+            {landscapeRoadmap.todayEquivalent.map((eq) => (
+              <li>
+                <code>{eq.id}</code>
+                <span>{eq.role}</span>
+              </li>
+            ))}
+          </ul>
+          <p class="mk-kicker" style="margin: 1.25rem 0 0.5rem;">ARTEFATOS PLANEJADOS</p>
+          <div class="mk-chip-row">
+            {landscapeRoadmap.plannedArtifacts.map((a) => (
+              <span class="mk-mini-chip">{a}</span>
             ))}
           </div>
-        )}
-      </>
-    )}
+          <div class="mk-hero-actions" style="margin-top: 1.5rem;">
+            <a href={withBase("/produto/#roadmap-paisagem")} class="mk-btn mk-btn-secondary">
+              Ver mock da visão
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="indices" class="mk-section mk-container">
+      <div class="mk-section-head">
+        <p class="mk-kicker">ÍNDICES SKY</p>
+        <h2 class="mk-h2 mk-center">Prosperidade, medida.</h2>
+        <p class="mk-lead mk-center">
+          Cinco índices abertos e versionados (CC BY-SA) compõem o SKY_SCORE.
+          Sugestões de elevação são conscientes, opcionais e sempre confirmadas pelo criador.
+        </p>
+      </div>
+      <div class="mk-indices-grid">
+        {landingIndices.map((ix) => (
+          <article class="mk-index-card">
+            <div class="mk-index-top">
+              <span class="mk-index-sigla">{ix.sigla}</span>
+              <span class="mk-index-weight">{ix.weight}</span>
+            </div>
+            <h3 class="mk-h3">{ix.name}</h3>
+            <p class="mk-body">{ix.desc}</p>
+          </article>
+        ))}
+      </div>
+      <p class="mk-formula">
+        SKY_SCORE = 0.25×SPI + 0.20×HCE + 0.20×GAP + 0.20×CWB + 0.15×UXD
+      </p>
+      <article class="mk-mpi-card">
+        <div class="mk-index-top">
+          <span class="mk-index-sigla">{landingMpiNote.sigla}</span>
+          <span class="mk-roadmap-badge" style="font-size: 0.62rem;">fora do composto</span>
+        </div>
+        <h3 class="mk-h3">{landingMpiNote.name}</h3>
+        <p class="mk-body">{landingMpiNote.desc}</p>
+      </article>
+    </section>
+
+    <section id="niveis" class="mk-section mk-section-alt">
+      <div class="mk-container">
+        <div class="mk-section-head">
+          <p class="mk-kicker">NÍVEIS DE ELEVAÇÃO</p>
+          <h2 class="mk-h2 mk-center">Do chão ao céu</h2>
+        </div>
+        <div class="mk-levels">
+          {landingLevels.map((lv) => (
+            <div class="mk-level">
+              <div class="mk-level-bar" style={`--h: ${lv.h}px; --op: ${lv.op}`} />
+              <div>
+                <div class="mk-level-title">
+                  <span class="mk-h3">{lv.name}</span>
+                  <span class="mk-range">{lv.range}</span>
+                </div>
+                <p class="mk-body">{lv.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="mk-section mk-container">
+      <div class="mk-cta">
+        <h2 class="mk-h2 mk-center">Comece pela intenção.</h2>
+        <p class="mk-lead mk-center">
+          O produto real roda via CLI e agentes no Cursor. Esta landing é a vitrine — o funil opera na sua máquina.
+        </p>
+        <code class="mk-code">./scripts/sky/sky.ps1 intake -Slug minha-ideia</code>
+        <div class="mk-hero-actions mk-center-actions">
+          <a href={withBase("/produto/")} class="mk-btn mk-btn-primary">Abrir o produto</a>
+          <a href={withBase("/galeria/")} class="mk-btn mk-btn-secondary">Ver showcase</a>
+        </div>
+      </div>
+    </section>
   </main>
-</BaseLayout>
+
+  <MarketingFooter />
+</LandingLayout>
+
+<script>
+  import { initLandingParticles } from "../scripts/landing-particles";
+
+  function boot() {
+    const canvas = document.getElementById("landing-particles") as HTMLCanvasElement | null;
+    if (!canvas) return;
+    initLandingParticles(canvas);
+  }
+  boot();
+  document.addEventListener("astro:page-load", boot);
+</script>

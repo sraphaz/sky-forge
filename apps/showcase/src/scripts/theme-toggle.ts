@@ -1,9 +1,9 @@
 export function initThemeToggle() {
   const root = document.documentElement;
   const stored = typeof localStorage !== "undefined" ? localStorage.getItem("sf-theme") : null;
-  const theme = stored === "light" ? "light" : "dark";
+  const theme = stored === "dark" ? "dark" : "light";
 
-  if (theme === "light") root.setAttribute("data-theme", "light");
+  if (theme === "dark") root.setAttribute("data-theme", "dark");
   else root.removeAttribute("data-theme");
 
   updateThemeMeta(theme);
@@ -14,9 +14,9 @@ export function initThemeToggle() {
   btn.dataset.bound = "true";
 
   btn.addEventListener("click", () => {
-    const isLight = root.getAttribute("data-theme") === "light";
-    const next = isLight ? "dark" : "light";
-    if (next === "light") root.setAttribute("data-theme", "light");
+    const isDark = root.getAttribute("data-theme") === "dark";
+    const next = isDark ? "light" : "dark";
+    if (next === "dark") root.setAttribute("data-theme", "dark");
     else root.removeAttribute("data-theme");
     localStorage.setItem("sf-theme", next);
     updateThemeMeta(next);
@@ -26,10 +26,10 @@ export function initThemeToggle() {
 
 function updateLabel(theme: string) {
   const label = document.getElementById("theme-toggle-label");
-  if (label) label.textContent = theme === "light" ? "Claro" : "Escuro";
+  if (label) label.textContent = theme === "dark" ? "Escuro" : "Claro";
 }
 
 function updateThemeMeta(theme: string) {
   const meta = document.querySelector('meta[name="theme-color"]');
-  if (meta) meta.setAttribute("content", theme === "light" ? "#F4F7FD" : "#060913");
+  if (meta) meta.setAttribute("content", theme === "dark" ? "#060913" : "#f7f9fc");
 }

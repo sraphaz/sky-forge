@@ -98,6 +98,9 @@ $maturity = Resolve-DataFile 'maturity.yaml' 'maturity.yaml'
 $roadmap = Resolve-DataFile 'roadmap/phases.yaml' 'roadmap/phases.yaml'
 $alternatives = Resolve-DataFile 'alternatives.yaml' 'alternatives.yaml'
 $manifest = Resolve-DataFile 'PACKAGE_MANIFEST.yaml' '__none__'
+$agentArch = $null
+$agentArchPath = Join-Path $OutputDir 'architecture\agent-architecture.md'
+if (Test-Path $agentArchPath) { $agentArch = Get-Content $agentArchPath -Raw }
 
 $title = Read-YamlField $brief 'title'
 if (-not $title) { $title = $Slug }
@@ -148,6 +151,12 @@ if ($Scope -in @('spec', 'full')) {
     Add-YamlSection $sb 'Integracoes' $integrations
     Add-YamlSection $sb 'Maturidade' $maturity
     Add-YamlSection $sb 'Roadmap do projeto' $roadmap
+    if ($agentArch) {
+        [void]$sb.AppendLine('## Arquitetura agêntica (resumo)')
+        [void]$sb.AppendLine()
+        [void]$sb.AppendLine($agentArch.Trim())
+        [void]$sb.AppendLine()
+    }
 }
 
 # Full — + alternativas e manifest do pacote

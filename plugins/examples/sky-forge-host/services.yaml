@@ -1,0 +1,46 @@
+# services.yaml — catálogo operacional do host plugin (dados, não código)
+
+version: "0.1.0"
+profile: platform-evolution
+
+intake_mode: brownfield_host
+
+phases:
+  assess:
+    label: "Avaliar baseline"
+    agents: [intake-conductor, sky-host]
+    cli: assess
+  shape:
+    label: "Dar forma à evolução"
+    agents: [intake-conductor, sky-elevator, ux-design-specialist]
+    cli: elevate
+  specify:
+    label: "Especificar alvo"
+    agents: [solutions-architect, c4-modeler, journey-sequence-modeler]
+    cli: architect
+  deliver:
+    label: "Entregar spec"
+    agents: [delivery-steward]
+    cli: null   # export no forge
+  implement:
+    label: "Implementar evolução"
+    agents: [repo-scaffolder]
+    cli: pull-spec
+
+evidence_sources:
+  - path: README.md
+    weight: 0.15
+  - path: AGENTS.md
+    weight: 0.10
+  - path: docs/
+    weight: 0.20
+  - path: .github/workflows/
+    weight: 0.15
+  - path: package.json
+    weight: 0.10
+  - path: pyproject.toml
+    weight: 0.10
+  - path: "**/*test*"
+    weight: 0.10
+  - path: spec/
+    weight: 0.10

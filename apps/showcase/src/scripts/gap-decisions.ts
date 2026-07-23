@@ -61,13 +61,23 @@ async function fetchState(): Promise<GapState | null> {
   }
 }
 
-async function postDecision(body: Record<string, unknown>): Promise<DecideResult> {
+async function postDecision(sel: BatchSelection, dryRun = false): Promise<DecideResult> {
+  const payload = {
+    slug,
+    item_id: sel.itemId,
+    decision: sel.decision,
+    label: sel.label,
+    dimension: sel.dimension,
+    note: sel.note,
+    answer_source: sel.answer_source,
+    dry_run: dryRun,
+  };
   const res = await fetch(`${apiBase}/api/gaps/decide`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ slug, ...body }),
+    body: JSON.stringify(payload),
   });
-  const data = (await res.json().catch(() => ({}))) as DecideResult;
+  const data = (await res.json().catch(() => ({}))) as DecideResult & { error?: string };
   if (!res.ok || !data.ok) throw new Error(data.error ?? `falha (HTTP ${res.status})`);
   return data;
 }
@@ -90,15 +100,7 @@ function batchPayload(decisions: BatchSelection[], dryRun: boolean) {
 async function postBatchSequential(decisions: BatchSelection[], dryRun = false): Promise<DecideResult> {
   let lastState: GapState | null = null;
   for (const d of decisions) {
-    const result = await postDecision({
-      item_id: d.itemId,
-      decision: d.decision,
-      label: d.label,
-      dimension: d.dimension,
-      note: d.note,
-      answer_source: d.answer_source,
-      dry_run: dryRun,
-    });
+    const result = await postDecision(d, dryRun);
     if (result.state) lastState = result.state;
   }
   return { ok: true, state: lastState ?? (await fetchState()) };
@@ -218,7 +220,24 @@ async function syncFromServer(state?: GapState | null): Promise<void> {
   updateBatchBar();
 }
 
+async function refreshProject(): Promise<GapState | null> {
+  const res = await fetch(`${apiBase}/api/project/refresh`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ slug }),
+  });
+  const data = (await res.json().catch(() => ({}))) as { ok?: boolean; state?: GapState; error?: string };
+  if (!res.ok || !data.ok) {
+    throw new Error(data.error ?? `falha ao atualizar (HTTP ${res.status})`);
+  }
+  return data.state ?? (await fetchState());
+}
+
 async function submitSingle(body: BatchSelection): Promise<void> {
+  if (!body.itemId) {
+    toast("item_id ausente — recarregue a página.", "error");
+    return;
+  }
   try {
     const result = await postDecision(body);
     toast("Decisão gravada na sessão.");
@@ -271,7 +290,7 @@ function clearBatch(): void {
 
 function wireSuggestionChips(form: HTMLFormElement): void {
   const textarea = form.querySelector<HTMLTextAreaElement>("textarea");
-  const itemId = form.dataset.itemId ?? "";
+  const itemId = resolveItemId(form);
   const chips = form.querySelectorAll<HTMLButtonElement>("[data-suggestion]");
 
   chips.forEach((chip) => {
@@ -321,6 +340,11 @@ function wireSuggestionChips(form: HTMLFormElement): void {
   });
 }
 
+function resolveItemId(el: HTMLElement | null): string {
+  if (!el) return "";
+  return el.dataset.itemId ?? el.closest("[data-gap-item-id]")?.getAttribute("data-gap-item-id") ?? "";
+}
+
 function wireAnswerForms(): void {
   document.querySelectorAll<HTMLFormElement>("form[data-gap-answer]").forEach((form) => {
     wireSuggestionChips(form);
@@ -334,7 +358,7 @@ function wireAnswerForms(): void {
         return;
       }
       void submitSingle({
-        itemId: form.dataset.itemId ?? "",
+        itemId: resolveItemId(form),
         kind: "gap_answer",
         decision: "answer",
         label: form.dataset.itemLabel,
@@ -374,7 +398,7 @@ function wireAnswerForms(): void {
 
 function wireRfCards(): void {
   document.querySelectorAll<HTMLElement>("[data-gap-actions]").forEach((actions) => {
-    const itemId = actions.dataset.itemId ?? "";
+    const itemId = resolveItemId(actions);
     const label = actions.dataset.itemLabel ?? "";
 
     actions.querySelectorAll<HTMLButtonElement>("[data-decide]").forEach((btn) => {
@@ -428,6 +452,21 @@ function wireRfCards(): void {
 function wireBatchBar(): void {
   document.getElementById("gap-batch-submit")?.addEventListener("click", () => void submitBatch());
   document.getElementById("gap-batch-clear")?.addEventListener("click", clearBatch);
+  document.getElementById("gap-project-refresh")?.addEventListener("click", () => void runProjectRefresh());
+}
+
+async function runProjectRefresh(): Promise<void> {
+  const btn = document.getElementById("gap-project-refresh") as HTMLButtonElement | null;
+  if (btn) btn.disabled = true;
+  try {
+    const state = await refreshProject();
+    if (state) await syncFromServer(state);
+    toast("Projeto atualizado — lacunas e preview sincronizados.");
+  } catch (err) {
+    toast(err instanceof Error ? err.message : "Falha ao atualizar projeto.", "error");
+  } finally {
+    if (btn) btn.disabled = false;
+  }
 }
 
 export async function initGapDecisions(): Promise<void> {
@@ -437,13 +476,32 @@ export async function initGapDecisions(): Promise<void> {
   apiBase = (config.dataset.base ?? "").replace(/\/$/, "");
   if (!slug) return;
 
+  let health: { ok?: boolean; service?: string; capabilities?: string[]; version?: string } | null = null;
   try {
     const res = await fetch(`${apiBase}/api/health`, { cache: "no-store" });
     if (!res.ok) return;
-    const health = (await res.json()) as { ok?: boolean; service?: string };
-    if (health.ok !== true || health.service !== "sky-local-api") return;
+    health = (await res.json()) as typeof health;
+    if (health?.ok !== true || health?.service !== "sky-local-api") return;
   } catch {
     return;
+  }
+
+  const caps = health.capabilities ?? [];
+  const hasState = caps.includes("gaps-state");
+  if (!hasState) {
+    // API antiga (dev server desatualizado): health ok mas /gaps/state ausente.
+    try {
+      const probe = await fetch(`${apiBase}/api/gaps/state?slug=${encodeURIComponent(slug)}`, {
+        cache: "no-store",
+      });
+      if (!probe.ok) {
+        showStaleApiBanner();
+        return;
+      }
+    } catch {
+      showStaleApiBanner();
+      return;
+    }
   }
 
   document.querySelectorAll<HTMLElement>("[data-gap-interactive]").forEach((el) => el.removeAttribute("hidden"));
@@ -452,4 +510,10 @@ export async function initGapDecisions(): Promise<void> {
   wireAnswerForms();
   wireBatchBar();
   await syncFromServer();
+}
+
+function showStaleApiBanner(): void {
+  const banner = document.querySelector<HTMLElement>("[data-gap-stale-api]");
+  if (banner) banner.removeAttribute("hidden");
+  toast("API local desatualizada — reinicie: ./scripts/sky/sky.ps1 showcase", "error");
 }

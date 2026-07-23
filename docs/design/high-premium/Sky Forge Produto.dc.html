@@ -77,7 +77,11 @@
     <div style="display: flex; align-items: center; justify-content: space-between; padding: 18px 32px; border-bottom: 1px solid var(--line);">
       <div style="display: flex; align-items: center; gap: 14px;">
         <span style="font-family: Sora, sans-serif; font-size: 16px; font-weight: 600;">rede-hortas</span>
-        <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--acc2); border: 1px solid var(--line); border-radius: 999px; padding: 4px 12px; background: var(--surface);">intake-conductor</span>
+        <div style="display: flex; gap: 4px; background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 4px;">
+          <button onClick="{{ goIntake }}" style="border: none; border-radius: 999px; padding: 7px 16px; font-family: Manrope, sans-serif; font-size: 12.5px; font-weight: 700; cursor: pointer; background: {{ tabIntakeBg }}; color: {{ tabIntakeColor }};" style-hover="color: var(--text)">Intake</button>
+          <button onClick="{{ goLandscape }}" style="border: none; border-radius: 999px; padding: 7px 16px; font-family: Manrope, sans-serif; font-size: 12.5px; font-weight: 700; cursor: pointer; background: {{ tabLandBg }}; color: {{ tabLandColor }};" style-hover="color: var(--text)">Paisagem de soluções</button>
+        </div>
+        <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--acc2); border: 1px solid var(--line); border-radius: 999px; padding: 4px 12px; background: var(--surface);">{{ agentChip }}</span>
       </div>
       <div style="display: flex; gap: 10px;">
         <sc-for list="{{ dims }}" as="d" hint-placeholder-count="6">
@@ -91,6 +95,7 @@
       </div>
     </div>
 
+    <sc-if value="{{ isIntake }}" hint-placeholder-val="{{ true }}">
     <div style="flex: 1; overflow-y: auto; padding: 32px; display: flex; flex-direction: column; gap: 20px;">
       <sc-for list="{{ messages }}" as="m" hint-placeholder-count="4">
         <div style="display: flex; justify-content: {{ m.align }};">
@@ -109,6 +114,100 @@
       </div>
       <div style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: var(--text3); margin-top: 10px; padding-left: 6px;">elevação sempre com permissão · ai_suggested requer confirmação</div>
     </div>
+    </sc-if>
+
+    <sc-if value="{{ isLandscape }}" hint-placeholder-val="{{ false }}">
+    <div data-screen-label="Paisagem de Solucoes" style="flex: 1; overflow-y: auto; padding: 28px 32px 40px; display: flex; flex-direction: column; gap: 26px;">
+
+      <!-- GATE STRIP -->
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+          <sc-for list="{{ gateStates }}" as="gs" hint-placeholder-count="6">
+            <span style="display: flex; align-items: center; gap: 8px;">
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: 0.06em; color: {{ gs.color }}; border: 1px solid {{ gs.border }}; background: {{ gs.bg }}; border-radius: 999px; padding: 5px 12px;">{{ gs.label }}</span>
+              <sc-if value="{{ gs.arrow }}" hint-placeholder-val="{{ true }}"><span style="color: var(--text3); font-size: 11px;">→</span></sc-if>
+            </span>
+          </sc-for>
+        </div>
+        <span style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: var(--text3); border: 1px solid var(--line); border-radius: 999px; padding: 5px 14px;">modo: standard</span>
+      </div>
+
+      <!-- SEIS LENTES -->
+      <div style="display: flex; flex-direction: column; gap: 14px;">
+        <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 14px; flex-wrap: wrap;">
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: 0.2em; color: var(--text3);">SEIS LENTES DE PESQUISA</div>
+          <span style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: var(--text3);">fonte: solution-landscape.yaml · 14 evidências</span>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
+          <sc-for list="{{ lenses }}" as="ln" hint-placeholder-count="6">
+            <div style="background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 12px;" style-hover="border-color: var(--acc1)">
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--acc2);">{{ ln.num }}</span>
+                <span style="font-family: Sora, sans-serif; font-size: 14px; font-weight: 600;">{{ ln.title }}</span>
+              </div>
+              <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+                <sc-for list="{{ ln.chips }}" as="ch" hint-placeholder-count="4">
+                  <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text2); border: 1px solid var(--line); border-radius: 999px; padding: 3px 10px;">{{ ch }}</span>
+                </sc-for>
+              </div>
+              <p style="font-size: 12.5px; line-height: 1.6; color: var(--text2); margin: 0; text-wrap: pretty;">{{ ln.note }}</p>
+            </div>
+          </sc-for>
+        </div>
+        <div style="border: 1px dashed var(--line); border-radius: 12px; padding: 12px 18px; display: flex; gap: 12px; align-items: baseline;">
+          <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.14em; color: var(--acc2); flex-shrink: 0;">GUARDRAIL</span>
+          <span style="font-size: 13px; color: var(--text2); line-height: 1.6;">Modelo de IA não é tratado como solução completa — cada lente computacional precisa apontar o mecanismo, o contexto onde falha e a alternativa determinística.</span>
+        </div>
+      </div>
+
+      <!-- OPCOES COMPOSTAS -->
+      <div style="display: flex; flex-direction: column; gap: 14px;">
+        <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 14px; flex-wrap: wrap;">
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: 0.2em; color: var(--text3);">OPÇÕES COMPOSTAS · solution-options.yaml</div>
+          <span style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: var(--text3);">2–5 alternativas exigidas pelo método</span>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <sc-for list="{{ options }}" as="op" hint-placeholder-count="4">
+            <div style="background: var(--bg2); border: 1px solid {{ op.border }}; border-radius: 16px; padding: 22px; display: flex; flex-direction: column; gap: 12px; box-shadow: {{ op.shadow }};">
+              <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <span style="font-family: Sora, sans-serif; font-size: 15px; font-weight: 700; color: var(--acc1);">{{ op.letter }}</span>
+                  <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.1em; color: var(--text2); border: 1px solid var(--line); border-radius: 999px; padding: 3px 10px;">{{ op.strategy }}</span>
+                </div>
+                <sc-if value="{{ op.reco }}" hint-placeholder-val="{{ false }}">
+                  <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--acc2); border: 1px solid var(--acc2); border-radius: 999px; padding: 3px 10px;">maior confiança</span>
+                </sc-if>
+              </div>
+              <div style="font-family: Sora, sans-serif; font-size: 15px; font-weight: 600;">{{ op.title }}</div>
+              <p style="font-size: 12.5px; line-height: 1.6; color: var(--text2); margin: 0; text-wrap: pretty;">{{ op.desc }}</p>
+              <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 2px;">
+                <sc-for list="{{ op.meta }}" as="mt" hint-placeholder-count="6">
+                  <div style="background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 7px 10px;">
+                    <div style="font-family: 'JetBrains Mono', monospace; font-size: 8.5px; letter-spacing: 0.1em; color: var(--text3); margin-bottom: 3px;">{{ mt.k }}</div>
+                    <div style="font-size: 12px; font-weight: 700; color: {{ mt.color }};">{{ mt.v }}</div>
+                  </div>
+                </sc-for>
+              </div>
+              <div style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: var(--text3);">{{ op.evidence }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+      <!-- GATE DE DECISAO -->
+      <div style="background: radial-gradient(ellipse 90% 120% at 50% 0%, var(--glow2), transparent 70%), var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 26px 30px; display: flex; align-items: center; gap: 22px; flex-wrap: wrap;">
+        <div style="width: 44px; height: 44px; border-radius: 12px; background: var(--surface); border: 1px solid var(--acc1); display: grid; place-items: center; color: var(--acc1); font-size: 19px; flex-shrink: 0;">⏸</div>
+        <div style="flex: 1; min-width: 280px;">
+          <div style="font-family: Sora, sans-serif; font-size: 15px; font-weight: 700; margin-bottom: 5px;">Gate de decisão — a arquitetura não avança sozinha</div>
+          <div style="font-size: 13px; color: var(--text2); line-height: 1.6; text-wrap: pretty;">O solutions-architect só é acionado com decisão humana, autonomia que a permita ou waiver documentado. A decisão registra alternativa escolhida, rejeitadas, critérios, trade-offs e condições de reconsideração em solution-decision.md.</div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px; align-items: flex-end;">
+          <button style="background: var(--grad); border: none; color: #06131A; font-family: Manrope, sans-serif; font-weight: 700; font-size: 13px; border-radius: 10px; padding: 11px 22px; cursor: pointer;" style-hover="filter: brightness(1.08)">Registrar decisão</button>
+          <button style="background: transparent; border: 1px solid var(--line); color: var(--text2); font-family: Manrope, sans-serif; font-weight: 600; font-size: 12px; border-radius: 10px; padding: 8px 18px; cursor: pointer;" style-hover="color: var(--text)">Documentar waiver</button>
+        </div>
+      </div>
+    </div>
+    </sc-if>
   </main>
 
   <!-- PAINEL INDICES -->
@@ -165,6 +264,7 @@ class Component extends DCLogic {
   state = {
     theme: (typeof localStorage !== 'undefined' && localStorage.getItem('sf-theme')) || 'dark',
     active: 0,
+    view: 'landscape',
     draft: '',
     decided: {},
     extraMessages: []
@@ -177,8 +277,9 @@ class Component extends DCLogic {
   renderVals() {
     const t = this.state.theme;
     const decided = this.state.decided;
+    const view = this.state.view;
     const sessionsData = [
-      { slug: 'rede-hortas', stage: 'sky_elevation', score: 'SKY 72' },
+      { slug: 'rede-hortas', stage: 'solution_landscape', score: 'SKY 72' },
       { slug: 'atlas-oficios', stage: 'ux_review', score: 'SKY 58' },
       { slug: 'piloto-sky', stage: 'intake', score: 'SKY —' }
     ];
@@ -192,7 +293,41 @@ class Component extends DCLogic {
       { id: 'a', index: 'SPI +6', text: 'Painel de renda gerada por horta — torna visível a prosperidade material que o excedente cria no bairro.' },
       { id: 'b', index: 'CWB +4', text: 'Mapa de abundância do bairro: hortas, cozinhas e pontos de troca como um organismo único e legível.' }
     ];
+    const gateOrder = ['not_started', 'researching', 'options_ready', 'decision_pending', 'decided', 'superseded'];
+    const gateCurrent = 'decision_pending';
+    const curIdx = gateOrder.indexOf(gateCurrent);
+    const metaColor = (v) => v === 'alto' || v === 'baixa' ? 'var(--text2)' : 'var(--text)';
     return {
+      isIntake: view === 'intake',
+      isLandscape: view === 'landscape',
+      goIntake: () => this.setState({ view: 'intake' }),
+      goLandscape: () => this.setState({ view: 'landscape' }),
+      tabIntakeBg: view === 'intake' ? 'var(--bg2)' : 'transparent',
+      tabIntakeColor: view === 'intake' ? 'var(--text)' : 'var(--text3)',
+      tabLandBg: view === 'landscape' ? 'var(--bg2)' : 'transparent',
+      tabLandColor: view === 'landscape' ? 'var(--text)' : 'var(--text3)',
+      agentChip: view === 'intake' ? 'intake-conductor' : 'solution-landscape-researcher',
+      gateStates: gateOrder.map((g, i) => ({
+        label: g,
+        arrow: i < gateOrder.length - 1,
+        color: i === curIdx ? 'var(--acc2)' : i < curIdx ? 'var(--text2)' : 'var(--text3)',
+        border: i === curIdx ? 'var(--acc2)' : 'var(--line)',
+        bg: i === curIdx ? 'var(--surface)' : 'transparent'
+      })),
+      lenses: [
+        { num: 'L1', title: 'Soluções de referência', chips: ['Open Food Network', 'Karrot', 'marketplaces hiperlocais', 'apps de doação'], note: 'Produtos, serviços e projetos open source que já circulam excedente alimentar — com contexto de onde funcionam e onde falham.' },
+        { num: 'L2', title: 'Padrões arquiteturais', chips: ['monólito modular', 'eventos', 'workflows'], note: 'Reserva e expiração de excedente pedem eventos; o restante cabe num monólito modular — microsserviços seriam prematuro.' },
+        { num: 'L3', title: 'Modelos de solução', chips: ['marketplace', 'plataforma comunitária', 'PWA mobile-first'], note: 'Marketplace de dois lados (horta publica, cozinha reserva), operado como plataforma de bairro, não como app de consumo.' },
+        { num: 'L4', title: 'Estratégias de implementação', chips: ['buy', 'adopt', 'extend', 'build', 'hybrid'], note: 'As quatro opções abaixo compõem estas estratégias; nenhuma foi descartada sem evidência registrada.' },
+        { num: 'L5', title: 'Modelos operacionais', chips: ['federado por bairro', 'repo-first', 'operação compartilhada'], note: 'Cada bairro opera sua rede; o dossiê e as decisões vivem no repositório, auditáveis por diff.' },
+        { num: 'L6', title: 'Modelos computacionais e IA', chips: ['busca + geo', 'regras de matching', 'previsão de excedente'], note: 'Matching determinístico (regras + geolocalização) resolve o MVP; previsão de excedente é hipótese para spike, não requisito.' }
+      ],
+      options: [
+        { letter: 'Opção A', strategy: 'buy', title: 'Comprar plataforma de marketplace', desc: 'SaaS de marketplace local pronto, integrado ao ecossistema via API. Rápido para validar, mas dados da rede ficam fora e o modelo de reserva não é nativo.', reco: false, border: 'var(--line)', shadow: 'none', evidence: '3 evidências · confiança média', meta: [ { k: 'CUSTO', v: 'médio' }, { k: 'COMPLEX.', v: 'baixa' }, { k: 'LOCK-IN', v: 'alto' }, { k: 'REVERSIB.', v: 'baixa' }, { k: 'SOBERANIA', v: 'baixa' }, { k: 'MATURIDADE', v: 'alta' } ] },
+        { letter: 'Opção B', strategy: 'adopt + extend', title: 'Adotar Open Food Network e estender', desc: 'Projeto open source maduro para redes alimentares; extensão própria para reserva de excedente e prestação de contas por bairro.', reco: false, border: 'var(--line)', shadow: 'none', evidence: '5 evidências · confiança média-alta', meta: [ { k: 'CUSTO', v: 'baixo' }, { k: 'COMPLEX.', v: 'média' }, { k: 'LOCK-IN', v: 'baixo' }, { k: 'REVERSIB.', v: 'alta' }, { k: 'SOBERANIA', v: 'alta' }, { k: 'MATURIDADE', v: 'média' } ] },
+        { letter: 'Opção C', strategy: 'build repo-first', title: 'Construir domínio próprio', desc: 'Solução própria via Sky-Forge + ARAH Harness: domínio de excedente sob medida, custo maior de tempo e sustentação contínua.', reco: false, border: 'var(--line)', shadow: 'none', evidence: '2 evidências · exige spike', meta: [ { k: 'CUSTO', v: 'alto' }, { k: 'COMPLEX.', v: 'alta' }, { k: 'LOCK-IN', v: 'baixo' }, { k: 'REVERSIB.', v: 'alta' }, { k: 'SOBERANIA', v: 'alta' }, { k: 'MATURIDADE', v: 'baixa' } ] },
+        { letter: 'Opção D', strategy: 'hybrid', title: 'Serviços gerenciados + OSS + domínio próprio', desc: 'Auth e mapas gerenciados, catálogo open source, e só o domínio de reserva/expiração construído — o núcleo que diferencia a rede.', reco: true, border: 'var(--acc2)', shadow: '0 12px 40px var(--glow2)', evidence: '4 evidências · confiança alta · aguarda decisão humana', meta: [ { k: 'CUSTO', v: 'médio' }, { k: 'COMPLEX.', v: 'média' }, { k: 'LOCK-IN', v: 'parcial' }, { k: 'REVERSIB.', v: 'alta' }, { k: 'SOBERANIA', v: 'alta' }, { k: 'MATURIDADE', v: 'média' } ] }
+      ].map((o) => ({ ...o, meta: o.meta.map((m) => ({ ...m, color: metaColor(m.v) })) })),
       themeLabel: t === 'dark' ? 'escuro' : 'claro',
       toggleTheme: () => {
         const next = t === 'dark' ? 'light' : 'dark';

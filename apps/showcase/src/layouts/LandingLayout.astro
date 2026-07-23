@@ -1,0 +1,46 @@
+---
+import "../styles/landing.css";
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = "Eleve o que está sendo proposto — sintropia tecnológica aplicada ao software." } = Astro.props;
+---
+
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#060913" />
+    <title>{title} · Sky-Forge</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <script is:inline>
+      (function () {
+        try {
+          if (localStorage.getItem("sf-mk-theme") === "light") {
+            document.documentElement.setAttribute("data-mk-theme", "light");
+          }
+        } catch (_) {}
+      })();
+    </script>
+  </head>
+  <body class="mk-site">
+    <a class="skip-link" href="#main-content">Ir para o conteúdo</a>
+    <slot />
+  </body>
+</html>
+
+<script>
+  import { initMarketingThemeToggle } from "../scripts/landing-particles";
+  initMarketingThemeToggle();
+  document.addEventListener("astro:page-load", initMarketingThemeToggle);
+</script>

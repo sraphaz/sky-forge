@@ -37,3 +37,4 @@ if ($errors.Count -gt 0) {
 }
 
 Write-Host "validate-maturity OK: $Slug (readiness=$readiness)" -ForegroundColor Green
+exit 0

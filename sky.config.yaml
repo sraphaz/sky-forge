@@ -16,3 +16,9 @@ showcase:
   port: 4321
   # registry = só previews públicos | outputs = lê pacotes locais (dev)
   data_source: registry
+
+recommendations:
+  agentic_repo:
+    catalog: docs/recommendations/agentic-repo.catalog.yaml
+    default_product: arah-harness
+    local_path_env: ARAH_HARNESS_PATH

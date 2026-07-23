@@ -9,7 +9,7 @@
 [CmdletBinding()]
 param(
     [Parameter(Position = 0, Mandatory = $true)]
-    [ValidateSet('intake', 'status', 'approve', 'run', 'validate', 'export', 'elevate', 'benchmark', 'publish', 'sync', 'showcase', 'agents', 'audit', 'choreograph', 'architect', 'link', 'link-sync', 'pull-spec', 'integrate-dc', 'visualize')]
+    [ValidateSet('intake', 'status', 'approve', 'run', 'validate', 'export', 'elevate', 'benchmark', 'publish', 'sync', 'showcase', 'agents', 'audit', 'choreograph', 'architect', 'link', 'link-sync', 'pull-spec', 'integrate-dc', 'visualize', 'attach', 'assess', 'seed-roadmap')]
     [string]$Command,
 
     [Parameter()]
@@ -116,6 +116,11 @@ switch ($Command) {
         if (Test-Path $meritsPath) {
             Write-Host "`n--- sky-merits.yaml ---" -ForegroundColor Cyan
             Get-Content $meritsPath -Raw | Write-Host
+        }
+        $suggestScript = Join-Path $PSScriptRoot 'suggest-agentic-repo.ps1'
+        if (Test-Path $suggestScript) {
+            Write-Host "`n--- agentic repo ---" -ForegroundColor Cyan
+            & $suggestScript -Slug $Slug
         }
     }
     'approve' {
@@ -332,5 +337,31 @@ switch ($Command) {
         if ($Slug) {
             Invoke-AgentAudit $Slug 'delivery-steward' 'visualize.archify' 'invoke_skill' 'ok' "renderer=$Renderer"
         }
+    }
+    'attach' {
+        $attachArgs = @{}
+        if ($Slug) { $attachArgs.Slug = $Slug }
+        if ($WorkspacePath) { $attachArgs.WorkspacePath = $WorkspacePath }
+        if ($SyncMode) { $attachArgs.SyncMode = $SyncMode }
+        if ($Force) { $attachArgs.Force = $true }
+        & (Join-Path $PSScriptRoot 'attach-plugin.ps1') @attachArgs
+        if ($Slug) {
+            Invoke-AgentAudit $Slug 'repo-scaffolder' 'workspace.attach_host_plugin' 'side_effect' 'ok'
+        }
+    }
+    'assess' {
+        $assessArgs = @{ WorkspacePath = if ($WorkspacePath) { $WorkspacePath } else { (Get-Location).Path } }
+        if ($Slug) { $assessArgs.Slug = $Slug }
+        & (Join-Path $PSScriptRoot 'assess-platform.ps1') @assessArgs
+        if ($Slug) {
+            Invoke-AgentAudit $Slug 'intake-conductor' 'platform.assess' 'invoke_skill' 'ok'
+        }
+    }
+    'seed-roadmap' {
+        if (-not $Slug) { throw 'seed-roadmap requires -Slug' }
+        $seedArgs = @{ Slug = $Slug }
+        if ($Force) { $seedArgs.Force = $true }
+        & (Join-Path $PSScriptRoot 'seed-evolution-roadmap.ps1') @seedArgs
+        Invoke-AgentAudit $Slug 'solutions-architect' 'platform.seed_roadmap' 'invoke_skill' 'ok'
     }
 }

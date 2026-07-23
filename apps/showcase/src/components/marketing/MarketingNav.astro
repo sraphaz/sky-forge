@@ -1,0 +1,43 @@
+---
+import type { MarketingNavId } from "../../lib/landing-content";
+import { marketingNav } from "../../lib/landing-content";
+import { withBase } from "../../lib/paths";
+
+interface Props {
+  active?: MarketingNavId;
+  badge?: string;
+}
+
+const { active, badge } = Astro.props;
+const path = Astro.url.pathname.replace(/\/$/, "") || "/";
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+
+function isActive(id: MarketingNavId, href: string): boolean {
+  if (active) return active === id;
+  const full = `${base}${href}`.replace(/\/$/, "") || "/";
+  if (href === "/") return path === full || path === base;
+  return path.startsWith(full);
+}
+---
+
+<nav class="mk-nav" aria-label="Site Sky-Forge">
+  <a href={withBase("/")} class="mk-nav-brand">
+    <span class="mk-logo-ring" aria-hidden="true"><span class="mk-logo-core" /></span>
+    <span class="mk-logo-text">SKY-FORGE</span>
+    {badge && <span class="mk-logo-badge">{badge}</span>}
+  </a>
+  <div class="mk-nav-links">
+    {marketingNav.map((item) => (
+      <a
+        href={withBase(item.href)}
+        class:list={["mk-nav-link", isActive(item.id, item.href) && "mk-nav-link-active"]}
+      >
+        {item.label}
+      </a>
+    ))}
+    <a href={withBase("/hub/")} class="mk-nav-hub">Hub →</a>
+    <button type="button" class="mk-theme-toggle" id="mk-theme-toggle" aria-label="Alternar tema">
+      ◐ <span id="mk-theme-toggle-label">Escuro</span>
+    </button>
+  </div>
+</nav>

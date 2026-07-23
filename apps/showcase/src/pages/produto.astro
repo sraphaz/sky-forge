@@ -1,0 +1,284 @@
+---
+import LandingLayout from "../layouts/LandingLayout.astro";
+import MarketingNav from "../components/marketing/MarketingNav.astro";
+import MarketingFooter from "../components/marketing/MarketingFooter.astro";
+import {
+  landscapeRoadmap,
+  produtoApproveStages,
+  produtoLenses,
+  produtoOptions,
+} from "../lib/landing-content";
+import { withBase } from "../lib/paths";
+
+const gateCurrent = "research";
+const gateIdx = produtoApproveStages.indexOf(gateCurrent);
+const dims = [
+  { name: "business", pct: 78 },
+  { name: "product", pct: 62 },
+  { name: "ux_design", pct: 55 },
+  { name: "technical", pct: 40 },
+  { name: "sustent.", pct: 30 },
+  { name: "elevation", pct: 48 },
+];
+const benchmarkAxes = [
+  { name: "Cobertura de escopo", verdict: "paridade", note: "Mercado já cobre anúncio e reserva básica." },
+  { name: "Soberania de dados", verdict: "melhor", note: "Repo-first e dossiê local diferenciam." },
+  { name: "Matching de excedente", verdict: "novo", note: "Poucas iniciativas tratam expiração + renda local." },
+];
+---
+
+<LandingLayout
+  title="Produto"
+  description="Prévia do funil Sky-Forge: intake, market-benchmark, gates approve e painel SKY — com Paisagem de soluções marcada como roadmap."
+>
+  <MarketingNav active="produto" />
+
+  <header class="mk-page-hero">
+    <div class="mk-page-hero-inner mk-container">
+      <p class="mk-kicker">APP SKY-FORGE · PRÉVIA ESTÁTICA</p>
+      <h1>O funil na prática.</h1>
+      <p>
+        O que você vê abaixo espelha o que o Sky-Forge faz hoje: intake conversacional,
+        market-benchmark (MPI), gates <code>sky approve</code> e índices SKY.
+        A Paisagem de soluções aparece depois — como visão de roadmap, não como feature entregue.
+      </p>
+    </div>
+  </header>
+
+  <section class="mk-section mk-container">
+    <div class="mk-produto-grid">
+      <aside class="mk-panel" aria-label="Sessões">
+        <p class="mk-kicker" style="margin-bottom: 0.75rem;">SESSÕES</p>
+        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+          <div class="mk-panel" style="padding: 0.85rem; border-color: var(--acc1);">
+            <strong style="font-size: 0.88rem;">rede-hortas</strong>
+            <p class="mk-body" style="font-size: 0.72rem; margin-top: 0.25rem;">
+              <span style="color: var(--acc2);">elevate</span> · SKY 72
+            </p>
+          </div>
+          <div class="mk-panel" style="padding: 0.85rem;">
+            <strong style="font-size: 0.88rem;">atlas-oficios</strong>
+            <p class="mk-body" style="font-size: 0.72rem; margin-top: 0.25rem;">
+              <span style="color: var(--acc2);">specify</span> · SKY 58
+            </p>
+          </div>
+          <p class="mk-body" style="font-size: 0.82rem; border: 1px dashed var(--line); border-radius: 12px; padding: 0.75rem; text-align: center;">
+            + Nova sessão
+          </p>
+        </div>
+      </aside>
+
+      <main class="mk-panel mk-produto-main" aria-label="Intake e pesquisa">
+        <div class="mk-produto-toolbar">
+          <strong style="font-family: Sora, sans-serif;">rede-hortas</strong>
+          <div class="mk-view-tabs" role="tablist" aria-label="Vista do produto">
+            <span class="mk-view-tab is-active" aria-selected="true">Intake</span>
+            <span class="mk-view-tab" aria-selected="false">Benchmark</span>
+          </div>
+          <span class="mk-project-chip">intake-conductor</span>
+        </div>
+
+        <div class="mk-dim-row" aria-label="Dimensões de maturidade">
+          {dims.map((d) => (
+            <div class="mk-dim-cell">
+              <span>{d.name}</span>
+              <div class="mk-dim-track">
+                <div class="mk-dim-fill" style={`width: ${d.pct}%`} />
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div class="mk-gate-strip">
+          <div class="mk-gate-chips" aria-label="Gates sky approve">
+            {produtoApproveStages.map((g, i) => (
+              <>
+                <span
+                  class:list={[
+                    "mk-gate-chip",
+                    i === gateIdx && "is-current",
+                    i < gateIdx && "is-done",
+                  ]}
+                >
+                  {g}
+                </span>
+                {i < produtoApproveStages.length - 1 && (
+                  <span class="mk-gate-arrow" aria-hidden="true">→</span>
+                )}
+              </>
+            ))}
+          </div>
+          <span class="mk-project-chip">sky approve</span>
+        </div>
+
+        <div class="mk-chat-bubble mk-chat-agent">
+          <span class="mk-kicker" style="display: block; margin-bottom: 0.35rem;">SKY-HOST</span>
+          Descreva sua intenção em linguagem natural. Vou mapear maturidade por dimensão e sugerir
+          próximos passos — sem formulários.
+        </div>
+        <div class="mk-chat-bubble mk-chat-user">
+          <span class="mk-kicker" style="display: block; margin-bottom: 0.35rem;">VOCÊ</span>
+          Quero um app que conecte hortas comunitárias a cozinhas de bairro — quem planta encontra
+          quem cozinha, e o excedente vira renda local.
+        </div>
+        <div class="mk-chat-bubble mk-chat-agent">
+          <span class="mk-kicker" style="display: block; margin-bottom: 0.35rem;">INTAKE-CONDUCTOR</span>
+          Registrado no brief. business em 0.78 — research desbloqueado. Posso rodar market-benchmark
+          (MPI) e sugerir lacunas <em>ai_suggested</em>; nada vira requisito sem o seu sim.
+        </div>
+
+        <div class="mk-landscape-block">
+          <div class="mk-landscape-head">
+            <p class="mk-kicker">MARKET-BENCHMARK · market-benchmark.yaml</p>
+            <span class="mk-body" style="font-size: 0.72rem;">MPI 66 ±8 · fontes citadas</span>
+          </div>
+          <div class="mk-options-grid">
+            {benchmarkAxes.map((ax) => (
+              <article class="mk-option-card">
+                <div class="mk-option-top">
+                  <strong style="font-size: 0.88rem;">{ax.name}</strong>
+                  <span class="mk-mini-chip">{ax.verdict}</span>
+                </div>
+                <p class="mk-body" style="font-size: 0.78rem; margin: 0;">{ax.note}</p>
+              </article>
+            ))}
+          </div>
+          <p class="mk-body" style="font-size: 0.75rem; margin: 0; color: var(--text3);">
+            Agentes reais: market-scout (pesquisa) · market-benchmark (MPI) · gate{" "}
+            <code>approve -Stage research</code> antes da arquitetura.
+          </p>
+        </div>
+      </main>
+
+      <aside class="mk-panel" aria-label="Painel SKY">
+        <div class="mk-score-display">
+          <p class="mk-kicker">SKY_SCORE</p>
+          <div class="mk-score-num">72</div>
+          <p class="mk-body" style="margin-top: 0.5rem;">Horizon · 60–79</p>
+        </div>
+        <p class="mk-kicker" style="margin: 1.25rem 0 0.5rem;">ÍNDICES SKY</p>
+        {[
+          { sigla: "SPI", pct: 81 },
+          { sigla: "HCE", pct: 64 },
+          { sigla: "GAP", pct: 76 },
+          { sigla: "CWB", pct: 79 },
+          { sigla: "UXD", pct: 55 },
+        ].map((ix) => (
+          <div style="margin-bottom: 0.5rem;">
+            <div style="display: flex; justify-content: space-between; font-size: 0.72rem; color: var(--text3);">
+              <span>{ix.sigla}</span>
+              <span style="color: var(--acc2);">{ix.pct}</span>
+            </div>
+            <div style="height: 4px; border-radius: 2px; background: var(--surface); margin-top: 0.25rem;">
+              <div style={`height: 100%; width: ${ix.pct}%; background: var(--grad); border-radius: 2px;`} />
+            </div>
+          </div>
+        ))}
+        <div class="mk-mpi-aside">
+          <div style="display: flex; justify-content: space-between; align-items: baseline;">
+            <span class="mk-kicker" style="margin: 0;">MPI</span>
+            <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: var(--acc2);">66 ±8</span>
+          </div>
+          <p class="mk-body" style="font-size: 0.72rem; margin: 0.35rem 0 0;">
+            Fora do composto · market-benchmark
+          </p>
+        </div>
+      </aside>
+    </div>
+
+    <!-- ROADMAP: Paisagem (visão High Premium) -->
+    <div id="roadmap-paisagem" class="mk-roadmap-panel">
+      <div class="mk-roadmap-banner-top">
+        <p class="mk-kicker" style="margin: 0;">{landscapeRoadmap.title}</p>
+        <span class="mk-roadmap-badge">{landscapeRoadmap.badge}</span>
+      </div>
+      <h2 class="mk-h2" style="margin: 0.65rem 0 0.75rem; font-size: 1.45rem;">
+        Visão High Premium — ainda não é o produto
+      </h2>
+      <p class="mk-body" style="max-width: 48rem; margin: 0 0 1.25rem;">
+        {landscapeRoadmap.summary}
+      </p>
+
+      <div class="mk-landscape-block" style="opacity: 0.92;">
+        <div class="mk-landscape-head">
+          <p class="mk-kicker">SEIS LENTES · mock de design</p>
+          <span class="mk-body" style="font-size: 0.72rem;">
+            planejado: {landscapeRoadmap.plannedArtifacts[0]}
+          </span>
+        </div>
+        <div class="mk-lenses-grid">
+          {produtoLenses.map((ln) => (
+            <article class="mk-lens-card">
+              <div class="mk-lens-title">
+                <span class="mk-num">{ln.num}</span>
+                <h3 class="mk-h3" style="font-size: 0.92rem; margin: 0;">{ln.title}</h3>
+              </div>
+              <div class="mk-chip-row">
+                {ln.chips.map((ch) => <span class="mk-mini-chip">{ch}</span>)}
+              </div>
+              <p class="mk-body" style="font-size: 0.78rem; margin: 0;">{ln.note}</p>
+            </article>
+          ))}
+        </div>
+        <div class="mk-guardrail">
+          <span class="mk-kicker">GUARDRAIL (visão)</span>
+          <p class="mk-body" style="font-size: 0.82rem; margin: 0;">
+            Modelo de IA não é solução completa — cada lente computacional precisa apontar mecanismo,
+            falha e alternativa determinística.
+          </p>
+        </div>
+      </div>
+
+      <div class="mk-landscape-block" style="margin-top: 1.25rem; opacity: 0.92;">
+        <div class="mk-landscape-head">
+          <p class="mk-kicker">OPÇÕES COMPOSTAS · mock</p>
+          <span class="mk-body" style="font-size: 0.72rem;">
+            planejado: {landscapeRoadmap.plannedArtifacts[1]}
+          </span>
+        </div>
+        <div class="mk-options-grid">
+          {produtoOptions.map((op) => (
+            <article class:list={["mk-option-card", op.reco && "is-reco"]}>
+              <div class="mk-option-top">
+                <div class="mk-option-id">
+                  <span class="mk-option-letter">Opção {op.letter}</span>
+                  <span class="mk-mini-chip">{op.strategy}</span>
+                </div>
+                {op.reco && <span class="mk-reco-badge">maior confiança</span>}
+              </div>
+              <h3 class="mk-h3" style="font-size: 0.95rem; margin: 0;">{op.title}</h3>
+              <p class="mk-body" style="font-size: 0.78rem; margin: 0;">{op.desc}</p>
+              <p class="mk-body" style="font-size: 0.7rem; margin: 0; color: var(--text3);">{op.evidence}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+
+      <div class="mk-decision-gate" style="margin-top: 1.25rem;">
+        <div class="mk-decision-icon" aria-hidden="true">⏸</div>
+        <div>
+          <strong style="font-family: Sora, sans-serif; display: block; margin-bottom: 0.35rem;">
+            Gate de decisão (visão) — hoje: approve stages
+          </strong>
+          <p class="mk-body" style="font-size: 0.82rem; margin: 0;">
+            No produto atual, a arquitetura só avança após{" "}
+            <code>sky approve -Stage research|architecture</code>. A Paisagem unificaria lentes e
+            opções num único artefato — ainda em roadmap.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="mk-cta" style="margin-top: 2.5rem;">
+      <p class="mk-lead">O produto real roda via CLI na sua máquina.</p>
+      <code class="mk-code">./scripts/sky/sky.ps1 intake -Slug minha-ideia</code>
+      <code class="mk-code" style="margin-top: 0.5rem;">./scripts/sky/sky.ps1 benchmark -Slug minha-ideia</code>
+      <div class="mk-hero-actions mk-center-actions">
+        <a href={withBase("/hub/")} class="mk-btn mk-btn-primary">Abrir hub de projetos</a>
+        <a href={withBase("/")} class="mk-btn mk-btn-secondary">Voltar à landing</a>
+      </div>
+    </div>
+  </section>
+
+  <MarketingFooter />
+</LandingLayout>

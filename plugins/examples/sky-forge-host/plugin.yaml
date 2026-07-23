@@ -1,0 +1,89 @@
+# plugin.yaml — Sky-Forge Host Plugin (exemplo)
+# Instalado no repo da plataforma via: sky attach -WorkspacePath <repo>
+# Direção host: o Sky-Forge opera DENTRO do consumidor; não importa exports.
+
+plugin:
+  id: sky-forge-host
+  name: "Sky-Forge Host Plugin"
+  version: 0.1.0
+  owner: sky-forge
+  direction: host
+
+compatibility:
+  sky_forge_core: ">=0.3.0 <1.0.0"
+  profiles:
+    - platform-evolution
+
+requires:                        # artefatos mínimos para export deste profile
+  - brief.yaml
+  - platform-assessment.yaml
+  - requirements.yaml
+  - architecture.yaml
+  - evolution-roadmap.yaml
+  - acceptance-criteria.yaml
+optional:
+  - ux-spec.yaml
+  - market-benchmark.yaml
+  - risks-and-open-questions.yaml
+  - tooling-frugality.yaml
+  - handoff-solution.yaml
+
+services:                        # expostos via ./scripts/sky.ps1 no repo host
+  - id: assess
+    command: assess
+    description: "Varre o repo e gera platform-assessment + baseline de maturidade"
+    profile_stage: assess
+    autonomy_max: 2
+  - id: status
+    command: status
+    description: "Maturidade, índices SKY e gaps da sessão ligada"
+    profile_stage: assess
+    autonomy_max: 0
+  - id: elevate
+    command: elevate
+    description: "Elevação e UX digna (delega ao forge; requer confirmação humana)"
+    profile_stage: benchmark
+    autonomy_max: 1
+  - id: architect
+    command: architect
+    description: "Ciclo C4 + domínios a partir do baseline brownfield"
+    profile_stage: architecture
+    autonomy_max: 2
+  - id: pull-spec
+    command: pull-spec
+    description: "Sincroniza spec/ após export no forge"
+    profile_stage: evolution
+    autonomy_max: 3
+  - id: export-for-ai
+    command: export
+    description: "Contexto sanitizado para agentes (Scope spec|essential)"
+    profile_stage: evolution
+    autonomy_max: 3
+
+templates:
+  locale: pt-BR
+  cursor_rule: templates/sky-host-plugin.mdc
+  agents_stub: templates/AGENTS.sky.md
+
+policies:
+  - id: host_readonly_baseline
+    rule: "platform-assessment não altera código; só documenta baseline"
+    on_fail: block
+  - id: spec_before_structural_change
+    rule: "PRs estruturais exigem evolution-roadmap aprovado ou story shard ativa"
+    on_fail: warn
+  - id: forge_gates_for_export
+    rule: "export completo e publish só no forge (gates de autonomia)"
+    on_fail: block
+
+produces:
+  - .sky/link.yaml
+  - .sky/plugin.yaml
+  - integrations/sky-forge/
+  - spec/                           # após pull-spec
+  - platform-assessment.yaml        # cópia legível no host (opcional)
+
+does_not_modify:
+  - sky-forge-core
+  - histórico git da plataforma (sem commits automáticos)
+  - código de produção sem gate humano explícito

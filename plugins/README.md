@@ -14,5 +14,6 @@ Plugins **não** rodam dentro da geração do core. Consumidores externos (ex.: 
 |-------|-----------|
 | `examples/surya-labs-workspace/` | Adapter opcional — mapeia `consulting-handoff` → entidades de workspace |
 | `examples/archify/` | Adapter opcional pós-export — Sky Architecture IR → Archify HTML |
+| `examples/sky-forge-host/` | Plugin host — Sky-Forge opera dentro do repo brownfield (`sky attach`) |
 
 Remova `plugins/examples/` para validar que o core permanece agnóstico.

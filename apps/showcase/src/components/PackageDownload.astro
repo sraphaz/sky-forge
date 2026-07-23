@@ -1,0 +1,81 @@
+---
+import { withBase } from "../lib/paths";
+import type { PackageDownloadMeta } from "../lib/registry";
+
+interface Props {
+  slug: string;
+  packageDownload?: PackageDownloadMeta | null;
+}
+
+const { slug, packageDownload } = Astro.props;
+const pkg = packageDownload?.available ? packageDownload : null;
+---
+
+{pkg && (
+  <section class="panel package-download-panel" aria-labelledby="package-download-title">
+    <h2 class="section-title" id="package-download-title">Pacote completo</h2>
+    <p class="panel-hint">
+      Export Sky-Forge com brief, requisitos, maturidade, arquitetura, scaffold e Cloud Design.
+      Uso local/privado — não redistribua mockups proprietários sem licença.
+    </p>
+    <div class="package-download-meta">
+      {pkg.package_completeness && (
+        <span class="chip">{pkg.package_completeness === "full" ? "Pacote completo" : "Pacote parcial"}</span>
+      )}
+      {pkg.overall_readiness != null && (
+        <span class="chip">Maturidade {Math.round(pkg.overall_readiness * 100)}%</span>
+      )}
+      <span class="chip">{pkg.size_human}</span>
+    </div>
+    <a
+      href={withBase(`/${pkg.url_path}`)}
+      class="package-download-btn"
+      download={pkg.file}
+    >
+      Baixar {pkg.file}
+    </a>
+    {pkg.exported_at && (
+      <p class="package-download-foot">
+        Exportado em {new Date(pkg.exported_at).toLocaleString("pt-BR")}.
+        O showcase atualiza automaticamente após decisões no portal local.
+      </p>
+    )}
+  </section>
+)}
+
+<style>
+  .package-download-panel {
+    border-color: var(--color-sky-glow, #2e6fe0);
+    background: linear-gradient(135deg, rgba(46, 111, 224, 0.04), transparent);
+  }
+
+  .package-download-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0.75rem 0 1rem;
+  }
+
+  .package-download-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1.35rem;
+    border-radius: var(--radius-md, 10px);
+    background: var(--color-primary, #1a3a6b);
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.92rem;
+    text-decoration: none;
+  }
+
+  .package-download-btn:hover {
+    filter: brightness(1.08);
+  }
+
+  .package-download-foot {
+    margin: 0.85rem 0 0;
+    font-size: 0.82rem;
+    color: var(--color-text-muted);
+  }
+</style>

@@ -1,0 +1,76 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ProjectCard from "../../components/ProjectCard.astro";
+import { loadIndex, loadPreview } from "../../lib/registry";
+import { gapCountForIndex } from "../../lib/gaps";
+import { withBase } from "../../lib/paths";
+
+const { projects } = loadIndex();
+const visible = projects.filter((p) => p.public !== false);
+
+const projectsWithGaps = await Promise.all(
+  visible.map(async (p) => {
+    const preview = await loadPreview(p.slug);
+    const count = preview ? gapCountForIndex(preview) : p.gap_count ?? 0;
+    return { ...p, gap_count: count };
+  }),
+);
+---
+
+<BaseLayout
+  title="Hub de projetos"
+  description="Projetos publicados pelo Sky-Forge — resumos sanitizados. Métricas e artefatos dentro de cada projeto."
+  navActive="projetos"
+>
+  <main id="main-content" class="container hub-home">
+    <section class="hub-intro" aria-labelledby="hub-product-title">
+      <p class="hub-back"><a href={withBase("/")}>← Site Sky-Forge</a></p>
+      <h1 id="hub-product-title" class="hub-intro-title">Hub de projetos</h1>
+      <p class="hub-intro-lead">
+        Projetos que passaram pelo funil e foram publicados com opt-in. Abra um projeto para ver alquimia,
+        lacunas, artefatos e trilha de agentes.
+      </p>
+    </section>
+
+    <section class="hub-projects" aria-labelledby="hub-projects-title">
+      <h2 id="hub-projects-title" class="hub-section-title">Publicados</h2>
+
+      {projectsWithGaps.length === 0 ? (
+        <div class="empty-state panel" role="status">
+          <p><strong>Nenhum projeto publicado ainda.</strong></p>
+          <code class="cta-code">./scripts/sky/sky.ps1 intake -Slug meu-projeto</code>
+        </div>
+      ) : (
+        <div class="grid hub-project-grid">
+          {projectsWithGaps.map((project) => (
+            <ProjectCard project={project} gapCount={project.gap_count} />
+          ))}
+        </div>
+      )}
+    </section>
+  </main>
+</BaseLayout>
+
+<style>
+  .hub-home { padding-top: 2rem; padding-bottom: 3rem; }
+  .hub-back { margin: 0 0 0.75rem; font-size: 0.88rem; }
+  .hub-intro { max-width: 40rem; margin-bottom: 2rem; }
+  .hub-intro-title {
+    font-family: var(--font-display);
+    font-size: clamp(1.75rem, 4vw, 2.25rem);
+    font-weight: 600;
+    margin: 0 0 0.75rem;
+  }
+  .hub-intro-lead {
+    font-size: 1rem;
+    line-height: 1.65;
+    color: var(--color-text-muted);
+    margin: 0;
+  }
+  .hub-section-title {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    margin: 0 0 1rem;
+  }
+  .hub-project-grid { margin-top: 0; }
+</style>

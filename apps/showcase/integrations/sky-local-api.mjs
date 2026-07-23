@@ -195,6 +195,22 @@ async function recordAudit(slug, itemId, decision, dryRun, extra = "") {
   }
 }
 
+async function syncShowcase(slug, opts = {}) {
+  const script = path.join(SCRIPTS_DIR, "sync-showcase.ps1");
+  if (!fs.existsSync(script)) return refreshPreview(slug);
+  const args = ["-Slug", slug];
+  if (opts.public === true) args.push("-Public");
+  if (opts.noPublic === true) args.push("-NoPublic");
+  if (opts.skipExport === true) args.push("-SkipExport");
+  if (opts.skipZip === true) args.push("-SkipZip");
+  try {
+    await runPowerShell(script, args);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 async function refreshPreview(slug) {
   const script = path.join(SCRIPTS_DIR, "publish-preview.ps1");
   if (!fs.existsSync(script)) return false;
@@ -246,9 +262,7 @@ function buildGapsState(slug) {
   const answeredCount = items.filter((i) =>
     i.status === "answered" || i.status === "accepted" || i.status === "rejected" || i.status === "skipped",
   ).length;
-  const uiPendingCount = Math.max(0, totalCount - items.filter((i) =>
-    i.status === "answered" && i.kind === "gap_answer",
-  ).length);
+  const uiPendingCount = items.filter((i) => i.status === "pending").length;
 
   return {
     slug,
@@ -348,13 +362,37 @@ async function handleDecide(req, res, preParsed) {
     let previewRefreshed = false;
     let state = null;
     if (!dryRun) {
-      previewRefreshed = await refreshPreview(slug);
+      previewRefreshed = await syncShowcase(slug);
       state = buildGapsState(slug);
     }
-    return sendJson(res, 200, { ok: true, dry_run: dryRun, slug, ...result, preview_refreshed: previewRefreshed, state });
+    return sendJson(res, 200, { ok: true, dry_run: dryRun, slug, ...result, preview_refreshed: previewRefreshed, showcase_synced: previewRefreshed, state });
   } catch (err) {
     return sendJson(res, 400, { ok: false, error: String(err?.message ?? err) });
   }
+}
+
+async function handleProjectRefresh(req, res) {
+  let payload;
+  try {
+    payload = JSON.parse((await readBody(req)) || "{}");
+  } catch {
+    return sendJson(res, 400, { ok: false, error: "JSON inválido" });
+  }
+  const slug = String(payload.slug ?? "");
+  if (!SLUG_RE.test(slug)) return sendJson(res, 400, { ok: false, error: "slug inválido" });
+  const sessionDir = path.join(SESSIONS_DIR, slug);
+  if (!fs.existsSync(sessionDir)) return sendJson(res, 404, { ok: false, error: "sessão não encontrada" });
+
+  const refreshed = await syncShowcase(slug);
+  const state = buildGapsState(slug);
+  return sendJson(res, 200, {
+    ok: true,
+    slug,
+    preview_refreshed: refreshed,
+    showcase_synced: refreshed,
+    state,
+    message: "Export, preview, ZIP e registry atualizados a partir da sessão.",
+  });
 }
 
 async function handleDecideBatch(req, res, preParsed) {
@@ -388,7 +426,7 @@ async function handleDecideBatch(req, res, preParsed) {
   }
 
   if (!dryRun && results.length > 0) {
-    await refreshPreview(slug);
+    await syncShowcase(slug);
     for (const r of results) {
       await recordAudit(slug, r.item_id, r.decision, false, r.decision === "answer" ? "" : "");
     }
@@ -421,7 +459,13 @@ export default function skyLocalApi() {
 
           if (url === "/api/health") {
             if (req.method !== "GET") return sendJson(res, 405, { ok: false });
-            return sendJson(res, 200, { ok: true, service: "sky-local-api", writable: true });
+            return sendJson(res, 200, {
+              ok: true,
+              service: "sky-local-api",
+              writable: true,
+              version: "1.8",
+              capabilities: ["health", "gaps-state", "gaps-decide", "gaps-decide-batch", "project-refresh", "showcase-sync"],
+            });
           }
           if (url === "/api/gaps/state") {
             if (req.method !== "GET") return sendJson(res, 405, { ok: false, error: "use GET" });
@@ -443,6 +487,13 @@ export default function skyLocalApi() {
           if (url === "/api/gaps/decide-batch") {
             if (req.method !== "POST") return sendJson(res, 405, { ok: false, error: "use POST" });
             handleDecideBatch(req, res).catch((err) =>
+              sendJson(res, 500, { ok: false, error: String(err?.message ?? err) }),
+            );
+            return;
+          }
+          if (url === "/api/project/refresh") {
+            if (req.method !== "POST") return sendJson(res, 405, { ok: false, error: "use POST" });
+            handleProjectRefresh(req, res).catch((err) =>
               sendJson(res, 500, { ok: false, error: String(err?.message ?? err) }),
             );
             return;

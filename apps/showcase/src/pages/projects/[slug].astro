@@ -5,6 +5,7 @@ import RequirementEpic from "../../components/RequirementEpic.astro";
 import ArtifactExplorer from "../../components/ArtifactExplorer.astro";
 import MaturityBar from "../../components/MaturityBar.astro";
 import ProjectCtaPanel from "../../components/ProjectCtaPanel.astro";
+import PackageDownload from "../../components/PackageDownload.astro";
 import GapsPanel from "../../components/GapsPanel.astro";
 import {
   loadIndex,
@@ -37,7 +38,7 @@ const project = await loadPreview(slug!);
 const agents = await loadAgentsView(slug!);
 
 if (!project) {
-  return Astro.redirect(withBase("/"));
+  return Astro.redirect(withBase("/hub/"));
 }
 
 const vision = project.vision;
@@ -59,7 +60,7 @@ const visionCondensed = vision?.value_proposition?.split("\n")[0] ?? project.exc
 <BaseLayout title={project.title} description={project.excerpt}>
   <header class="site-header project-hero">
     <div class="container">
-      <a class="back-link" href={withBase("/")} style="color: var(--color-sky-glow);">← Hub de projetos</a>
+      <a class="back-link" href={withBase("/hub/")} style="color: var(--color-sky-glow);">← Hub de projetos</a>
       <div class="meta-row">
         {journeyPhase && (
           <span class="badge project-phase-badge">{journeyPhaseLabel(journeyPhase)}</span>
@@ -105,6 +106,8 @@ const visionCondensed = vision?.value_proposition?.split("\n")[0] ?? project.exc
   </div>
 
   <main id="main-content" class="container project-sections">
+    <PackageDownload slug={slug!} packageDownload={project.package_download} />
+
     <section id="lacunas" class="project-section">
       <GapsPanel slug={slug!} gaps={gaps} variant="hero" />
     </section>
@@ -124,10 +127,9 @@ const visionCondensed = vision?.value_proposition?.split("\n")[0] ?? project.exc
     )}
 
     {(project.indices || project.dimensions) && (
-      <details class="collapsible-wrap">
-        <summary class="collapsible-toggle">Expandir índices & maturidade</summary>
-        <section id="indices" class="panel project-section">
-        <h2 class="section-title">Índices SKY & maturidade</h2>
+      <section id="alquimia" class="panel project-section">
+        <h2 class="section-title">Alquimia do projeto</h2>
+        <p class="panel-hint section-lead">Índices SKY, maturidade por dimensão e score composto — escopo completo nesta página.</p>
         {project.indices && (
           <>
             {Object.entries(project.indices).map(([key, score]) => {
@@ -185,7 +187,6 @@ const visionCondensed = vision?.value_proposition?.split("\n")[0] ?? project.exc
           </div>
         )}
       </section>
-      </details>
     )}
     {hasMarket && (
       <details class="collapsible-wrap">

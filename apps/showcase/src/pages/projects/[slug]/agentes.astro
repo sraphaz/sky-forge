@@ -17,7 +17,7 @@ const project = await loadPreview(slug!);
 const agents = await loadAgentsView(slug!);
 
 if (!project) {
-  return Astro.redirect(withBase("/"));
+  return Astro.redirect(withBase("/hub/"));
 }
 ---
 

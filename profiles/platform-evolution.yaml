@@ -1,0 +1,44 @@
+# destino: sky-forge/profiles/platform-evolution.yaml
+# Brownfield — avaliar plataforma existente e produzir roadmap de evolução governável.
+# Consumido via plugin host (integrations/sky-forge/) no repo da plataforma.
+
+id: platform-evolution
+name: "Platform Evolution"
+extends: generic-product
+description: "Avalia uma plataforma existente (código, docs, ops) e gera spec de evolução: gaps, arquitetura alvo, roadmap e critérios — sem reescrever do zero."
+use_when:
+  - "repo brownfield com código ou docs já existentes"
+  - "evolução incremental com gates humanos antes de mudanças estruturais"
+  - "Sky-Forge consumido como plugin host no repo da plataforma"
+  - "necessidade de maturidade, índices SKY e spec sincronizada com o código"
+avoid_when:
+  - "greenfield sem artefato prévio (usar generic-product ou startup-mvp)"
+  - "consultoria comercial com proposta ao cliente (usar consulting-handoff)"
+  - "hotfix pontual sem intenção de evolução de plataforma"
+
+artifacts:
+  required: [brief, platform-assessment, requirements, ux-spec, architecture,
+             assumptions, risks-and-open-questions, evolution-roadmap, acceptance-criteria]
+  optional: [market-benchmark, data-model, design-tokens, tooling-frugality, handoff-solution]
+
+stages:
+  - {id: assess,       artifacts: [platform-assessment, brief],              exit_gate: baseline_confirmed}
+  - {id: benchmark,    artifacts: [market-benchmark]}
+  - {id: requirements, artifacts: [requirements]}
+  - {id: ux,           artifacts: [ux-spec]}
+  - {id: architecture, artifacts: [architecture, tooling-frugality],         exit_gate: target_arch_reviewed}
+  - {id: evolution,    artifacts: [evolution-roadmap, acceptance-criteria], exit_gate: evolution_approved}
+
+gates:
+  - {id: baseline_confirmed, approver: platform_owner,
+     checks: ["assessment reflete o repo real", "problemas e restrições confirmados"]}
+  - {id: target_arch_reviewed, approver: technical_lead,
+     checks: ["arquitetura alvo coerente com baseline", "riscos de migração registrados"]}
+  - {id: evolution_approved, approver: platform_owner,
+     checks: ["roadmap priorizado", "critérios de aceite verificáveis por fase"]}
+
+validation_rules:
+  - {id: assessment_present,     rule: "platform-assessment.baseline commitável ou tag referenciada", on_fail: block}
+  - {id: roadmap_phased,         rule: "evolution-roadmap.phases não vazio com critério de done",       on_fail: block}
+  - {id: risks_have_severity,    rule: "todo risco tem severity e mitigation ou acceptance",          on_fail: block}
+  - {id: no_blocking_open_questions, rule: "zero open_questions com blocking=true no export",         on_fail: block}

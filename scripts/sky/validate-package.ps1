@@ -90,3 +90,4 @@ Write-Host "validate-package OK ($Completeness)" -ForegroundColor Green
 if ($warnings.Count -gt 0) {
     $warnings | ForEach-Object { Write-Host "  WARN: $_" -ForegroundColor Yellow }
 }
+exit 0

@@ -23,6 +23,8 @@ acceptance:
     then: "architecture/ se technical.score >= 0.6"
   - id: AC-SK-7
     then: "validate-package.ps1 passa"
+  - id: AC-SK-8
+    then: "architecture/agents/ com >=1 manifest quando solucao tem IA multi-agente (RF epic E3/E4 ou container Agent)"
 
 harness:
   scripts:

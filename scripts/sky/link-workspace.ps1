@@ -101,6 +101,16 @@ Write-Host "  Sessao: .sky/sessions/$Slug/git.yaml"
 Write-Host "  App:    .sky/link.yaml"
 Write-Host "  CLI:    ./scripts/sky.ps1 status"
 
+$recPath = Join-Path $sessionDir 'agentic-repo-recommendation.yaml'
+$suggestScript = Join-Path $PSScriptRoot 'suggest-agentic-repo.ps1'
+if (Test-Path $suggestScript) {
+    $rec = & $suggestScript -Slug $Slug -Quiet
+    if ($rec.Plausible) {
+        Write-Host "`n  ARAH Harness ($($rec.Tier)) — instale no repo antes do scaffold:" -ForegroundColor Cyan
+        Write-Host "    ver agentic-repo-recommendation.yaml ou docs/recommendations/agentic-repo.catalog.yaml" -ForegroundColor DarkGray
+    }
+}
+
 if ($PullSpec) {
     & (Join-Path $PSScriptRoot 'pull-spec.ps1') -Slug $Slug -WorkspacePath $workspace
 }

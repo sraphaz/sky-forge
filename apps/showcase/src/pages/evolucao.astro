@@ -1,0 +1,105 @@
+---
+import LandingLayout from "../layouts/LandingLayout.astro";
+import MarketingNav from "../components/marketing/MarketingNav.astro";
+import MarketingFooter from "../components/marketing/MarketingFooter.astro";
+import { withBase } from "../lib/paths";
+
+const findings = [
+  {
+    num: "01",
+    sev: "CRÍTICO",
+    sevClass: "mk-chip-crit",
+    title: "Índices SKY sem trilha de evidência",
+    body: "Scores aparecem na UI sem ligação auditável a inputs, pesos versionados ou histórico de revisão humana.",
+    prop: "Persistir breakdown por índice em sky-merits.yaml com ai_suggested vs user_confirmed e hash de versão da fórmula.",
+  },
+  {
+    num: "02",
+    sev: "CRÍTICO",
+    sevClass: "mk-chip-crit",
+    title: "Harness não cobre showcase publicado",
+    body: "Publish sanitiza preview, mas não há gate que valide links, artefatos renderizáveis e metadados antes de index.json.",
+    prop: "Estender sky validate com perfil showcase-public e bloquear publish se Mermaid/LikeC4 falhar.",
+  },
+  {
+    num: "03",
+    sev: "ESTRUTURAL",
+    sevClass: "mk-chip-struct",
+    title: "Duas identidades visuais sem mapa",
+    body: "Marketing premium (escuro) e hub claro coexistem — correto por contexto, mas falta documentação de quando usar cada um.",
+    prop: "Registrar em SKY_APP_UX: landing/marketing = data-mk-theme; hub = data-theme claro default.",
+  },
+  {
+    num: "04",
+    sev: "ESTRUTURAL",
+    sevClass: "mk-chip-struct",
+    title: "Autonomia declarada, observabilidade parcial",
+    body: "Níveis 0–6 existem no docs, mas nem toda ação bloqueada gera entrada legível no showcase ou no pacote exportado.",
+    prop: "Surface de audit trail resumida por projeto (últimas 10 ações) no hub, sanitizada para público.",
+  },
+];
+---
+
+<LandingLayout
+  title="Evolução"
+  description="Auditoria e proposta de evolução — do discurso ao método verificável."
+>
+  <MarketingNav active="evolucao" />
+
+  <header class="mk-page-hero">
+    <div class="mk-page-hero-inner" style="max-width: 68rem; margin: 0 auto; padding: 0 1.5rem;">
+      <p class="mk-kicker">AUDITORIA · PROPOSTA DE EVOLUÇÃO</p>
+      <h1>Do discurso ao método.</h1>
+      <p style="max-width: 46rem;">
+        A estética é coerente e a promessa é ambiciosa — o material é frágil onde a promessa encosta na prova.
+        Os achados abaixo convertem narrativa em método: cada ciclo deve deixar tudo mais organizado do que encontrou.
+      </p>
+      <div class="mk-stats">
+        <div>
+          <div class="mk-stat-num mk-stat-num-warn">5</div>
+          <p class="mk-kicker" style="margin: 0.35rem 0 0;">CRÍTICOS</p>
+        </div>
+        <div>
+          <div class="mk-stat-num mk-stat-num-acc">16</div>
+          <p class="mk-kicker" style="margin: 0.35rem 0 0;">ESTRUTURAIS</p>
+        </div>
+        <div>
+          <div class="mk-stat-num" style="color: var(--text2);">2</div>
+          <p class="mk-kicker" style="margin: 0.35rem 0 0;">REFINAMENTOS</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section class="mk-section mk-container" style="padding-top: 2rem;">
+    <p class="mk-kicker">AMOSTRA DE ACHADOS</p>
+    <h2 class="mk-h2" style="margin-bottom: 1.5rem;">Coerência antes de escala</h2>
+    {findings.map((f) => (
+      <article class="mk-finding">
+        <div style="display: flex; align-items: center; gap: 0.65rem; margin-bottom: 0.5rem;">
+          <span class="mk-num">{f.num}</span>
+          <span class:list={["mk-chip-sev", f.sevClass]}>{f.sev}</span>
+        </div>
+        <h3 class="mk-h3">{f.title}</h3>
+        <p class="mk-body">{f.body}</p>
+        <p style="margin: 0.75rem 0 0; font-size: 0.88rem;">
+          <span class="mk-kicker" style="display: inline; margin-right: 0.5rem;">PROPOSTA</span>
+          {f.prop}
+        </p>
+      </article>
+    ))}
+
+    <div class="mk-cta" style="margin-top: 2.5rem;">
+      <p class="mk-kicker">PRIORIZAÇÃO</p>
+      <h2 class="mk-h2" style="margin-bottom: 0.75rem;">Três horizontes</h2>
+      <p class="mk-lead">
+        <strong style="color: var(--text);">Agora</strong> — coerência entre o que afirmamos e entregamos.
+        <strong style="color: var(--text);"> Próximo ciclo</strong> — confiança via harness e audit trail.
+        <strong style="color: var(--text);"> Horizonte</strong> — índices SKY com evidência reprodutível.
+      </p>
+      <a href={withBase("/metodo/")} class="mk-btn mk-btn-secondary">Ver método no hub</a>
+    </div>
+  </section>
+
+  <MarketingFooter />
+</LandingLayout>

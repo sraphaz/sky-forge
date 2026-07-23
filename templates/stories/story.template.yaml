@@ -1,0 +1,41 @@
+# Story shard — padrão BMAD (context-engineered development)
+# Copie para .sky/sessions/{slug}/stories/{story-id}.yaml
+version: "1.0"
+story_id: IA-XX
+epic: EX
+title: Título da story
+status: ready | in_progress | done | blocked
+
+# Contexto embutido — dev agent não precisa reler o pacote inteiro
+context:
+  slug: "{slug}"
+  tier: mvp | growth | enterprise
+  architecture_refs:
+    - architecture/c4-containers.md
+    - architecture/agent-architecture.md
+  rf_refs: [RF-XXX]
+  adr_refs: []
+
+intent: |
+  O que esta story entrega em uma frase.
+
+acceptance:
+  - id: AC-XX-1
+    given: pré-condição
+    when: ação
+    then: resultado verificável
+
+implementation_notes: |
+  Stack, pastas, comandos, guardrails.
+
+testing:
+  - type: unit | integration | e2e | a11y
+    scope: descrição
+
+definition_of_done:
+  - typecheck verde
+  - testes da story verdes
+  - documentação no mesmo PR
+
+bmad_track: quick | full
+ai_suggested: true

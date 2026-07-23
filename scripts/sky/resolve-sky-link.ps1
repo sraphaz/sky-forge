@@ -27,15 +27,22 @@ function Read-SkyLinkYaml {
         forge_root = $null
         package_dir = $null
         sync_mode = 'manual'
+        mode = 'linked'
+        profile = $null
         linked_at = $null
     }
     if ($raw -match '(?m)^slug:\s*(.+)$') { $link.slug = $Matches[1].Trim().Trim('"').Trim("'") }
     if ($raw -match '(?m)^forge_root:\s*(.+)$') { $link.forge_root = $Matches[1].Trim().Trim('"').Trim("'") }
+    if (-not $link.forge_root -and ($raw -match '(?m)^forge_path:\s*(.+)$')) {
+        $link.forge_root = $Matches[1].Trim().Trim('"').Trim("'")
+    }
     if ($raw -match '(?m)^package_dir:\s*(.+)$') {
         $val = $Matches[1].Trim().Trim('"').Trim("'")
         if ($val -and $val -ne 'null') { $link.package_dir = $val }
     }
     if ($raw -match '(?m)^sync_mode:\s*(.+)$') { $link.sync_mode = $Matches[1].Trim().Trim('"').Trim("'") }
+    if ($raw -match '(?m)^mode:\s*(.+)$') { $link.mode = $Matches[1].Trim().Trim('"').Trim("'") }
+    if ($raw -match '(?m)^profile:\s*(.+)$') { $link.profile = $Matches[1].Trim().Trim('"').Trim("'") }
     if ($raw -match '(?m)^linked_at:\s*(.+)$') { $link.linked_at = $Matches[1].Trim().Trim('"').Trim("'") }
     return $link
 }
@@ -129,6 +136,8 @@ function Get-SkyLinkContext {
             PackageDir = $packageDir
             LinkFile = $linkFile
             SyncMode = $link.sync_mode
+            Mode = $link.mode
+            Profile = $link.profile
         }
     }
 

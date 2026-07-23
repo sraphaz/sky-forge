@@ -8,4 +8,8 @@ export default defineConfig({
   outDir: "dist",
   // Endpoints de decisão só existem no dev server; o build estático não muda.
   integrations: [skyLocalApi()],
+  server: {
+    port: 4321,
+    strictPort: true,
+  },
 });

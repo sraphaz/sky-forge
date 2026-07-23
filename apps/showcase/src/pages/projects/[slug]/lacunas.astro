@@ -81,6 +81,14 @@ function gapMeta(dimension: string, gap: string) {
     <p class="panel gap-local-banner" data-gap-interactive hidden>
       <strong>Modo interativo local ativo.</strong>
       Decisões tomadas aqui são gravadas em <code>.sky/sessions/{slug}/</code> e auditadas — nada muda sem você.
+      <button type="button" id="gap-project-refresh" class="btn-secondary gap-refresh-btn">
+        Atualizar projeto
+      </button>
+    </p>
+    <p class="panel gap-stale-api-banner" data-gap-stale-api hidden>
+      <strong>API local desatualizada.</strong>
+      Um servidor antigo ainda ocupa a porta — reinicie o showcase para habilitar envio em lote e atualização sem reload:
+      <code>./scripts/sky/sky.ps1 showcase</code>
     </p>
 
     <GapsPanel slug={slug!} gaps={gaps} variant="page" />

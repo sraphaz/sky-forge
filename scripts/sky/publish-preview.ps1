@@ -112,26 +112,34 @@ function Read-DimensionGaps([string]$Maturity) {
     return $gaps
 }
 
-function Build-GapsSummary([hashtable]$DimensionGaps, [array]$FunctionalReqs, [array]$PipelinePending, [double]$Readiness) {
+function Build-GapsSummary([hashtable]$DimensionGaps, [array]$FunctionalReqs, [array]$PipelinePending, [double]$Readiness, [hashtable]$AnsweredItemIds = @{}) {
     $top = [System.Collections.Generic.List[hashtable]]::new()
     $total = 0
 
     foreach ($dim in ($DimensionGaps.Keys | Sort-Object)) {
+        $idx = 0
         foreach ($g in @($DimensionGaps[$dim])) {
-            $total++
-            if ($top.Count -lt 3) {
-                $top.Add(@{
-                    id = "dim-$dim-$($g.Substring(0, [Math]::Min(20, $g.Length)).Replace(' ', '-').ToLower())"
-                    label = $g
-                    kind = 'maturity'
-                    dimension = $dim
-                })
+            $idx++
+            $itemId = "dim-$dim-$idx"
+            $answered = $AnsweredItemIds.ContainsKey($itemId)
+            if (-not $answered) {
+                $total++
+                if ($top.Count -lt 3) {
+                    $top.Add(@{
+                        id = $itemId
+                        label = $g
+                        kind = 'maturity'
+                        dimension = $dim
+                    })
+                }
             }
         }
     }
 
     # Só sugestões ainda sem decisão contam como lacuna (user_confirmed null)
-    $aiSuggested = @($FunctionalReqs | Where-Object { $_.ai_suggested -eq $true -and $null -eq $_.user_confirmed })
+    $aiSuggested = @($FunctionalReqs | Where-Object {
+        $_.ai_suggested -eq $true -and $null -eq $_.user_confirmed -and -not $AnsweredItemIds.ContainsKey($_.id)
+    })
     foreach ($rf in $aiSuggested) {
         $total++
         if ($top.Count -lt 3) {
@@ -339,6 +347,21 @@ function Read-Pipeline([string]$Maturity) {
         }
     }
     return $items
+}
+
+function Read-DecisionsInbox([string]$SessionDir) {
+    $inboxPath = Join-Path $SessionDir 'decisions-inbox.yaml'
+    if (-not (Test-Path $inboxPath)) { return @{} }
+    $raw = Get-Content $inboxPath -Raw
+    $answered = @{}
+    foreach ($block in ([regex]::Split($raw, '(?m)^  - at:'))) {
+        if ($block -notmatch 'item_id:\s*"([^"]+)"') { continue }
+        $itemId = $Matches[1]
+        if ($block -match 'decision:\s*(\w+)') {
+            $answered[$itemId] = $Matches[1]
+        }
+    }
+    return $answered
 }
 
 function Resolve-SkyDataFile([string]$Slug, [string]$OutputName, [string]$SessionName) {
@@ -734,6 +757,38 @@ function Build-Artifacts([string]$OutputDir, [hashtable]$Context) {
             description = 'Architecture Decision Records'
         },
         @{
+            id = 'agent-architecture'
+            label = 'Arquitetura agêntica'
+            type = 'markdown'
+            stage = 'architecture'
+            path = 'architecture/agent-architecture.md'
+            description = 'Manifests e coreografia da solução — padrão Arah'
+        },
+        @{
+            id = 'agent-graph'
+            label = 'Grafo de agentes'
+            type = 'markdown'
+            stage = 'architecture'
+            path = 'architecture/agent-graph.md'
+            description = 'Grafo Mermaid — roster, handoffs e consultas de domínio'
+        },
+        @{
+            id = 'agent-manifests'
+            label = 'Manifests de agentes'
+            type = 'yaml'
+            stage = 'architecture'
+            path = 'architecture/agents/'
+            description = 'Agentes da solução (*.agent.yaml, choreography, autonomy)'
+        },
+        @{
+            id = 'agent-harness'
+            label = 'Harness de agentes'
+            type = 'yaml'
+            stage = 'architecture'
+            path = 'architecture/specs/agent-harness.spec.yaml'
+            description = 'Spec-driven — guardrails, Claim model e HITL verificáveis'
+        },
+        @{
             id = 'maturity'
             label = 'Maturidade'
             type = 'yaml'
@@ -895,6 +950,31 @@ function Read-UxSummary([string]$Content) {
     }
 }
 
+function Read-PackageDownloadMeta([string]$Slug) {
+    $metaPath = Join-Path (Get-SkyRegistryDir) "$Slug.package.json"
+    if (-not (Test-Path $metaPath)) { return $null }
+    try {
+        $meta = Get-Content $metaPath -Raw | ConvertFrom-Json
+        if (-not $meta.available) { return $null }
+        $repoRoot = Get-SkyRepoRoot
+        $zipPath = Join-Path $repoRoot "apps\showcase\public\$($meta.url_path -replace '/', '\')"
+        if (-not (Test-Path $zipPath)) { return $null }
+        return [ordered]@{
+            available = $true
+            file = [string]$meta.file
+            url_path = [string]$meta.url_path
+            size_bytes = [int]$meta.size_bytes
+            size_human = [string]$meta.size_human
+            package_completeness = [string]$meta.package_completeness
+            overall_readiness = if ($null -ne $meta.overall_readiness) { [double]$meta.overall_readiness } else { $null }
+            exported_at = [string]$meta.exported_at
+            zipped_at = [string]$meta.zipped_at
+        }
+    } catch {
+        return $null
+    }
+}
+
 $OutputDir = Get-SkyOutputDirForSlug $Slug
 $SessionDir = Join-Path (Get-SkyRepoRoot) ".sky\sessions\$Slug"
 if (-not (Test-Path $OutputDir) -and -not (Test-Path $SessionDir)) {
@@ -991,7 +1071,9 @@ $dimensionGaps = Read-DimensionGaps $maturity
 $pipelineList = Read-Pipeline $maturity
 $pipelinePending = @($pipelineList | Where-Object { -not $_.approved })
 $readinessNum = if ($readiness) { [double]$readiness } else { 0 }
-$gapsSummary = Build-GapsSummary $dimensionGaps @($functionalReqs) @($pipelinePending) $readinessNum
+$sessionDirForInbox = Join-Path (Get-SkyRepoRoot) ".sky\sessions\$Slug"
+$answeredItems = Read-DecisionsInbox $sessionDirForInbox
+$gapsSummary = Build-GapsSummary $dimensionGaps @($functionalReqs) @($pipelinePending) $readinessNum $answeredItems
 $gapSuggestionsRaw = Resolve-SkyDataFile $Slug 'gaps-suggestions.yaml' 'gaps-suggestions.yaml'
 $gapSuggestions = @(Read-GapSuggestions $gapSuggestionsRaw)
 $rfEffects = Read-RfEffects $gapSuggestionsRaw
@@ -1028,8 +1110,9 @@ $artifactContext = @{
     phases = $phasesList
 }
 $artifactsList = if ($OutputDir) { Build-Artifacts $OutputDir $artifactContext } else { @() }
+$packageDownload = Read-PackageDownloadMeta $Slug
 
-# Opt-in é pegajoso: republicar sem -Public não despublica (despublicar é ação explícita)
+# Opt-in é pegajoso
 $registryDir = Get-SkyRegistryDir
 $indexPath = Join-Path $registryDir 'index.json'
 $index = @{ version = '1.0'; projects = @() }
@@ -1070,6 +1153,7 @@ $preview = [ordered]@{
     phases = Read-Phases $roadmap
     pipeline = $pipelineList
     artifacts = @($artifactsList)
+    package_download = $packageDownload
     public = $isPublic
     published_at = (Get-Date).ToUniversalTime().ToString('o')
     outputs_dir = $OutputDir
@@ -1094,6 +1178,9 @@ $entry = [ordered]@{
     agents_file = "$Slug.agents.json"
     public = $isPublic
     gap_count = $gapsSummary.total_count
+}
+if ($packageDownload) {
+    $entry.package_download = $packageDownload
 }
 $index.projects = @($existing) + @($entry)
 Write-Utf8NoBom $indexPath (@{ version = '1.0'; projects = $index.projects } | ConvertTo-Json -Depth 10)

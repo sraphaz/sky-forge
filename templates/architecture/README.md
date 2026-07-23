@@ -12,7 +12,15 @@ architecture/
   c4-summary.md       # Showcase (sanitizado)
   domains.md
   context-flow.md     # Fluxograma end-to-end
+  agent-architecture.md  # Ponte C4 ↔ agentes (padrão Arah)
+  agent-graph.md      # Grafo de agentes da solução
   craft-review.md     # clean-craft-advisor
+  agents/             # Manifests da solução (não Sky-Forge)
+    *.agent.yaml
+    choreography.yaml
+    autonomy.yaml
+  specs/
+    agent-harness.spec.yaml
   sequences/
     journey-*.md
   adrs/
@@ -30,8 +38,11 @@ Preferir **Mermaid** embutido em Markdown. Renderizável no showcase e no GitHub
 
 ## Agentes
 
-| Agente | Skill |
-|--------|-------|
+| Agente Sky-Forge | Skill |
+|----------------|-------|
 | c4-modeler | sky-c4-model |
 | journey-sequence-modeler | sky-journey-sequences |
+| solutions-architect | sky-agent-architecture |
 | clean-craft-advisor | sky-clean-craft |
+
+Soluções com IA multi-agente: ver `agents/README.md` e [arah.md](../../docs/attribution/arah.md).

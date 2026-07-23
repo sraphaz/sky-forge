@@ -11,7 +11,9 @@ fields:
     name:        {type: string, required: true}
     version:     {type: semver, required: true}
     owner:       {type: string, required: true}
-    direction:   {type: enum[consumer], required: true}  # única direção permitida hoje
+    direction:   {type: enum[consumer, host], required: true}
+                  # consumer: importa pacotes exportados (adapter externo)
+                  # host: Sky-Forge opera DENTRO do repo da plataforma (attach)
 
   compatibility:
     sky_forge_core: {type: semver_range, required: true}
@@ -40,8 +42,18 @@ fields:
   produces:      {type: list<string>}                    # artefatos gerados no destino
   does_not_modify: {type: list<string>, required: true}  # limites explícitos (core, pacote origem, …)
 
+  services:      # direction=host — catálogo de serviços expostos no repo consumidor
+    type: list
+    item:
+      id:          {type: string, required: true}
+      command:     {type: string, required: true}       # subcomando CLI no app (ex.: assess)
+      description: {type: string}
+      profile_stage: {type: string}                      # stage do profile relacionado
+      autonomy_max:  {type: integer}                     # nível máximo sem gate humano
+
 validations_expected:
-  - "direction=consumer é obrigatório (não há hooks de geração)"
+  - "direction=consumer: não há hooks de geração no core"
+  - "direction=host: services não vazio; profile declarado em compatibility.profiles"
   - "todo `from` de mappings existe em requires ou optional"
   - "does_not_modify inclui 'sky-forge-core'"
   - "compatibility.profiles não vazio"

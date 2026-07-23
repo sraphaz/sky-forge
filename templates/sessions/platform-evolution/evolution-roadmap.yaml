@@ -1,0 +1,44 @@
+# evolution-roadmap.yaml — template (preencher após assess + intake)
+# Gerado inicialmente por: sky seed-roadmap -Slug <slug>
+
+version: "0.1"
+slug: "{{slug}}"
+profile: platform-evolution
+updated_at: "{{now}}"
+baseline_ref: "{{baseline_ref}}"
+ai_suggested: true
+
+vision: ""
+constraints: []
+
+phases:
+  - id: phase-stabilize
+    title: "Estabilizar baseline"
+    priority: P0
+    status: planned
+    depends_on: []
+    deliverables: []
+    done_when: "CI verde, assessment confirmado, gates baseline_confirmed aprovado"
+    rf_refs: []
+    gate: baseline_confirmed
+
+  - id: phase-spec-sync
+    title: "Spec sincronizada com forge"
+    priority: P1
+    status: planned
+    depends_on: [phase-stabilize]
+    deliverables: [spec/]
+    done_when: "pull-spec traz architecture + requirements; story shard ativa definida"
+    rf_refs: []
+
+  - id: phase-evolve
+    title: "Evolução incremental"
+    priority: P1
+    status: planned
+    depends_on: [phase-spec-sync]
+    deliverables: []
+    done_when: "Primeira fase do roadmap entregue com critérios de aceite verificados"
+    rf_refs: []
+    gate: evolution_approved
+
+acceptance_summary: ""

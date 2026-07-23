@@ -1,0 +1,43 @@
+---
+description: Plataforma com Sky-Forge host plugin — avaliar e evoluir brownfield
+globs:
+alwaysApply: true
+---
+
+Este repositório tem o **Sky-Forge Host Plugin** (`integrations/sky-forge/`).
+
+## Modo de operação
+
+- **Profile:** `platform-evolution` (brownfield)
+- **Sessão:** `.sky/link.yaml` → repo Sky-Forge
+- **Baseline:** `platform-assessment.yaml` (sessão + cópia em `spec/` após sync)
+
+## Antes de mudanças estruturais
+
+1. `./scripts/sky.ps1 status` — maturidade e gaps
+2. Ler `spec/` ou pedir `./scripts/sky.ps1 pull-spec`
+3. Story shard ou fase do `evolution-roadmap` aprovada
+
+## Comandos (deste repo)
+
+```powershell
+./scripts/sky.ps1 assess          # re-varrer repo → atualizar assessment
+./scripts/sky.ps1 status          # maturidade + índices SKY
+./scripts/sky.ps1 elevate         # elevação (delega ao forge)
+./scripts/sky.ps1 architect       # ciclo C4 brownfield
+./scripts/sky.ps1 pull-spec       # sync spec/ após export
+./scripts/sky.ps1 export -ForAI -Scope spec
+```
+
+Intake completo, export governado e `publish -Public` rodam **no Sky-Forge** (gates humanos).
+
+## Agentes sugeridos
+
+| Fase | Agente |
+|------|--------|
+| Baseline | intake-conductor, sky-host |
+| Elevação | sky-elevator, ux-design-specialist |
+| Arquitetura | solutions-architect, c4-modeler |
+| Entrega | delivery-steward |
+
+Ver `integrations/sky-forge/services.yaml`.

@@ -11,7 +11,7 @@ interface Props {
 
 const {
   title,
-  description = "Eleve o que está sendo proposto — especificação, UX digna e índices SKY.",
+  description="Estúdio de elevação de ideias — visão clara de cada aplicativo, passo a passo.",
   navActive,
 } = Astro.props;
 ---
@@ -22,19 +22,19 @@ const {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
-    <meta name="theme-color" content="#060913" />
+    <meta name="theme-color" content="#f7f9fc" />
     <title>{title} · Sky-Forge</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Mulish:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
       rel="stylesheet"
     />
     <script is:inline>
       (function () {
         try {
-          if (localStorage.getItem("sf-theme") === "light") {
-            document.documentElement.setAttribute("data-theme", "light");
+          if (localStorage.getItem("sf-theme") === "dark") {
+            document.documentElement.setAttribute("data-theme", "dark");
           }
         } catch (_) {}
       })();

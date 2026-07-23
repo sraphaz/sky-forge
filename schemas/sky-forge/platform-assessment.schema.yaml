@@ -1,0 +1,51 @@
+# platform-assessment.schema.yaml — baseline brownfield gerado por sky assess
+
+schema: sky-forge/platform-assessment
+version: 0.1.0
+
+fields:
+  version:       {type: string, required: true}
+  slug:          {type: string, required: true}
+  assessed_at:   {type: datetime, required: true}
+  intake_mode:   {type: enum[brownfield_host], required: true}
+  profile:       {type: string, required: true}
+
+  baseline:
+    workspace_path: {type: string, required: true}
+    git_commit:     {type: string}
+    stacks_detected:
+      type: list
+      item:
+        stack:    {type: string}
+        signal:   {type: string}
+        language: {type: string}
+
+  signals:
+    has_readme:       {type: boolean}
+    has_docs:         {type: boolean}
+    has_ci:           {type: boolean}
+    has_agents_md:    {type: boolean}
+    has_spec_sync:    {type: boolean}
+    has_cursor_rules: {type: boolean}
+    test_file_count:  {type: integer}
+
+  evidence_score:   {type: number, min: 0, max: 1}
+  readme_excerpt:   {type: string}
+
+  maturity_hints:
+    technical:      {type: number}
+    product:        {type: number}
+    sustainability: {type: number}
+
+  gaps_detected:  {type: list<string>}
+  next_recommended:
+    type: list
+    item:
+      agent:  {type: string}
+      action: {type: string}
+      cli:    {type: string}
+
+validations_expected:
+  - "baseline.workspace_path não vazio"
+  - "evidence_score entre 0 e 1"
+  - "gaps_detected presente (pode ser lista vazia após repo maduro)"

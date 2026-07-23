@@ -1,0 +1,98 @@
+---
+import LandingLayout from "../layouts/LandingLayout.astro";
+import MarketingNav from "../components/marketing/MarketingNav.astro";
+import MarketingFooter from "../components/marketing/MarketingFooter.astro";
+import { loadIndex, loadPreview } from "../lib/registry";
+import { withBase } from "../lib/paths";
+
+const { projects } = loadIndex();
+const visible = projects.filter((p) => p.public !== false);
+const featured = visible[0];
+
+let featuredPreview = featured ? await loadPreview(featured.slug) : null;
+const skyScore = featured?.sky_score ?? featuredPreview?.readiness ?? "—";
+const phase = featuredPreview?.journey_phase ?? "showcase";
+---
+
+<LandingLayout
+  title="Showcase"
+  description="Galeria de propostas elevadas — resumos sanitizados publicados com consentimento."
+>
+  <MarketingNav active="galeria" badge="SHOWCASE" />
+
+  <header class="mk-page-hero">
+    <div class="mk-page-hero-inner" style="max-width: 68rem; margin: 0 auto; padding: 0 1.5rem;">
+      <p class="mk-kicker">GALERIA DE PROPOSTAS ELEVADAS</p>
+      <h1>O que o funil já elevou.</h1>
+      <p style="max-width: 42rem;">
+        Cada projeto aqui atravessou intake, elevação e pipeline de maturidade — e foi publicado com
+        consentimento explícito. Brief completo e artefatos proprietários ficam privados até você optar.
+      </p>
+    </div>
+  </header>
+
+  <section class="mk-section mk-container">
+    {visible.length === 0 ? (
+      <div class="mk-cta">
+        <p class="mk-lead">Nenhum projeto publicado ainda. Comece pelo intake local.</p>
+        <code class="mk-code">./scripts/sky/sky.ps1 publish -Slug meu-projeto -Public</code>
+      </div>
+    ) : (
+      <>
+        <div class="mk-gallery-grid">
+          {featured && (
+            <article class="mk-featured-card">
+              <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.75rem;">
+                <span class="mk-project-chip">DESTAQUE</span>
+                <span class="mk-project-chip">{phase}</span>
+              </div>
+              <h2 class="mk-h2" style="margin-bottom: 0.5rem;">{featured.title ?? featured.slug}</h2>
+              <p class="mk-body">{featured.excerpt ?? "Proposta elevada pelo funil Sky-Forge."}</p>
+              <div style="display: flex; gap: 1.5rem; margin: 1.25rem 0; flex-wrap: wrap;">
+                <div>
+                  <p class="mk-kicker" style="margin: 0;">SKY_SCORE</p>
+                  <span class="mk-score-num" style="font-size: 2rem;">{skyScore}</span>
+                </div>
+                {featured.gap_count != null && (
+                  <div>
+                    <p class="mk-kicker" style="margin: 0;">LACUNAS</p>
+                    <span style="font-family: Sora, sans-serif; font-size: 2rem; font-weight: 700;">{featured.gap_count}</span>
+                  </div>
+                )}
+              </div>
+              <a href={withBase(`/projects/${featured.slug}/`)} class="mk-btn mk-btn-primary">
+                Abrir projeto →
+              </a>
+            </article>
+          )}
+          <div style="display: flex; flex-direction: column; gap: 0.85rem;">
+            {visible.slice(featured ? 1 : 0).map((p) => (
+              <a
+                href={withBase(`/projects/${p.slug}/`)}
+                class="mk-card mk-card-hover"
+                style="text-decoration: none; color: inherit;"
+              >
+                <div>
+                  <h3 class="mk-h3">{p.title ?? p.slug}</h3>
+                  <p class="mk-body" style="font-size: 0.82rem;">{p.excerpt ?? p.slug}</p>
+                </div>
+              </a>
+            ))}
+            {visible.length === 1 && (
+              <p class="mk-body" style="font-size: 0.88rem; padding: 1rem; border: 1px dashed var(--line); border-radius: 12px;">
+                Mais projetos aparecerão aqui conforme forem publicados com opt-in.
+              </p>
+            )}
+          </div>
+        </div>
+
+        <div class="mk-cta" style="margin-top: 3rem;">
+          <p class="mk-lead">Métricas, lacunas, artefatos e trilha de agentes — tudo dentro de cada projeto no hub.</p>
+          <a href={withBase("/hub/")} class="mk-btn mk-btn-primary">Ir ao hub completo</a>
+        </div>
+      </>
+    )}
+  </section>
+
+  <MarketingFooter />
+</LandingLayout>

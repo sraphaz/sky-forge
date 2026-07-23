@@ -1,56 +1,93 @@
 ---
 import type { ProjectIndexEntry } from "../lib/registry";
-import MaturityBar from "./MaturityBar.astro";
+import PendingBell from "./PendingBell.astro";
 import { withBase } from "../lib/paths";
-import { formatPercent } from "../lib/registry";
 
 interface Props {
   project: ProjectIndexEntry;
-  featured?: boolean;
   gapCount?: number;
 }
 
-const { project, featured = false, gapCount = project.gap_count ?? 0 } = Astro.props;
+const { project, gapCount = project.gap_count ?? 0 } = Astro.props;
 const href = withBase(`/projects/${project.slug}/`);
-const lacunasHref = withBase(`/projects/${project.slug}/lacunas/`);
 const isPrivate = project.public === false;
-const skyScore = project.sky_score != null ? Math.round(project.sky_score) : null;
-const primaryHref = gapCount > 0 ? lacunasHref : href;
-const primaryLabel = gapCount > 0 ? `Preencher lacunas (${gapCount}) →` : "Ver dossiê público →";
 ---
 
-<article class:list={["card", "sf-card", featured && "sf-card-featured"]}>
-  <div class="meta-row">
-    {gapCount > 0 && <span class="chip chip-gap-count">{gapCount} lacuna{gapCount !== 1 ? "s" : ""}</span>}
-    {project.tier && <span class="chip chip-tier">{project.tier}</span>}
-    {project.elevation_level && <span class="chip">{project.elevation_level}</span>}
+<article class="card hub-project-card">
+  <div class="hub-project-card-top">
     {isPrivate && <span class="chip chip-private">Privado</span>}
-    {project.tags?.slice(0, 2).map((tag) => <span class="chip chip-tag">{tag}</span>)}
+    <PendingBell slug={project.slug} count={gapCount} />
   </div>
-  <h2 class="sf-card-title"><a href={href}>{project.title}</a></h2>
-  {project.excerpt && <p class="sf-card-excerpt">{project.excerpt}</p>}
-
-  <div class="sf-card-metrics">
-    {project.readiness != null && (
-      <div class="sf-metric">
-        <span class="sf-metric-label">MATURIDADE</span>
-        <span class="sf-metric-value">{formatPercent(project.readiness)}</span>
-      </div>
-    )}
-    {skyScore != null && (
-      <div class="sf-metric">
-        <span class="sf-metric-label">SKY SCORE</span>
-        <span class="sf-metric-value sf-grad-text">{skyScore}</span>
-      </div>
-    )}
-  </div>
-
-  {project.readiness != null && (
-    <MaturityBar value={project.readiness} variant="card" id={`maturity-${project.slug}`} />
+  <h2 class="hub-project-title">
+    <a href={href}>{project.title}</a>
+  </h2>
+  {project.excerpt && <p class="hub-project-excerpt">{project.excerpt}</p>}
+  {project.tags && project.tags.length > 0 && (
+    <div class="meta-row hub-project-tags">
+      {project.tags.slice(0, 3).map((tag) => (
+        <span class="chip chip-tag">{tag}</span>
+      ))}
+    </div>
   )}
-
-  <a href={primaryHref} class="btn-primary sf-card-primary-cta">{primaryLabel}</a>
-  {gapCount > 0 && (
-    <a href={href} class="sf-card-cta sf-card-secondary-link">Ver visão resumida →</a>
-  )}
+  <a href={href} class="hub-project-link">Abrir projeto →</a>
 </article>
+
+<style>
+  .hub-project-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .hub-project-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    min-height: 1.5rem;
+  }
+
+  .hub-project-title {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    font-weight: 600;
+    margin: 0;
+    line-height: 1.35;
+  }
+
+  .hub-project-title a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .hub-project-title a:hover {
+    color: var(--color-sky-accent);
+  }
+
+  .hub-project-excerpt {
+    font-size: 0.9rem;
+    line-height: 1.55;
+    color: var(--color-text-muted);
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .hub-project-tags {
+    margin: 0.25rem 0 0;
+  }
+
+  .hub-project-link {
+    margin-top: 0.5rem;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--color-sky-accent);
+    text-decoration: none;
+  }
+
+  .hub-project-link:hover {
+    text-decoration: underline;
+  }
+</style>
