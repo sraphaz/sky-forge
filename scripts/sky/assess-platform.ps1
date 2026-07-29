@@ -1,4 +1,4 @@
-#Requires -Version 5.1
+﻿#Requires -Version 5.1
 <#
 .SYNOPSIS
   Varre repo brownfield e gera platform-assessment.yaml + atualiza maturidade inicial.
@@ -191,3 +191,18 @@ Write-Host "  stacks: $stackNames | gaps: $($gaps.Count)"
 if ($gaps.Count -gt 0) {
     $gaps | ForEach-Object { Write-Host "    - $_" -ForegroundColor DarkYellow }
 }
+
+# HITL: via sky.ps1 interact (auditoria human.interaction.*)
+$skyCli = Join-Path $PSScriptRoot 'sky.ps1'
+if (-not (Test-Path $skyCli)) {
+    throw "HITL obrigatorio apos assess: sky.ps1 ausente ($skyCli)"
+}
+$topGap = if ($gaps.Count -gt 0) { $gaps[0] } else { $null }
+$promptOverride = if ($topGap) {
+    "Assessment pronto (principal lacuna: $topGap). O que prefere agora?"
+} else {
+    'Assessment pronto. O que prefere agora?'
+}
+Write-Host ""
+Write-Host "=== Proximo passo (interacao HITL) ===" -ForegroundColor Cyan
+& $skyCli interact -Slug $Slug -PointId 'assess.next_action' -Prompt $promptOverride

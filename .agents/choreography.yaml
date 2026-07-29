@@ -1,13 +1,16 @@
-# Coreografia — Sky-Forge v3
-# Autonomia explícita + gates + triggers para choreograph-agents.ps1
-version: 3
-updated: 2026-07-04
+# Coreografia — Sky-Forge v3.1
+# Autonomia explícita + gates + triggers + pontos de interação HITL
+version: 3.1
+updated: 2026-07-28
 policy: |
   Agentes operam dentro do nível de autonomia declarado. Ações acima do nível
   ou sem human gate são bloqueadas e registradas em .sky/audit/{slug}/events.jsonl.
   sky-host roteia; especialistas executam; domínio só consulta.
+  Decision points (.agents/interaction-points.yaml): pausar e elicitar com
+  AskQuestion (Cursor) ou fallback numerado antes de prosseguir.
 
 autonomy_ref: .agents/autonomy.yaml
+interaction_points_ref: .agents/interaction-points.yaml
 
 triggers:
   - id: manual
@@ -18,8 +21,36 @@ triggers:
     description: overall_readiness cruzou limiar
   - id: post_export
     description: Após export bem-sucedido
+  - id: post_assess
+    description: Após sky assess — elicitar assess.next_action
+  - id: post_attach
+    description: Após sky attach — elicitar brownfield.after_attach (se sem assess)
   - id: hook_stop
     description: Hook Cursor stop — auditoria passiva
+
+interaction_hooks:
+  - trigger: manual
+    when: arrival_or_unclear_intent
+    point: arrival.intent
+    agent: sky-host
+  - trigger: post_attach
+    point: brownfield.after_attach
+    agent: sky-host
+  - trigger: post_assess
+    point: assess.next_action
+    agent: sky-host
+  - trigger: maturity_gate
+    when: open_to_elevation
+    point: elevate.confirm
+    agent: sky-host
+  - trigger: manual
+    when: export_requested
+    point: deliver.export_scope
+    agent: delivery-steward
+  - trigger: manual
+    when: public_publish_requested
+    point: showcase.privacy
+    agent: showcase-curator
 
 rules:
   - id: experience-host
@@ -28,26 +59,29 @@ rules:
       - sky.config.yaml
       - docs/_meta/USER_JOURNEY.md
       - docs/_meta/OUTPUTS_AND_SHOWCASE.md
+      - docs/_meta/SKY_INTERACT.md
+      - .agents/interaction-points.yaml
     agents:
       - id: sky-host
         type: operational
         autonomy: [observe, route]
         max_autonomy: route
+        skills: [sky-interact]
       - id: delivery-steward
         type: operational
         autonomy: [observe, activate, invoke_skill]
         max_autonomy: invoke_skill
-        skills: [sky-deliver, sky-export, sky-validate]
+        skills: [sky-deliver, sky-export, sky-validate, sky-interact]
         requires_gate: [package]
       - id: showcase-curator
         type: operational
         autonomy: [observe, activate, invoke_skill]
         max_autonomy: invoke_skill
-        skills: [sky-publish, sky-showcase]
+        skills: [sky-publish, sky-showcase, sky-interact]
         requires_gate: [public_showcase]
 
   - id: intake-sessions
-    when: [manual, path_change]
+    when: [manual, path_change, post_assess, post_attach]
     paths:
       - .sky/sessions/**
     agents:
@@ -55,11 +89,12 @@ rules:
         type: operational
         autonomy: [observe, route]
         max_autonomy: route
+        skills: [sky-interact]
       - id: intake-conductor
         type: operational
         autonomy: [observe, activate, invoke_skill]
         max_autonomy: activate
-        skills: [sky-intake, sky-approve, sky-elevate]
+        skills: [sky-intake, sky-approve, sky-elevate, sky-interact]
         requires_gate: [brief]
       - id: sky-elevator
         type: domain
@@ -104,12 +139,13 @@ rules:
         type: operational
         autonomy: [observe, activate, invoke_skill, public]
         max_autonomy: public
-        skills: [sky-publish, sky-showcase]
+        skills: [sky-publish, sky-showcase, sky-interact]
         requires_gate: [public_showcase]
       - id: sky-host
         type: operational
         autonomy: [route]
         max_autonomy: route
+        skills: [sky-interact]
 
   - id: outputs-package
     when: [path_change, post_export, maturity_gate]
@@ -121,7 +157,7 @@ rules:
         type: operational
         autonomy: [observe, activate, invoke_skill, side_effect]
         max_autonomy: side_effect
-        skills: [sky-deliver, sky-export, sky-validate]
+        skills: [sky-deliver, sky-export, sky-validate, sky-interact]
         requires_gate: [package]
       - id: showcase-curator
         type: operational
@@ -265,6 +301,7 @@ party_mode:
   policy: |
     Reúne consultas paralelas de domínio. O host apresenta síntese — nunca export + publish
     no mesmo turno. Ativado por fase UX (journey.yaml current_phase).
+    Preferir AskQuestion para a decisão resultante da party.
   sessions:
     - id: elevation-party
       label: Elevação colaborativa

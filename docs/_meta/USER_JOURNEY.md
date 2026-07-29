@@ -35,6 +35,8 @@ Mapa de experiência para **sky-host** e agentes especializados. O usuário nunc
 
 ## Mensagem tipo do sky-host (chegada)
 
+Preferir **AskQuestion** (UI Cursor) com as mesmas opções. Fallback em prosa:
+
 ```
 Bem-vindo ao Sky-Forge.
 
@@ -51,6 +53,28 @@ O que posso fazer por você agora (escolha uma):
 
 Responda com o número ou descreva em suas palavras.
 ```
+
+Catálogo de pontos e protocolo: [SKY_INTERACT.md](SKY_INTERACT.md) · `.agents/interaction-points.yaml`
+
+## Interatividade no Cursor (HITL)
+
+Após `attach` / `assess` / lacunas / gates, o agente **pausa** e elicita:
+
+1. Grava `pending_interaction` em `journey.yaml` (`sky interact -PointId …`)
+2. Chama `AskQuestion` se disponível; senão lista numerada
+3. Resolve com a escolha e segue **uma** ação
+
+| Gatilho | PointId |
+|---------|---------|
+| Chegada | `arrival.intent` |
+| Pós-attach (sem assess) | `brownfield.after_attach` |
+| Pós-assess | `assess.next_action` |
+| Lacunas | `intake.deepen_gap` |
+| Elevação | `elevate.confirm` |
+| Gate humano | `gate.approve_stage` |
+| Escopo de export | `deliver.export_scope` |
+| Antes de `-Public` | `showcase.privacy` |
+| ARAH Harness | `implement.agentic_repo` |
 
 ## Handoffs entre agentes
 

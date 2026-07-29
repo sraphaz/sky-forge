@@ -1,4 +1,4 @@
-#Requires -Version 5.1
+﻿#Requires -Version 5.1
 param(
     [Parameter(Mandatory = $true)]
     [string]$Slug
@@ -169,9 +169,12 @@ next_suggested_actions:
   - id: brownfield
     label: Trouxe material existente (zip, docs, mockup)
     agent: intake-conductor
+  - id: brownfield_repo
+    label: Analisar / anexar repositório existente
+    agent: intake-conductor
 
 notes: |
-  Criado pelo sky-intake. sky-host conduz a experiência.
+  Criado pelo sky-intake. sky-host conduz via sky-interact (AskQuestion ou fallback numerado).
 "@
         }
         Set-Content -Path $dest -Value $content -Encoding UTF8 -NoNewline
@@ -184,5 +187,12 @@ if (Test-Path $maturityPath) {
     $m = $m -replace 'updated_at: "[^"]+"', "updated_at: `"$now`""
     Set-Content -Path $maturityPath -Value $m -Encoding UTF8 -NoNewline
 }
+
+# HITL arrival.intent via CLI auditado (apos base da sessao no disco)
+$skyCli = Join-Path $PSScriptRoot 'sky.ps1'
+if (-not (Test-Path $skyCli)) {
+    throw "sky.ps1 ausente para gravar arrival.intent: $skyCli"
+}
+& $skyCli interact -Slug $Slug -PointId 'arrival.intent'
 
 Write-Host "OK: sessao $Slug em $SessionDir"

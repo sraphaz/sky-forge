@@ -1,4 +1,4 @@
-#Requires -Version 5.1
+﻿#Requires -Version 5.1
 <#
 .SYNOPSIS
   CLI principal do Sky-Forge.
@@ -9,7 +9,7 @@
 [CmdletBinding()]
 param(
     [Parameter(Position = 0, Mandatory = $true)]
-    [ValidateSet('intake', 'status', 'approve', 'run', 'validate', 'export', 'elevate', 'benchmark', 'publish', 'sync', 'showcase', 'agents', 'audit', 'choreograph', 'architect', 'link', 'link-sync', 'pull-spec', 'integrate-dc', 'visualize', 'attach', 'assess', 'seed-roadmap')]
+    [ValidateSet('intake', 'status', 'approve', 'run', 'validate', 'export', 'elevate', 'benchmark', 'publish', 'sync', 'showcase', 'agents', 'audit', 'choreograph', 'architect', 'link', 'link-sync', 'pull-spec', 'integrate-dc', 'visualize', 'attach', 'assess', 'seed-roadmap', 'interact')]
     [string]$Command,
 
     [Parameter()]
@@ -47,6 +47,12 @@ param(
     [switch]$Force,
 
     [Parameter()]
+    [switch]$Assess,
+
+    [Parameter()]
+    [switch]$NoAssess,
+
+    [Parameter()]
     [switch]$Public,
 
     [Parameter()]
@@ -80,7 +86,22 @@ param(
 
     [Parameter()]
     [ValidateSet('standard', 'showcase')]
-    [string]$Quality = 'standard'
+    [string]$Quality = 'standard',
+
+    [Parameter()]
+    [string]$PointId,
+
+    [Parameter()]
+    [string]$ChoiceId,
+
+    [Parameter()]
+    [string]$Prompt,
+
+    [Parameter()]
+    [switch]$Clear,
+
+    [Parameter()]
+    [switch]$Resolve
 )
 
 $ErrorActionPreference = 'Stop'
@@ -339,11 +360,16 @@ switch ($Command) {
         }
     }
     'attach' {
+        if ($Assess -and $NoAssess) {
+            throw 'attach: nao combine -Assess e -NoAssess'
+        }
         $attachArgs = @{}
         if ($Slug) { $attachArgs.Slug = $Slug }
         if ($WorkspacePath) { $attachArgs.WorkspacePath = $WorkspacePath }
         if ($SyncMode) { $attachArgs.SyncMode = $SyncMode }
         if ($Force) { $attachArgs.Force = $true }
+        if ($Assess) { $attachArgs.Assess = $true }
+        if ($NoAssess) { $attachArgs.NoAssess = $true }
         & (Join-Path $PSScriptRoot 'attach-plugin.ps1') @attachArgs
         if ($Slug) {
             Invoke-AgentAudit $Slug 'repo-scaffolder' 'workspace.attach_host_plugin' 'side_effect' 'ok'
@@ -363,5 +389,38 @@ switch ($Command) {
         if ($Force) { $seedArgs.Force = $true }
         & (Join-Path $PSScriptRoot 'seed-evolution-roadmap.ps1') @seedArgs
         Invoke-AgentAudit $Slug 'solutions-architect' 'platform.seed_roadmap' 'invoke_skill' 'ok'
+    }
+    'interact' {
+        if (-not $Slug) { throw 'interact requires -Slug' }
+        if ($Clear -and $Resolve) {
+            throw 'interact: nao combine -Clear e -Resolve'
+        }
+        if ($Clear) {
+            if ($ChoiceId) { throw 'interact -Clear nao aceita -ChoiceId' }
+            if ($PointId) { throw 'interact -Clear nao aceita -PointId' }
+            if ($Prompt) { throw 'interact -Clear nao aceita -Prompt' }
+        }
+        elseif ($Resolve) {
+            if ($Prompt) { throw 'interact -Resolve nao aceita -Prompt' }
+            if (-not $ChoiceId) { throw 'interact -Resolve requires -ChoiceId' }
+        }
+        else {
+            if (-not $PointId) { throw 'interact requires -PointId (ou -Clear / -Resolve)' }
+            if ($ChoiceId) { throw 'interact com -PointId nao aceita -ChoiceId (use -Resolve)' }
+        }
+        $iArgs = @{ Slug = $Slug }
+        if ($WorkspacePath) { $iArgs.WorkspacePath = $WorkspacePath }
+        if ($Stage) { $iArgs.Stage = $Stage }
+        if ($Clear) { $iArgs.Clear = $true }
+        elseif ($Resolve) {
+            $iArgs.Resolve = $true
+            $iArgs.ChoiceId = $ChoiceId
+            if ($PointId) { $iArgs.PointId = $PointId }
+        }
+        else {
+            $iArgs.PointId = $PointId
+            if ($Prompt) { $iArgs.Prompt = $Prompt }
+        }
+        & (Join-Path $PSScriptRoot 'prompt-interaction.ps1') @iArgs
     }
 }

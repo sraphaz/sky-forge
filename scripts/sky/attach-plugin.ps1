@@ -1,4 +1,4 @@
-#Requires -Version 5.1
+﻿#Requires -Version 5.1
 <#
 .SYNOPSIS
   Instala Sky-Forge Host Plugin num repo brownfield existente.
@@ -163,10 +163,29 @@ if (Test-Path $linkFile) {
     }
 }
 
-$runAssess = $Assess -or -not $NoAssess
+# Default: HITL brownfield.after_attach. Assess só com -Assess.
+# Documentado em SKY_INTERACT.md: attach → after_attach; assess → assess.next_action.
+if ($NoAssess) {
+    $runAssess = $false
+} elseif ($Assess) {
+    $runAssess = $true
+} else {
+    $runAssess = $false
+}
+
+# Nao limpar pending antecipadamente — Set-SkyJourneyPendingInteraction / assess
+# sobrescrevem arrival.intent so apos sucesso. Falha no meio preserva a pergunta anterior.
+$skyCli = Join-Path $PSScriptRoot 'sky.ps1'
 if ($runAssess) {
     Write-Host ""
     & (Join-Path $PSScriptRoot 'assess-platform.ps1') -Slug $Slug -WorkspacePath $workspace
+} else {
+    if (-not (Test-Path $skyCli)) {
+        throw "HITL obrigatorio apos attach: sky.ps1 ausente ($skyCli)"
+    }
+    Write-Host ""
+    Write-Host "=== Proximo passo (interacao HITL) ===" -ForegroundColor Cyan
+    & $skyCli interact -Slug $Slug -PointId 'brownfield.after_attach' -WorkspacePath $workspace
 }
 
 Write-Host ""
@@ -179,3 +198,4 @@ Write-Host "  ./scripts/sky.ps1 status"
 Write-Host "  ./scripts/sky.ps1 assess"
 Write-Host ""
 Write-Host "Intake/evolucao: converse com sky-host no Cursor (profile $Profile)."
+Write-Host "Interacao: se o agente Cursor tiver AskQuestion, use o pending_interaction do journey.yaml."

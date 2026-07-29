@@ -1,4 +1,4 @@
-#Requires -Version 5.1
+﻿#Requires -Version 5.1
 <#
 .SYNOPSIS
   Resolve coreografia Sky-Forge: agentes, autonomia, skills e gates.
@@ -10,7 +10,7 @@ param(
     [string[]]$ChangedFiles = @(),
     [string]$Slug = '',
     [string]$Intent = '',
-    [ValidateSet('manual', 'path_change', 'maturity_gate', 'post_export', 'hook_stop')]
+    [ValidateSet('manual', 'path_change', 'maturity_gate', 'post_export', 'post_assess', 'post_attach', 'hook_stop')]
     [string]$Trigger = 'manual',
     [string]$Action = '',
     [string]$AgentId = '',

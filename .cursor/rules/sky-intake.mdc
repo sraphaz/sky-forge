@@ -1,5 +1,5 @@
 ---
-description: Intake-conductor Sky-Forge — conversa, maturidade, elevacao SKY e UX
+description: Intake-conductor Sky-Forge — conversa, maturidade, elevacao SKY e UX, HITL
 globs:
   - .sky/sessions/**
   - templates/sessions/**
@@ -12,9 +12,21 @@ Conduza elicitação dinâmica e **eleve** a proposta quando `policies.open_to_e
 ## Antes de cada resposta
 
 1. Ler `.sky/sessions/{slug}/maturity.yaml` e `sky-merits.yaml`
-2. Ler `brief-draft.yaml`, `alternatives.yaml`, `ux-spec.yaml`
-3. Top 3 gaps ponderados (inclui `elevation` e `ux_design`)
-4. [INTAKE_PROTOCOL.md](../../docs/_meta/INTAKE_PROTOCOL.md)
+2. Ler `brief-draft.yaml`, `alternatives.yaml`, `ux-spec.yaml`, `journey.yaml`
+3. Se `pending_interaction.status: pending` → skill **sky-interact** (AskQuestion / fallback) antes de escrever YAML novo
+4. Top 3 gaps ponderados (inclui `elevation` e `ux_design`)
+5. [INTAKE_PROTOCOL.md](../../docs/_meta/INTAKE_PROTOCOL.md) · [SKY_INTERACT.md](../../docs/_meta/SKY_INTERACT.md)
+
+## Interação ao aprofundar
+
+Quando houver lacunas e o usuário não escolheu qual preencher:
+
+1. **Obrigatório** — persistir pending antes de perguntar:  
+   `./scripts/sky/sky.ps1 interact -Slug {slug} -PointId intake.deepen_gap`
+2. Preferir **AskQuestion** com as top lacunas (máx. 4) — ponto `intake.deepen_gap`
+3. Só após `-Resolve` atualizar artefatos da dimensão escolhida
+
+Brownfield pós-assess: respeitar `assess.next_action` / `pending_interaction` do journey.
 
 ## Níveis
 
@@ -30,7 +42,7 @@ Conduza elicitação dinâmica e **eleve** a proposta quando `policies.open_to_e
 
 > "Sua horta comunitária conecta-se a cuidado do lugar (CH-BIODIVERSITY). Quer explorar oficina com escolas (CH-EDUCATION) como pós-MVP?"
 
-Sempre opcional. Se `open_to_elevation: false`, pule sugestões.
+Sempre opcional. Elicitar com ponto `elevate.confirm` (AskQuestion). Se `open_to_elevation: false`, pule sugestões.
 
 ## Comandos
 
@@ -38,6 +50,7 @@ Sempre opcional. Se `open_to_elevation: false`, pule sugestões.
 ./scripts/sky/sky.ps1 intake -Slug <slug>
 ./scripts/sky/sky.ps1 elevate -Slug <slug>
 ./scripts/sky/sky.ps1 approve -Slug <slug> -Stage elevation
+./scripts/sky/sky.ps1 interact -Slug <slug> -PointId intake.deepen_gap
 ```
 
 Persistir YAML a cada turno. Informar `SKY_SCORE` e `elevation_level` quando disponível.
@@ -48,6 +61,6 @@ Se `overall_readiness ≥ 0.55`, oferecer handoff ao **delivery-steward** via **
 
 | Agente | Quando |
 |--------|--------|
-| sky-host | Sempre — face da experiência, opções numeradas |
+| sky-host | Sempre — face da experiência, AskQuestion / opções |
 | delivery-steward | Export, pasta externa |
 | showcase-curator | Galeria visual, publish opt-in |

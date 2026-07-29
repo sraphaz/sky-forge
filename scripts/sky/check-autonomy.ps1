@@ -29,10 +29,12 @@ $allowed = $resolution.autonomy_check.allowed
 $gates = @($resolution.gates_required)
 
 $actionGates = @{
-    'export.package' = @('package')
+    'export.package' = @('package', 'architecture')
     'publish.preview' = @()
     'publish.public' = @('public_showcase', 'package')
+    # brief global; architecture vem de requires_gate da coreografia (architecture-spec)
     'skill.invoke' = @('brief')
+    'side_effect' = @('architecture', 'package')
 }
 $allGates = [System.Collections.Generic.List[string]]::new()
 foreach ($g in $gates) { if ($allGates -notcontains $g) { $allGates.Add($g) } }
@@ -43,27 +45,32 @@ if ($actionGates.ContainsKey($Action)) {
 }
 $gates = @($allGates)
 
-# Verificar approvals.yaml (stages:)
+# Verificar approvals.yaml (stages:) — timestamp de approve-stage conta como aprovado
 $approvalsPath = Join-Path $RepoRoot ".sky\sessions\$Slug\approvals.yaml"
 $gateStatus = @{}
 if (Test-Path $approvalsPath) {
     $ap = Get-Content $approvalsPath -Raw
     foreach ($g in $gates) {
-        if ($ap -match "(?m)^\s+$g`:\s*approved") { $gateStatus[$g] = $true }
-        elseif ($ap -match "(?m)^\s+$g`:") { $gateStatus[$g] = $false }
-        else { $gateStatus[$g] = $false }
+        if ($ap -match "(?m)^\s+$([regex]::Escape($g)):\s*(approved|\d{4}-\d{2})") {
+            $gateStatus[$g] = $true
+        } elseif ($ap -match "(?m)^\s+$([regex]::Escape($g)):\s*\S+") {
+            $gateStatus[$g] = $true
+        } else {
+            $gateStatus[$g] = $false
+        }
     }
 }
 
 $needsGate = $false
 $blockingGates = @()
 
-if ($actionGates.ContainsKey($Action)) {
-    foreach ($g in $actionGates[$Action]) {
-        if (-not $gateStatus.ContainsKey($g) -or -not $gateStatus[$g]) {
-            $needsGate = $true
-            if ($blockingGates -notcontains $g) { $blockingGates += $g }
-        }
+# Bloquear por TODOS os gates (actionGates + requires_gate da coreografia, ex.: architecture)
+foreach ($g in $gates) {
+    if ([string]::IsNullOrWhiteSpace("$g")) { continue }
+    $approved = $gateStatus.ContainsKey($g) -and $gateStatus[$g]
+    if (-not $approved) {
+        $needsGate = $true
+        if ($blockingGates -notcontains $g) { $blockingGates += $g }
     }
 }
 

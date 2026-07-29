@@ -1,0 +1,192 @@
+# Pontos de interação HITL — Sky-Forge
+# Agentes: preferir AskQuestion (Cursor UI); fallback = opções numeradas no chat.
+# Fonte: docs/_meta/SKY_INTERACT.md · skill sky-interact
+version: "1.0"
+updated: 2026-07-28
+
+policy: |
+  Em todo decision_point listado aqui, o agente DEVE pausar e elicitar
+  com AskQuestion quando a ferramenta estiver disponível no turno.
+  Se AskQuestion não existir (modelo/modo), usar o formato sky-host
+  (máx. 4 opções numeradas + "Responda com o número…").
+  Uma pergunta por turno. Nunca empilhar gates no mesmo turno.
+  Após a escolha: atualizar journey.yaml (pending_interaction resolved +
+  next_suggested_actions) e registrar human.interaction.answered na auditoria.
+
+defaults:
+  max_options: 4
+  allow_freeform_escape: true
+  freeform_label: "Outra coisa (vou digitar)"
+  ask_question_tool: AskQuestion
+  fallback: numbered_chat
+
+points:
+  - id: arrival.intent
+    phase: arrival
+    agent: sky-host
+    skill: sky-interact
+    when: Sem slug / chegada / usuário abre Sky-Forge sem pedido claro
+    prompt: O que você quer fazer no Sky-Forge agora?
+    options:
+      - id: new_idea
+        label: Começar ideia nova (intake)
+        routes_to: intake-conductor
+      - id: resume
+        label: Retomar sessão existente
+        routes_to: sky-host
+      - id: brownfield_repo
+        label: Analisar / anexar repositório existente
+        routes_to: intake-conductor
+      - id: status_only
+        label: Só ver status de um projeto
+        routes_to: sky-host
+
+  - id: brownfield.path_confirm
+    phase: shape
+    agent: sky-host
+    skill: sky-interact
+    when: Usuário pediu attach/assess sem WorkspacePath claro
+    prompt: Qual repositório devemos usar?
+    options:
+      - id: current_workspace
+        label: Este workspace aberto no Cursor
+      - id: paste_path
+        label: Vou informar o caminho
+      - id: cancel
+        label: Cancelar por agora
+
+  - id: brownfield.after_attach
+    phase: shape
+    agent: sky-host
+    skill: sky-interact
+    when: Após sky attach bem-sucedido
+    prompt: Host plugin anexado. Próximo passo?
+    options:
+      - id: run_assess
+        label: Rodar assessment do repositório
+        command: ./scripts/sky/sky.ps1 assess -Slug {slug} -WorkspacePath {workspace}
+      - id: deepen_problem
+        label: Contar o problema de evolução (intake)
+        routes_to: intake-conductor
+      - id: status
+        label: Ver maturidade / status
+        command: ./scripts/sky/sky.ps1 status -Slug {slug}
+      - id: later
+        label: Parar por aqui
+
+  - id: assess.next_action
+    phase: shape
+    agent: sky-host
+    skill: sky-interact
+    when: Após sky assess (platform-assessment.yaml gerado)
+    prompt: Assessment pronto. O que prefere agora?
+    options:
+      - id: deepen_top_gap
+        label: Aprofundar a principal lacuna detectada
+        routes_to: intake-conductor
+      - id: seed_roadmap
+        label: Gerar roadmap de evolução (draft)
+        command: ./scripts/sky/sky.ps1 seed-roadmap -Slug {slug}
+      - id: elevate
+        label: Explorar elevação / índices SKY
+        routes_to: sky-elevator
+      - id: status
+        label: Só revisar o status
+        command: ./scripts/sky/sky.ps1 status -Slug {slug}
+
+  - id: intake.deepen_gap
+    phase: shape
+    agent: intake-conductor
+    skill: sky-interact
+    when: Há lacunas de maturidade e o usuário não escolheu qual preencher
+    prompt: Qual lacuna quer aprofundar agora?
+    options_source: maturity.top_gaps
+    options_fallback:
+      - id: business
+        label: Negócio / problema / stakeholders
+      - id: product
+        label: Produto / jornadas / requisitos
+      - id: ux_design
+        label: UX / acessibilidade
+      - id: something_else
+        label: Outra coisa (vou digitar)
+
+  - id: elevate.confirm
+    phase: elevate
+    agent: sky-host
+    skill: sky-interact
+    when: open_to_elevation true e sky-elevator tem sugestões ai_suggested
+    prompt: Quer explorar conexões de elevação (opcional)?
+    options:
+      - id: explore
+        label: Sim, explorar sugestões
+        routes_to: sky-elevator
+      - id: skip
+        label: Não agora — seguir no produto
+        routes_to: intake-conductor
+      - id: disable
+        label: Prefiro não elevar neste projeto
+        sets: policies.open_to_elevation=false
+
+  - id: gate.approve_stage
+    phase: any
+    agent: sky-host
+    skill: sky-interact
+    when: Ação bloqueada por human gate (brief|elevation|architecture|package|public_showcase)
+    prompt: Há um gate humano pendente. Como seguir?
+    options:
+      - id: approve
+        label: Aprovar este stage agora
+        command: ./scripts/sky/sky.ps1 approve -Slug {slug} -Stage {stage}
+      - id: explain
+        label: Explicar o que o gate protege
+      - id: defer
+        label: Deixar para depois
+
+  - id: deliver.export_scope
+    phase: deliver
+    agent: delivery-steward
+    skill: sky-interact
+    when: Usuário pediu export sem escopo claro
+    prompt: Como quer o pacote de entrega?
+    options:
+      - id: partial
+        label: Parcial (pronto para handoff cedo)
+        command: ./scripts/sky/sky.ps1 export -Slug {slug} -Completeness partial
+      - id: full
+        label: Completo (quando readiness permitir)
+        command: ./scripts/sky/sky.ps1 export -Slug {slug} -Completeness full
+      - id: for_ai
+        label: Pacote para IA (-ForAI)
+        command: ./scripts/sky/sky.ps1 export -Slug {slug} -ForAI -Scope essential
+      - id: cancel
+        label: Ainda não exportar
+
+  - id: showcase.privacy
+    phase: showcase
+    agent: showcase-curator
+    skill: sky-interact
+    when: Antes de publish -Public
+    prompt: Sobre privacidade do preview público…
+    options:
+      - id: private_only
+        label: Manter privado (só máquina / pasta externa)
+      - id: public_ok
+        label: Autorizo publish -Public no showcase
+        requires_gate: public_showcase
+      - id: ask_later
+        label: Decidir depois
+
+  - id: implement.agentic_repo
+    phase: implement
+    agent: repo-scaffolder
+    skill: sky-interact
+    when: agentic-repo-recommendation tier recommended|suggested
+    prompt: Recomendamos ARAH Harness neste repo. Quer instalar antes do scaffold/link?
+    options:
+      - id: install_arah
+        label: Sim — orientar instalação do ARAH Harness
+      - id: skip_arah
+        label: Seguir sem ARAH por agora
+      - id: explain
+        label: Explicar o que é o ARAH Harness
