@@ -106,7 +106,7 @@ points:
         label: Negócio / problema / stakeholders
       - id: product
         label: Produto / jornadas / requisitos
-      - id: ux
+      - id: ux_design
         label: UX / acessibilidade
       - id: something_else
         label: Outra coisa (vou digitar)

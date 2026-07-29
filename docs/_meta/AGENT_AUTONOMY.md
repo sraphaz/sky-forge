@@ -20,8 +20,9 @@ Fonte: [`.agents/autonomy.yaml`](../../.agents/autonomy.yaml)
 
 | Gate | Bloqueia até aprovar |
 |------|----------------------|
-| `brief` | Export e side effects |
+| `brief` | Export e side effects / skill.invoke (actionGates) |
 | `elevation` | Publish público (se aplicável) |
+| `architecture` | Skills/side effects de agentes com `requires_gate: [architecture]` (+ export) |
 | `package` | Export completo |
 | `public_showcase` | `-Public` no showcase |
 

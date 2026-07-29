@@ -1,4 +1,4 @@
-#Requires -Version 5.1
+﻿#Requires -Version 5.1
 <#
 .SYNOPSIS
   Grava / resolve / limpa pending_interaction em journey.yaml e imprime payload para o agente.
@@ -134,9 +134,7 @@ if ($Resolve) {
     $resolvedChannel = if ($snap.channel) { $snap.channel } else { $Channel }
     $now = (Get-Date).ToUniversalTime().ToString('o')
 
-    $optsForBlock = Expand-OptionCommands -Options $(
-        if ($catalog.ContainsKey($pointKey)) { $catalog[$pointKey].options } else { $opts }
-    )
+    $optsForBlock = Expand-OptionCommands -Options $opts
 
     $block = Format-SkyPendingInteractionYaml -PointId $pointKey -Prompt $resolvedPrompt -Options $optsForBlock `
         -Status 'resolved' -Channel $resolvedChannel -ChoiceId $ChoiceId -ChoiceLabel $choiceLabel `

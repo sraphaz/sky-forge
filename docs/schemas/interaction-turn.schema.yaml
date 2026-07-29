@@ -36,6 +36,13 @@ properties:
           type: string
         command:
           type: string
+        sets:
+          type: string
+          description: >
+            Diretiva de sessão do catálogo (ex. policies.open_to_elevation=false),
+            persistida para Apply-SkyOptionSets no -Resolve.
+        requires_gate:
+          type: string
   channel:
     type: string
     enum: [ask_question, numbered_chat, cli]
@@ -61,6 +68,11 @@ allOf:
       required: [status]
     then:
       required: [resolved_at]
+      properties:
+        resolved_at:
+          type: string
+          format: date-time
+          minLength: 1
       anyOf:
         - required: [choice_id]
           properties:

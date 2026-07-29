@@ -163,26 +163,29 @@ if (Test-Path $linkFile) {
     }
 }
 
-$runAssess = $Assess -or -not $NoAssess
-
-# Só limpar pending herdado (arrival.intent) depois do attach/link bem-sucedido,
-# imediatamente antes do HITL pós-ação — evita sessão shape sem pergunta se o attach falhar no meio.
-. (Join-Path $PSScriptRoot 'interaction-catalog.ps1')
-if (Test-Path $journeyPath) {
-    Clear-SkyJourneyPendingInteraction -JourneyPath $journeyPath
+# Default: HITL brownfield.after_attach. Assess só com -Assess.
+# Documentado em SKY_INTERACT.md: attach → after_attach; assess → assess.next_action.
+if ($NoAssess) {
+    $runAssess = $false
+} elseif ($Assess) {
+    $runAssess = $true
+} else {
+    $runAssess = $false
 }
 
+# Nao limpar pending antecipadamente — Set-SkyJourneyPendingInteraction / assess
+# sobrescrevem arrival.intent so apos sucesso. Falha no meio preserva a pergunta anterior.
+$skyCli = Join-Path $PSScriptRoot 'sky.ps1'
 if ($runAssess) {
     Write-Host ""
     & (Join-Path $PSScriptRoot 'assess-platform.ps1') -Slug $Slug -WorkspacePath $workspace
 } else {
-    $interactScript = Join-Path $PSScriptRoot 'prompt-interaction.ps1'
-    if (-not (Test-Path $interactScript)) {
-        throw "HITL obrigatorio apos attach: script ausente ($interactScript)"
+    if (-not (Test-Path $skyCli)) {
+        throw "HITL obrigatorio apos attach: sky.ps1 ausente ($skyCli)"
     }
     Write-Host ""
     Write-Host "=== Proximo passo (interacao HITL) ===" -ForegroundColor Cyan
-    & $interactScript -Slug $Slug -PointId 'brownfield.after_attach' -WorkspacePath $workspace
+    & $skyCli interact -Slug $Slug -PointId 'brownfield.after_attach' -WorkspacePath $workspace
 }
 
 Write-Host ""

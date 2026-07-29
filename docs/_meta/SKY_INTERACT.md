@@ -71,7 +71,7 @@ Agente detecta decision_point
 
 | Fluxo | PointId gravado |
 |-------|-----------------|
-| `sky attach` (sucesso) | `brownfield.after_attach` |
+| `sky attach` (sucesso) | `brownfield.after_attach` (default; use `-Assess` para rodar assessment na hora) |
 | `sky assess` (sucesso) | `assess.next_action` |
 | `sky new-session` / intake | `arrival.intent` (em `next_suggested_actions` + pending opcional) |
 

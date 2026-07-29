@@ -1,4 +1,4 @@
-#Requires -Version 5.1
+﻿#Requires -Version 5.1
 param(
     [Parameter(Mandatory = $true)]
     [string]$Slug
@@ -146,11 +146,6 @@ pending_suggestions: []
 "@
         }
         if ($f -eq 'journey.yaml') {
-            . (Join-Path $PSScriptRoot 'interaction-catalog.ps1')
-            $arrival = (Get-SkyInteractionCatalog)['arrival.intent']
-            if (-not $arrival) { throw 'Catalogo sem arrival.intent — verifique .agents/interaction-points.yaml' }
-            $pendingBlock = Format-SkyPendingInteractionYaml -PointId 'arrival.intent' -Prompt $arrival.prompt `
-                -Options $arrival.options -Status 'pending' -Channel 'ask_question' -CreatedAt $now
             $content = @"
 version: "1.0"
 slug: $Slug
@@ -180,8 +175,6 @@ next_suggested_actions:
 
 notes: |
   Criado pelo sky-intake. sky-host conduz via sky-interact (AskQuestion ou fallback numerado).
-
-$pendingBlock
 "@
         }
         Set-Content -Path $dest -Value $content -Encoding UTF8 -NoNewline
@@ -194,5 +187,12 @@ if (Test-Path $maturityPath) {
     $m = $m -replace 'updated_at: "[^"]+"', "updated_at: `"$now`""
     Set-Content -Path $maturityPath -Value $m -Encoding UTF8 -NoNewline
 }
+
+# HITL arrival.intent via CLI auditado (apos base da sessao no disco)
+$skyCli = Join-Path $PSScriptRoot 'sky.ps1'
+if (-not (Test-Path $skyCli)) {
+    throw "sky.ps1 ausente para gravar arrival.intent: $skyCli"
+}
+& $skyCli interact -Slug $Slug -PointId 'arrival.intent'
 
 Write-Host "OK: sessao $Slug em $SessionDir"

@@ -8,21 +8,52 @@
 function Escape-SkyYamlDoubleQuoted {
     param([AllowNull()][string]$Text)
     if ($null -eq $Text) { return '' }
-    $t = $Text -replace '\\', '\\'
-    $t = $t -replace '"', '\"'
-    $t = $t -replace "`r`n", '\n'
-    $t = $t -replace "`n", '\n'
-    $t = $t -replace "`r", '\n'
+    # String.Replace — um '\' vira '\\' no scalar YAML entre aspas duplas
+    $t = $Text.Replace('\', '\\')
+    $t = $t.Replace('"', '\"')
+    $t = $t.Replace("`r`n", '\n').Replace("`n", '\n').Replace("`r", '\n')
     return $t
 }
 
 function Unescape-SkyYamlDoubleQuoted {
     param([AllowNull()][string]$Text)
     if ($null -eq $Text) { return '' }
-    $t = $Text -replace '\\n', "`n"
-    $t = $t -replace '\\"', '"'
-    $t = $t -replace '\\\\', '\'
-    return $t
+    # Passo unico L→R: \\n nao vira newline apos expandir \\
+    $sb = New-Object System.Text.StringBuilder
+    $chars = $Text.ToCharArray()
+    $i = 0
+    while ($i -lt $chars.Length) {
+        if ($chars[$i] -eq '\' -and ($i + 1) -lt $chars.Length) {
+            $next = $chars[$i + 1]
+            if ($next -eq 'n') { [void]$sb.Append("`n"); $i += 2; continue }
+            if ($next -eq '"') { [void]$sb.Append('"'); $i += 2; continue }
+            if ($next -eq '\') { [void]$sb.Append('\'); $i += 2; continue }
+        }
+        [void]$sb.Append($chars[$i])
+        $i++
+    }
+    return $sb.ToString()
+}
+
+function Skip-SkyYamlTopLevelKeyBlock {
+    <#
+    .SYNOPSIS
+      Avanca o indice apos um bloco YAML top-level (chave + linhas indentadas).
+    #>
+    param(
+        [Parameter(Mandatory = $true)][string[]]$Lines,
+        [Parameter(Mandatory = $true)][int]$Index
+    )
+    $i = $Index + 1
+    while ($i -lt $Lines.Count -and ($Lines[$i] -match '^\s' -or $Lines[$i] -match '^\s*$')) {
+        if ($Lines[$i] -match '^\s*$') {
+            $j = $i + 1
+            while ($j -lt $Lines.Count -and $Lines[$j] -match '^\s*$') { $j++ }
+            if ($j -lt $Lines.Count -and $Lines[$j] -match '^[a-zA-Z_]') { break }
+        }
+        $i++
+    }
+    return $i
 }
 
 function ConvertFrom-SkyInteractionPointsYaml {
@@ -273,22 +304,42 @@ function Resolve-SkyInteractStage {
     )
     if ($Explicit) { return $Explicit }
     $approvals = Join-Path $SessionDir 'approvals.yaml'
+    $order = @('brief', 'elevation', 'architecture', 'package', 'public_showcase')
     if (-not (Test-Path $approvals)) {
         return 'brief'
     }
     $raw = Get-Content $approvals -Raw
-    foreach ($s in @('brief', 'elevation', 'architecture', 'package', 'public_showcase')) {
-        if ($raw -notmatch "(?m)^\s*${s}\s*:") {
-            return $s
-        }
+    # Isolar bloco stages: — nao confundir com outras chaves homonimas
+    $stagesBlock = $raw
+    if ($raw -match '(?ms)^stages:\s*\r?\n(.*?)(?=^[a-z_][a-z0-9_]*:\s*$|\z)') {
+        $stagesBlock = $Matches[1]
     }
-    return 'package'
+    foreach ($s in $order) {
+        $approved = $false
+        if ($stagesBlock -match "(?m)^\s+$([regex]::Escape($s)):\s*(.+)$") {
+            $val = $Matches[1].Trim().Trim('"').Trim("'")
+            # approve-stage.ps1 grava timestamp ISO; legado pode usar "approved …"
+            if ($val -match 'approved' -or $val -match '\d{4}-\d{2}-\d{2}T') {
+                $approved = $true
+            }
+        }
+        if (-not $approved) { return $s }
+    }
+    # Todos aprovados — ultimo stage da fila (nao default "package")
+    return 'public_showcase'
 }
 
 function Get-SkyMaturityTopGapOptions {
     param([Parameter(Mandatory = $true)][string]$MaturityPath)
     if (-not (Test-Path $MaturityPath)) { return @() }
     $raw = Get-Content $MaturityPath -Raw
+    # Isolar bloco dimensions: para nao ancorar em weights.<dim>
+    $dimsSection = $null
+    if ($raw -match '(?ms)^dimensions:\s*\r?\n(.*?)(?=^[a-z_][a-z0-9_]*:\s*$|\z)') {
+        $dimsSection = $Matches[1]
+    }
+    if (-not $dimsSection) { return @() }
+
     $dimOrder = @('business', 'product', 'ux_design', 'technical', 'sustainability', 'elevation')
     $labels = @{
         business = 'Negócio'
@@ -300,12 +351,19 @@ function Get-SkyMaturityTopGapOptions {
     }
     $scored = @()
     foreach ($dim in $dimOrder) {
+        $block = $null
+        # Indent do nome da dimensao; propriedades devem ser mais indentadas (nao o proximo dim)
+        $dimPat = "(?ms)^([ \t]+)$([regex]::Escape($dim)):\s*\r?\n((?:^\1[ \t]+.+\r?\n)*)"
+        if ($dimsSection -match $dimPat) {
+            $block = $Matches[2]
+        }
+        if (-not $block) { continue }
         $score = 1.0
-        if ($raw -match "(?ms)^\s+$dim`:\s*\r?\n(?:.*?\r?\n)*?\s+score:\s*([0-9.]+)") {
+        if ($block -match '(?m)^\s+score:\s*([0-9.]+)') {
             $score = [double]$Matches[1]
         }
         $gap = $null
-        if ($raw -match "(?ms)^\s+$dim`:\s*\r?\n(?:.*?\r?\n)*?\s+gaps:\s*\[([^\]]*)\]") {
+        if ($block -match '(?m)^\s+gaps:\s*\[([^\]]*)\]') {
             $inner = $Matches[1]
             if ($inner -match '"([^"]+)"') { $gap = $Matches[1] }
             elseif ($inner -match "'([^']+)'") { $gap = $Matches[1] }
@@ -421,6 +479,9 @@ function Format-SkyPendingInteractionYaml {
             $sets = Escape-SkyYamlDoubleQuoted $opt.sets
             [void]$sb.AppendLine("      sets: `"$sets`"")
         }
+        if ($opt.requires_gate) {
+            [void]$sb.AppendLine("      requires_gate: $($opt.requires_gate)")
+        }
     }
     return $sb.ToString().TrimEnd()
 }
@@ -442,27 +503,11 @@ function Set-SkyJourneyPendingInteraction {
     while ($i -lt $lines.Count) {
         $line = $lines[$i]
         if ($line -match '^pending_interaction\s*:') {
-            $i++
-            while ($i -lt $lines.Count -and ($lines[$i] -match '^\s' -or $lines[$i] -match '^\s*$')) {
-                if ($lines[$i] -match '^\s*$') {
-                    $j = $i + 1
-                    while ($j -lt $lines.Count -and $lines[$j] -match '^\s*$') { $j++ }
-                    if ($j -lt $lines.Count -and $lines[$j] -match '^[a-zA-Z_]') { break }
-                }
-                $i++
-            }
+            $i = Skip-SkyYamlTopLevelKeyBlock -Lines $lines -Index $i
             continue
         }
         if ($line -match '^next_suggested_actions\s*:' -and $ReplaceNextActions -and $NextActionsYamlLines.Count -gt 0) {
-            $i++
-            while ($i -lt $lines.Count -and ($lines[$i] -match '^\s' -or $lines[$i] -match '^\s*$')) {
-                if ($lines[$i] -match '^\s*$') {
-                    $j = $i + 1
-                    while ($j -lt $lines.Count -and $lines[$j] -match '^\s*$') { $j++ }
-                    if ($j -lt $lines.Count -and $lines[$j] -match '^[a-zA-Z_]') { break }
-                }
-                $i++
-            }
+            $i = Skip-SkyYamlTopLevelKeyBlock -Lines $lines -Index $i
             $out.Add('next_suggested_actions:')
             foreach ($l in $NextActionsYamlLines) { $out.Add($l) }
             $out.Add('')
@@ -514,15 +559,7 @@ function Clear-SkyJourneyPendingInteraction {
     while ($i -lt $lines.Count) {
         $line = $lines[$i]
         if ($line -match '^pending_interaction\s*:') {
-            $i++
-            while ($i -lt $lines.Count -and ($lines[$i] -match '^\s' -or $lines[$i] -match '^\s*$')) {
-                if ($lines[$i] -match '^\s*$') {
-                    $j = $i + 1
-                    while ($j -lt $lines.Count -and $lines[$j] -match '^\s*$') { $j++ }
-                    if ($j -lt $lines.Count -and $lines[$j] -match '^[a-zA-Z_]') { break }
-                }
-                $i++
-            }
+            $i = Skip-SkyYamlTopLevelKeyBlock -Lines $lines -Index $i
             continue
         }
         if ($line -match '^updated_at:') {

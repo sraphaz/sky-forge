@@ -1,4 +1,4 @@
-#Requires -Version 5.1
+﻿#Requires -Version 5.1
 <#
 .SYNOPSIS
   CLI principal do Sky-Forge.
@@ -360,6 +360,9 @@ switch ($Command) {
         }
     }
     'attach' {
+        if ($Assess -and $NoAssess) {
+            throw 'attach: nao combine -Assess e -NoAssess'
+        }
         $attachArgs = @{}
         if ($Slug) { $attachArgs.Slug = $Slug }
         if ($WorkspacePath) { $attachArgs.WorkspacePath = $WorkspacePath }
@@ -389,18 +392,32 @@ switch ($Command) {
     }
     'interact' {
         if (-not $Slug) { throw 'interact requires -Slug' }
+        if ($Clear -and $Resolve) {
+            throw 'interact: nao combine -Clear e -Resolve'
+        }
+        if ($Clear) {
+            if ($ChoiceId) { throw 'interact -Clear nao aceita -ChoiceId' }
+            if ($PointId) { throw 'interact -Clear nao aceita -PointId' }
+            if ($Prompt) { throw 'interact -Clear nao aceita -Prompt' }
+        }
+        elseif ($Resolve) {
+            if ($Prompt) { throw 'interact -Resolve nao aceita -Prompt' }
+            if (-not $ChoiceId) { throw 'interact -Resolve requires -ChoiceId' }
+        }
+        else {
+            if (-not $PointId) { throw 'interact requires -PointId (ou -Clear / -Resolve)' }
+            if ($ChoiceId) { throw 'interact com -PointId nao aceita -ChoiceId (use -Resolve)' }
+        }
         $iArgs = @{ Slug = $Slug }
         if ($WorkspacePath) { $iArgs.WorkspacePath = $WorkspacePath }
         if ($Stage) { $iArgs.Stage = $Stage }
         if ($Clear) { $iArgs.Clear = $true }
         elseif ($Resolve) {
             $iArgs.Resolve = $true
-            if (-not $ChoiceId) { throw 'interact -Resolve requires -ChoiceId' }
             $iArgs.ChoiceId = $ChoiceId
             if ($PointId) { $iArgs.PointId = $PointId }
         }
         else {
-            if (-not $PointId) { throw 'interact requires -PointId (ou -Clear / -Resolve)' }
             $iArgs.PointId = $PointId
             if ($Prompt) { $iArgs.Prompt = $Prompt }
         }

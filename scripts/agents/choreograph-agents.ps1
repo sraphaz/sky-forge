@@ -1,4 +1,4 @@
-#Requires -Version 5.1
+﻿#Requires -Version 5.1
 <#
 .SYNOPSIS
   Resolve coreografia Sky-Forge: agentes, autonomia, skills e gates.
