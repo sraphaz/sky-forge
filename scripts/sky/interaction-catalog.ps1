@@ -1,4 +1,4 @@
-#Requires -Version 5.1
+﻿#Requires -Version 5.1
 <#
 .SYNOPSIS
   Catálogo de pontos de interação — fonte: .agents/interaction-points.yaml
