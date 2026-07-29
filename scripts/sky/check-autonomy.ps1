@@ -50,11 +50,18 @@ $approvalsPath = Join-Path $RepoRoot ".sky\sessions\$Slug\approvals.yaml"
 $gateStatus = @{}
 if (Test-Path $approvalsPath) {
     $ap = Get-Content $approvalsPath -Raw
+    $stagesBlock = $ap
+    if ($ap -match '(?ms)^stages:\s*\r?\n(.*?)(?=^[a-zA-Z_][a-zA-Z0-9_]*:\s*$|\z)') {
+        $stagesBlock = $Matches[1]
+    }
     foreach ($g in $gates) {
-        if ($ap -match "(?m)^\s+$([regex]::Escape($g)):\s*(approved|\d{4}-\d{2})") {
-            $gateStatus[$g] = $true
-        } elseif ($ap -match "(?m)^\s+$([regex]::Escape($g)):\s*\S+") {
-            $gateStatus[$g] = $true
+        if ($stagesBlock -match "(?m)^\s+$([regex]::Escape($g)):\s*(.+)$") {
+            $gateValue = $Matches[1].Trim().Trim('"').Trim("'")
+            if ($gateValue -match '^approved(?:\s|$)' -or $gateValue -match '^\d{4}-\d{2}-\d{2}T') {
+                $gateStatus[$g] = $true
+            } else {
+                $gateStatus[$g] = $false
+            }
         } else {
             $gateStatus[$g] = $false
         }

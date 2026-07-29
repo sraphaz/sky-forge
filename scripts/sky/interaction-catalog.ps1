@@ -393,12 +393,20 @@ function Apply-SkyOptionSets {
         $key = $Matches[1]
         $val = $Matches[2].Trim()
         $merits = Join-Path $SessionDir 'sky-merits.yaml'
-        if (-not (Test-Path $merits)) { return }
+        if (-not (Test-Path $merits)) {
+            throw "sky-merits.yaml nao encontrado para aplicar $Sets"
+        }
         $raw = Get-Content $merits -Raw
+        $updated = $false
         if ($raw -match "(?m)^(\s+)$([regex]::Escape($key)):\s*.+$") {
             $raw = [regex]::Replace($raw, "(?m)^(\s+)$([regex]::Escape($key)):\s*.+$", "`${1}${key}: $val")
+            $updated = $true
         } elseif ($raw -match '(?m)^policies\s*:') {
             $raw = [regex]::Replace($raw, '(?m)^(policies\s*:)', "`$1`r`n  ${key}: $val")
+            $updated = $true
+        }
+        if (-not $updated) {
+            throw "Bloco policies ausente em sky-merits.yaml para aplicar $Sets"
         }
         Set-Content -Path $merits -Value $raw -Encoding UTF8
         Write-Host "OK: policies.$key = $val (sky-merits.yaml)" -ForegroundColor DarkCyan

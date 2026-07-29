@@ -141,12 +141,13 @@ if ($Resolve) {
         -CreatedAt $createdAt -ResolvedAt $now
 
     $nextLines = Format-SkyOptionNextActionLines -Option $match -Slug $Slug -Workspace $workspace -Stage $stageVal
-    Set-SkyJourneyPendingInteraction -JourneyPath $journeyPath -PendingYamlBlock $block `
-        -NextActionsYamlLines $nextLines -ReplaceNextActions
 
     if ($match.sets) {
         Apply-SkyOptionSets -SessionDir $sessionDir -Sets $match.sets
     }
+
+    Set-SkyJourneyPendingInteraction -JourneyPath $journeyPath -PendingYamlBlock $block `
+        -NextActionsYamlLines $nextLines -ReplaceNextActions
 
     if (-not $NoAudit -and (Test-Path $rec)) {
         & $rec -Slug $Slug -AgentId 'sky-host' -Action 'human.interaction.answered' -Outcome 'ok' `

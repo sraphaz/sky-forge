@@ -202,11 +202,22 @@ switch ($Command) {
         }
         $check = Join-Path $PSScriptRoot 'check-autonomy.ps1'
         if (Test-Path $check) {
-            & $check -Slug $Slug -AgentId 'delivery-steward' -Action 'export.package' -ErrorAction SilentlyContinue
-            if ($LASTEXITCODE -eq 1 -and -not $Force) {
-                Write-Host "Export bloqueado — aprove gate package ou use -Force com consciencia." -ForegroundColor Yellow
-                Invoke-AgentAudit $Slug 'delivery-steward' 'export.package' 'side_effect' 'blocked' 'gate package'
-                throw 'autonomy gate package'
+            $checkRaw = & $check -Slug $Slug -AgentId 'delivery-steward' -Action 'export.package' -Json -ErrorAction SilentlyContinue
+            $checkExitCode = $LASTEXITCODE
+            $checkInfo = $null
+            if ($checkRaw) {
+                $checkInfo = $checkRaw | ConvertFrom-Json
+            }
+            if ($checkExitCode -eq 1 -and -not $Force) {
+                $blockingGates = @()
+                if ($checkInfo -and $checkInfo.gates_blocking) {
+                    $blockingGates = @($checkInfo.gates_blocking | Where-Object { -not [string]::IsNullOrWhiteSpace($_) })
+                }
+                if ($blockingGates.Count -eq 0) { $blockingGates = @('package') }
+                $gateList = $blockingGates -join ', '
+                Write-Host "Export bloqueado — aprove os gates pendentes: $gateList ou use -Force com consciencia." -ForegroundColor Yellow
+                Invoke-AgentAudit $Slug 'delivery-steward' 'export.package' 'side_effect' 'blocked' "gates $gateList"
+                throw "autonomy gate $gateList"
             }
         }
         $validateArgs = @{ Slug = $Slug; Completeness = $Completeness }
