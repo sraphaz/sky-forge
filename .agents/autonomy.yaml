@@ -72,5 +72,8 @@ actions:
   - human.gate.requested
   - human.gate.approved
   - human.gate.denied
+  - human.interaction.requested
+  - human.interaction.answered
+  - human.interaction.cleared
   - choreography.resolve
   - autonomy.blocked

@@ -15,6 +15,7 @@ skills:
   - sky-intake
   - sky-approve
   - sky-elevate
+  - sky-interact
   - sky-rag-query
 domain_consults:
   - sky-elevator
@@ -47,6 +48,11 @@ elicitation:
     - invite_elevation_when_open_to_elevation
     - never_skip_business_minimum
     - handoff_to_delivery_when_readiness_partial
+    - prefer_ask_question_on_decision_points
+  interaction_points:
+    - intake.deepen_gap
+    - elevate.confirm
+    - assess.next_action
 guardrails:
   no_confirmed_requirements_without_user_ok: true
   respect_elevation_policy: true

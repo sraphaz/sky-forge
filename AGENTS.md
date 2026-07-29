@@ -75,6 +75,7 @@ Chegada (sky-host) → intake-conductor (conversa)
 | `sky-intake` | Sessão conversacional |
 | `sky-elevate` | Índices SKY + UX + humanity_connections |
 | `sky-approve` | Human gates |
+| `sky-interact` | HITL no Cursor (AskQuestion + fallback) |
 | `sky-plan` | Pipeline batch (C4 + jornadas + craft) |
 | `sky-c4-model` | C4 três níveis + domínios |
 | `sky-journey-sequences` | Sequências + context-flow |
@@ -123,6 +124,8 @@ Docs: [PROFILES.md](docs/_meta/PROFILES.md) · [PLUGINS.md](docs/_meta/PLUGINS.m
 ./scripts/sky/sky.ps1 link -Slug <slug> -WorkspacePath <app-repo> [-PullSpec]
 ./scripts/sky/sky.ps1 attach -WorkspacePath <brownfield-repo>   # host plugin
 ./scripts/sky/sky.ps1 assess -Slug <slug> -WorkspacePath <repo>
+./scripts/sky/sky.ps1 interact -Slug <slug> -PointId arrival.intent
+./scripts/sky/sky.ps1 interact -Slug <slug> -Resolve -ChoiceId <option-id>
 ./scripts/sky/sky.ps1 pull-spec -Slug <slug>
 ./scripts/sky/sky.ps1 publish -Slug <slug> -Public
 ./scripts/sky/sky.ps1 showcase
@@ -134,7 +137,7 @@ Docs: [PROFILES.md](docs/_meta/PROFILES.md) · [PLUGINS.md](docs/_meta/PLUGINS.m
 
 Autonomia e auditoria: [AGENT_AUTONOMY.md](docs/_meta/AGENT_AUTONOMY.md) · [AGENT_OBSERVABILITY.md](docs/_meta/AGENT_OBSERVABILITY.md)
 
-Jornada UX: [USER_JOURNEY.md](docs/_meta/USER_JOURNEY.md) · Outputs externos: [OUTPUTS_AND_SHOWCASE.md](docs/_meta/OUTPUTS_AND_SHOWCASE.md)
+Jornada UX: [USER_JOURNEY.md](docs/_meta/USER_JOURNEY.md) · Interatividade HITL: [SKY_INTERACT.md](docs/_meta/SKY_INTERACT.md) · Outputs externos: [OUTPUTS_AND_SHOWCASE.md](docs/_meta/OUTPUTS_AND_SHOWCASE.md)
 
 Compat: `./scripts/forge/forge.ps1` delega para `sky.ps1`.
 

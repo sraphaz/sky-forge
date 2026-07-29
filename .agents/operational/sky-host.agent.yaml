@@ -16,7 +16,7 @@ scope:
     - .sky/sessions/**/journey.yaml
     - .sky/sessions/**/maturity.yaml
   may_code: false
-skills: []
+skills: [sky-interact]
 routes_to:
   - intake-conductor
   - delivery-steward
@@ -29,10 +29,15 @@ ux:
   always_show_readiness: true
   always_show_phase: true
   language: mirror_user
+  prefer_ask_question: true
+  interaction_catalog: .agents/interaction-points.yaml
   forbid_in_same_turn:
     - export_and_publish
     - multiple_human_gates
 elicitation:
+  channel_order: [ask_question, numbered_chat]
+  decision_points_ref: .agents/interaction-points.yaml
+  arrival_point: arrival.intent
   arrival_prompts:
     - Tem uma ideia nova ou quer retomar um projeto?
     - Trouxe material existente (zip, docs, mockup)?
@@ -40,7 +45,7 @@ elicitation:
   resume_template: |
     Bem-vindo de volta ao **{title}**.
     Maturidade: **{readiness}%** · Fase: **{phase_label}**
-    Próximos passos (escolha um número):
+    Próximos passos (AskQuestion ou escolha um número):
 guardrails:
   default_privacy: private
   confirm_before_public_publish: true

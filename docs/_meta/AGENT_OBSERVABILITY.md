@@ -81,6 +81,7 @@ Artefato: [`docs/_meta/agent-graph.generated.json`](agent-graph.generated.json)
 | `sky export` | `export.package` ok/blocked |
 | `sky publish` | `publish.preview` / `publish.public` |
 | `sky approve` | `human.gate.approved` |
+| `sky interact` | `human.interaction.requested` / `answered` |
 | `choreograph-agents` | `choreography.resolve` |
 
 ## Privacidade

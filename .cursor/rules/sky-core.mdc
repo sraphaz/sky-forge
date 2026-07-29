@@ -10,6 +10,7 @@ Leia [AGENTS.md](../../AGENTS.md) e [SKY_MERIT_INDICES.md](../../docs/_meta/SKY_
 
 - Sessoes em `.sky/sessions/{slug}/`
 - Experiencia: **sky-host** — [USER_JOURNEY.md](../../docs/_meta/USER_JOURNEY.md)
+- Interatividade HITL: skill **sky-interact** — [SKY_INTERACT.md](../../docs/_meta/SKY_INTERACT.md) · AskQuestion no Cursor
 - Intake: [INTAKE_PROTOCOL.md](../../docs/_meta/INTAKE_PROTOCOL.md)
 - Elevação: consultar `sky-elevator`; respeitar `sky-merits.yaml` → `policies`
 - UX: `ux-design-specialist` — WCAG AA, tokens, baixa excitação

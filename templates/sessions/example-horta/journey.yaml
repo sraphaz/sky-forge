@@ -20,6 +20,29 @@ next_suggested_actions:
   - id: check_status
     label: Ver maturidade atual
     command: ./scripts/sky/sky.ps1 status -Slug example-horta
+  - id: deepen_gap
+    label: Escolher lacuna para aprofundar (HITL)
+    command: ./scripts/sky/sky.ps1 interact -Slug example-horta -PointId intake.deepen_gap
+
+pending_interaction:
+  id: intake.deepen_gap
+  status: pending
+  channel: ask_question
+  created_at: null
+  resolved_at: null
+  choice_id: null
+  choice_label: null
+  prompt: "Qual lacuna quer aprofundar agora?"
+  options:
+    - id: business
+      label: "Negócio / problema / stakeholders"
+    - id: product
+      label: "Produto / jornadas / requisitos"
+    - id: ux
+      label: "UX / acessibilidade"
+    - id: something_else
+      label: "Outra coisa (vou digitar)"
 
 notes: |
   Atualizado pelo sky-host ou especialista ativo a cada handoff.
+  pending_interaction: skill sky-interact (AskQuestion ou fallback numerado).

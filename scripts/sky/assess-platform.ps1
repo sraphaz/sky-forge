@@ -191,3 +191,17 @@ Write-Host "  stacks: $stackNames | gaps: $($gaps.Count)"
 if ($gaps.Count -gt 0) {
     $gaps | ForEach-Object { Write-Host "    - $_" -ForegroundColor DarkYellow }
 }
+
+# HITL: gravar pending_interaction para o agente Cursor (AskQuestion / fallback)
+$interactScript = Join-Path $PSScriptRoot 'prompt-interaction.ps1'
+if (Test-Path $interactScript) {
+    $topGap = if ($gaps.Count -gt 0) { $gaps[0] } else { $null }
+    $promptOverride = if ($topGap) {
+        "Assessment pronto (principal lacuna: $topGap). O que prefere agora?"
+    } else {
+        'Assessment pronto. O que prefere agora?'
+    }
+    Write-Host ""
+    Write-Host "=== Proximo passo (interacao HITL) ===" -ForegroundColor Cyan
+    & $interactScript -Slug $Slug -PointId 'assess.next_action' -Prompt $promptOverride -ErrorAction SilentlyContinue
+}

@@ -167,6 +167,13 @@ $runAssess = $Assess -or -not $NoAssess
 if ($runAssess) {
     Write-Host ""
     & (Join-Path $PSScriptRoot 'assess-platform.ps1') -Slug $Slug -WorkspacePath $workspace
+} else {
+    $interactScript = Join-Path $PSScriptRoot 'prompt-interaction.ps1'
+    if (Test-Path $interactScript) {
+        Write-Host ""
+        Write-Host "=== Proximo passo (interacao HITL) ===" -ForegroundColor Cyan
+        & $interactScript -Slug $Slug -PointId 'brownfield.after_attach' -ErrorAction SilentlyContinue
+    }
 }
 
 Write-Host ""
@@ -179,3 +186,4 @@ Write-Host "  ./scripts/sky.ps1 status"
 Write-Host "  ./scripts/sky.ps1 assess"
 Write-Host ""
 Write-Host "Intake/evolucao: converse com sky-host no Cursor (profile $Profile)."
+Write-Host "Interacao: se o agente Cursor tiver AskQuestion, use o pending_interaction do journey.yaml."

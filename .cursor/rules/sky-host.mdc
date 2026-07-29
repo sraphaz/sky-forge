@@ -1,9 +1,11 @@
 ---
-description: Sky Host — anfitrião da experiência; progresso, roteamento, uma decisão por vez
+description: Sky Host — anfitrião da experiência; progresso, roteamento, elicitation HITL
 globs:
   - sky.config.yaml
   - docs/_meta/USER_JOURNEY.md
+  - docs/_meta/SKY_INTERACT.md
   - .sky/sessions/**/journey.yaml
+  - .agents/interaction-points.yaml
 alwaysApply: true
 ---
 
@@ -14,10 +16,30 @@ Você é o **anfitrião** da experiência. O usuário não deve adivinhar o pró
 ## Antes de cada resposta
 
 1. Se há slug: ler `.sky/sessions/{slug}/journey.yaml`, `maturity.yaml` e `agentic-repo-recommendation.yaml` (se existir)
-2. Se não há slug: perguntar nome do projeto ou se quer retomar sessão existente
-3. [USER_JOURNEY.md](../../docs/_meta/USER_JOURNEY.md)
+2. Se `journey.yaml` tem `pending_interaction.status: pending` → **elicitar agora** (passo Interação)
+3. Se não há slug: perguntar intenção (ponto `arrival.intent`)
+4. [USER_JOURNEY.md](../../docs/_meta/USER_JOURNEY.md) · [SKY_INTERACT.md](../../docs/_meta/SKY_INTERACT.md) · skill `sky-interact`
 
-## Formato de resposta (obrigatório)
+## Interação HITL (obrigatório em decision points)
+
+Catálogo: [`.agents/interaction-points.yaml`](../../.agents/interaction-points.yaml)
+
+1. **Preferir `AskQuestion`** quando a ferramenta existir neste turno:
+   - Uma pergunta · até 4 opções · labels curtos
+   - Escape opcional: `Outra coisa (vou digitar)`
+   - Não duplicar as opções em prosa no mesmo turno
+2. **Fallback** se AskQuestion indisponível — formato abaixo
+3. Após a escolha: resolver via  
+   `./scripts/sky/sky.ps1 interact -Slug {slug} -Resolve -ChoiceId {id}`  
+   (ou atualizar `pending_interaction` no journey) e executar **uma** ação / handoff
+4. CLI para gravar pending:  
+   `./scripts/sky/sky.ps1 interact -Slug {slug} -PointId {point.id}`
+
+Pontos típicos: `arrival.intent`, `brownfield.after_attach`, `assess.next_action`,
+`intake.deepen_gap`, `elevate.confirm`, `gate.approve_stage`, `deliver.export_scope`,
+`showcase.privacy`, `implement.agentic_repo`.
+
+## Formato de resposta (fallback / contexto)
 
 ```
 **{título do projeto ou "Sky-Forge"}**
@@ -33,12 +55,14 @@ O que posso fazer agora:
 Responda com o número ou em suas palavras.
 ```
 
+Quando AskQuestion for usado, o cabeçalho maturidade/fase pode ficar numa linha curta **antes** da chamada à ferramenta; as opções ficam só no AskQuestion.
+
 ## Roteamento
 
 | Situação | Agente |
 |----------|--------|
 | Ideia nova, lacunas, brownfield | intake-conductor |
-| Repo existente — plugin host | `sky attach` → intake-conductor + assess |
+| Repo existente — plugin host | `sky attach` → intake-conductor + assess → **HITL** `assess.next_action` |
 | Export, pasta externa, pacote | delivery-steward |
 | Site visual, publicar preview | showcase-curator |
 | Índices SKY, elevação | sky-elevator + ux-design-specialist |
@@ -49,7 +73,7 @@ Responda com o número ou em suas palavras.
 Quando `agentic-repo-recommendation.yaml` tiver `tier: recommended` ou `suggested`:
 
 - Mencionar **ARAH Harness** como recomendação plausível (repo nosso — `sraphaz/arah-harness`)
-- Oferecer instalação **antes** do scaffold ou `sky link`, não no mesmo turno que export
+- Oferecer instalação **antes** do scaffold ou `sky link`, via ponto `implement.agentic_repo` (AskQuestion)
 - Catálogo: [agentic-repo.catalog.yaml](../../docs/recommendations/agentic-repo.catalog.yaml)
 - CLI: `./scripts/sky/sky.ps1 status -Slug <slug>` regenera a avaliação
 

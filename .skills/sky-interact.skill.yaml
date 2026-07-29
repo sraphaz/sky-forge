@@ -1,0 +1,21 @@
+id: sky-interact
+name: Sky Interact
+description: >
+  Elicitação HITL no Cursor — AskQuestion (UI) com fallback numerado;
+  grava pending_interaction em journey.yaml.
+inputs:
+  slug: kebab-case
+  point_id: id em .agents/interaction-points.yaml
+steps:
+  - read: .agents/interaction-points.yaml
+  - read: docs/_meta/SKY_INTERACT.md
+  - read: .sky/sessions/{slug}/journey.yaml
+  - script: scripts/sky/prompt-interaction.ps1 -Slug {slug} -PointId {point_id}
+  - agent: >
+      Pausar. Preferir ferramenta AskQuestion com prompt/options do ponto.
+      Se indisponível, opções numeradas (sky-host). Após escolha, resolver
+      pending_interaction e rotear.
+guardrails:
+  one_question_per_turn: true
+  max_options: 4
+  never_stack_with: [export_and_publish, multiple_human_gates]

@@ -25,6 +25,8 @@ Fonte: [`.agents/autonomy.yaml`](../../.agents/autonomy.yaml)
 | `package` | Export completo |
 | `public_showcase` | `-Public` no showcase |
 
+Elicitação de “aprovar agora?” usa o ponto `gate.approve_stage` ([SKY_INTERACT.md](SKY_INTERACT.md)); a aprovação efetiva continua em:
+
 ```powershell
 ./scripts/sky/sky.ps1 approve -Slug <slug> -Stage package
 ./scripts/sky/sky.ps1 approve -Slug <slug> -Stage public_showcase

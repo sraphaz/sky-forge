@@ -9,7 +9,7 @@
 [CmdletBinding()]
 param(
     [Parameter(Position = 0, Mandatory = $true)]
-    [ValidateSet('intake', 'status', 'approve', 'run', 'validate', 'export', 'elevate', 'benchmark', 'publish', 'sync', 'showcase', 'agents', 'audit', 'choreograph', 'architect', 'link', 'link-sync', 'pull-spec', 'integrate-dc', 'visualize', 'attach', 'assess', 'seed-roadmap')]
+    [ValidateSet('intake', 'status', 'approve', 'run', 'validate', 'export', 'elevate', 'benchmark', 'publish', 'sync', 'showcase', 'agents', 'audit', 'choreograph', 'architect', 'link', 'link-sync', 'pull-spec', 'integrate-dc', 'visualize', 'attach', 'assess', 'seed-roadmap', 'interact')]
     [string]$Command,
 
     [Parameter()]
@@ -80,7 +80,19 @@ param(
 
     [Parameter()]
     [ValidateSet('standard', 'showcase')]
-    [string]$Quality = 'standard'
+    [string]$Quality = 'standard',
+
+    [Parameter()]
+    [string]$PointId,
+
+    [Parameter()]
+    [string]$ChoiceId,
+
+    [Parameter()]
+    [switch]$Clear,
+
+    [Parameter()]
+    [switch]$Resolve
 )
 
 $ErrorActionPreference = 'Stop'
@@ -363,5 +375,21 @@ switch ($Command) {
         if ($Force) { $seedArgs.Force = $true }
         & (Join-Path $PSScriptRoot 'seed-evolution-roadmap.ps1') @seedArgs
         Invoke-AgentAudit $Slug 'solutions-architect' 'platform.seed_roadmap' 'invoke_skill' 'ok'
+    }
+    'interact' {
+        if (-not $Slug) { throw 'interact requires -Slug' }
+        $iArgs = @{ Slug = $Slug }
+        if ($Clear) { $iArgs.Clear = $true }
+        elseif ($Resolve) {
+            $iArgs.Resolve = $true
+            if (-not $ChoiceId) { throw 'interact -Resolve requires -ChoiceId' }
+            $iArgs.ChoiceId = $ChoiceId
+            if ($PointId) { $iArgs.PointId = $PointId }
+        }
+        else {
+            if (-not $PointId) { throw 'interact requires -PointId (ou -Clear / -Resolve)' }
+            $iArgs.PointId = $PointId
+        }
+        & (Join-Path $PSScriptRoot 'prompt-interaction.ps1') @iArgs
     }
 }
