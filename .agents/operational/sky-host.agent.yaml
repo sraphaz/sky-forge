@@ -38,10 +38,8 @@ elicitation:
   channel_order: [ask_question, numbered_chat]
   decision_points_ref: .agents/interaction-points.yaml
   arrival_point: arrival.intent
-  arrival_prompts:
-    - Tem uma ideia nova ou quer retomar um projeto?
-    - Trouxe material existente (zip, docs, mockup)?
-    - Quer ver o que já foi feito visualmente?
+  # Uma decisão por turno — prompt/opções vêm do catálogo (arrival.intent)
+  arrival_prompts_ref: arrival.intent
   resume_template: |
     Bem-vindo de volta ao **{title}**.
     Maturidade: **{readiness}%** · Fase: **{phase_label}**

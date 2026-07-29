@@ -132,7 +132,7 @@ points:
     phase: any
     agent: sky-host
     skill: sky-interact
-    when: Ação bloqueada por human gate (brief|architecture|package|public_showcase)
+    when: Ação bloqueada por human gate (brief|elevation|architecture|package|public_showcase)
     prompt: Há um gate humano pendente. Como seguir?
     options:
       - id: approve

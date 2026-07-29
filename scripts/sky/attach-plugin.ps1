@@ -173,11 +173,12 @@ if ($runAssess) {
     & (Join-Path $PSScriptRoot 'assess-platform.ps1') -Slug $Slug -WorkspacePath $workspace
 } else {
     $interactScript = Join-Path $PSScriptRoot 'prompt-interaction.ps1'
-    if (Test-Path $interactScript) {
-        Write-Host ""
-        Write-Host "=== Proximo passo (interacao HITL) ===" -ForegroundColor Cyan
-        & $interactScript -Slug $Slug -PointId 'brownfield.after_attach' -ErrorAction SilentlyContinue
+    if (-not (Test-Path $interactScript)) {
+        throw "HITL obrigatorio apos attach: script ausente ($interactScript)"
     }
+    Write-Host ""
+    Write-Host "=== Proximo passo (interacao HITL) ===" -ForegroundColor Cyan
+    & $interactScript -Slug $Slug -PointId 'brownfield.after_attach'
 }
 
 Write-Host ""

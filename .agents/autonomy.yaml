@@ -50,6 +50,9 @@ human_gates:
   elevation:
     required_before: [public]
     approval_stage: elevation
+  architecture:
+    required_before: [invoke_skill, side_effect]
+    approval_stage: architecture
   package:
     required_before: [side_effect]
     approval_stage: package

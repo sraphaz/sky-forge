@@ -20,7 +20,7 @@ Use quando o usuário interage com Sky-Forge sem saber o próximo passo, quer ex
 
 ## Antes de responder
 
-1. `.sky/sessions/{slug}/journey.yaml` + `maturity.yaml`
+1. Contrato de sessão (quando existirem): `journey.yaml`, `maturity.yaml`, `sky-merits.yaml`, `brief-draft.yaml`, `alternatives.yaml`, `ux-spec.yaml`
 2. Se `pending_interaction.status: pending` → carregar skill **sky-interact** e elicitar (AskQuestion / fallback)
 3. [USER_JOURNEY.md](../../../docs/_meta/USER_JOURNEY.md) · [SKY_INTERACT.md](../../../docs/_meta/SKY_INTERACT.md)
 

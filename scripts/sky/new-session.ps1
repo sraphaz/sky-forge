@@ -146,6 +146,11 @@ pending_suggestions: []
 "@
         }
         if ($f -eq 'journey.yaml') {
+            . (Join-Path $PSScriptRoot 'interaction-catalog.ps1')
+            $arrival = (Get-SkyInteractionCatalog)['arrival.intent']
+            if (-not $arrival) { throw 'Catalogo sem arrival.intent — verifique .agents/interaction-points.yaml' }
+            $pendingBlock = Format-SkyPendingInteractionYaml -PointId 'arrival.intent' -Prompt $arrival.prompt `
+                -Options $arrival.options -Status 'pending' -Channel 'ask_question' -CreatedAt $now
             $content = @"
 version: "1.0"
 slug: $Slug
@@ -176,28 +181,7 @@ next_suggested_actions:
 notes: |
   Criado pelo sky-intake. sky-host conduz via sky-interact (AskQuestion ou fallback numerado).
 
-pending_interaction:
-  id: arrival.intent
-  status: pending
-  channel: ask_question
-  created_at: "$now"
-  resolved_at: null
-  choice_id: null
-  choice_label: null
-  prompt: "O que você quer fazer no Sky-Forge agora?"
-  options:
-    - id: new_idea
-      label: "Começar ideia nova (intake)"
-      routes_to: intake-conductor
-    - id: resume
-      label: "Retomar sessão existente"
-      routes_to: sky-host
-    - id: brownfield_repo
-      label: "Analisar / anexar repositório existente"
-      routes_to: intake-conductor
-    - id: status_only
-      label: "Só ver status de um projeto"
-      routes_to: sky-host
+$pendingBlock
 "@
         }
         Set-Content -Path $dest -Value $content -Encoding UTF8 -NoNewline

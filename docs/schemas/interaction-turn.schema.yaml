@@ -53,3 +53,22 @@ properties:
   freeform:
     type: [string, 'null']
     description: Texto livre quando o usuário escolheu escape freeform
+allOf:
+  - if:
+      properties:
+        status:
+          const: resolved
+      required: [status]
+    then:
+      required: [resolved_at]
+      anyOf:
+        - required: [choice_id]
+          properties:
+            choice_id:
+              type: string
+              minLength: 1
+        - required: [freeform]
+          properties:
+            freeform:
+              type: string
+              minLength: 1

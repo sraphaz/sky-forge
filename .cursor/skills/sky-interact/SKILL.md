@@ -29,7 +29,7 @@ um agente estiver prestes a escolher sozinho entre caminhos divergentes.
 
 ## Protocolo (ordem)
 
-1. **Ler contexto** — `journey.yaml`, `maturity.yaml`, e o `point` no catálogo.
+1. **Ler contexto de sessão** (quando existirem): `journey.yaml`, `maturity.yaml` (top gaps incl. `elevation` / `ux_design`), `sky-merits.yaml`, `brief-draft.yaml`, `alternatives.yaml`, `ux-spec.yaml`, e o `point` no catálogo.
 2. **Preferir AskQuestion** — se a ferramenta `AskQuestion` estiver disponível neste turno:
    - Uma pergunta por mensagem
    - Até **4** opções (labels curtos)
@@ -37,14 +37,14 @@ um agente estiver prestes a escolher sozinho entre caminhos divergentes.
    - Não listar as mesmas opções em prosa no mesmo turno
 3. **Fallback** — se AskQuestion indisponível (modelo/modo):
    - Formato sky-host: maturidade · fase · opções `1)…4)` · “Responda com o número…”
-4. **Após a resposta**:
-   - Atualizar `journey.yaml`:
-     - `pending_interaction.status: resolved`
-     - `pending_interaction.choice_id` / `choice_label`
-     - `next_suggested_actions` coerentes com a escolha
-   - Registrar auditoria: `human.interaction.answered`
-   - Seguir o `routes_to` / comando do catálogo (**uma** ação)
-5. **CLI auxiliar** (opcional, grava o pending no disco):
+4. **Após a resposta** — resolver **somente** via CLI auditado (não editar YAML à mão):
+
+```powershell
+./scripts/sky/sky.ps1 interact -Slug <slug> -Resolve -ChoiceId <id>
+```
+
+   Isso grava `choice_id` / `next_suggested_actions` e `human.interaction.answered`. Depois seguir **uma** ação (`routes_to` / `command`).
+5. **CLI para abrir pending**:
 
 ```powershell
 ./scripts/sky/sky.ps1 interact -Slug <slug> -PointId <point.id>

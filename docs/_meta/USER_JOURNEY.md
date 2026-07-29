@@ -67,10 +67,14 @@ Após `attach` / `assess` / lacunas / gates, o agente **pausa** e elicita:
 | Gatilho | PointId |
 |---------|---------|
 | Chegada | `arrival.intent` |
-| Pós-attach | `brownfield.after_attach` |
+| Pós-attach (sem assess) | `brownfield.after_attach` |
 | Pós-assess | `assess.next_action` |
 | Lacunas | `intake.deepen_gap` |
+| Elevação | `elevate.confirm` |
+| Gate humano | `gate.approve_stage` |
+| Escopo de export | `deliver.export_scope` |
 | Antes de `-Public` | `showcase.privacy` |
+| ARAH Harness | `implement.agentic_repo` |
 
 ## Handoffs entre agentes
 

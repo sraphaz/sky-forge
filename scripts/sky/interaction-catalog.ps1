@@ -1,11 +1,95 @@
 #Requires -Version 5.1
 <#
 .SYNOPSIS
-  Catálogo embutido de pontos de interação (espelho de .agents/interaction-points.yaml).
+  Catálogo de pontos de interação — fonte: .agents/interaction-points.yaml
   Dot-source: . (Join-Path $PSScriptRoot 'interaction-catalog.ps1')
 #>
 
-function Get-SkyInteractionCatalog {
+function Escape-SkyYamlDoubleQuoted {
+    param([AllowNull()][string]$Text)
+    if ($null -eq $Text) { return '' }
+    $t = $Text -replace '\\', '\\'
+    $t = $t -replace '"', '\"'
+    $t = $t -replace "`r`n", '\n'
+    $t = $t -replace "`n", '\n'
+    $t = $t -replace "`r", '\n'
+    return $t
+}
+
+function ConvertFrom-SkyInteractionPointsYaml {
+    param([Parameter(Mandatory = $true)][string]$Path)
+    if (-not (Test-Path $Path)) { return $null }
+    $lines = @(Get-Content -Path $Path -Encoding UTF8)
+    $catalog = @{}
+    $inPoints = $false
+    $pointId = $null
+    $prompt = $null
+    $optList = @()
+    $inOptions = $false
+    $curOpt = $null
+
+    foreach ($line in $lines) {
+        if ($line -match '^\s*#') { continue }
+        if (-not $inPoints) {
+            if ($line -match '^points\s*:') { $inPoints = $true }
+            continue
+        }
+        if ($line -match '^  - id:\s*(\S+)\s*$') {
+            if ($pointId) {
+                if ($null -ne $curOpt) { $optList += $curOpt; $curOpt = $null }
+                $catalog[$pointId] = @{ prompt = $(if ($prompt) { $prompt } else { '' }); options = @($optList) }
+            }
+            $pointId = $Matches[1]
+            $prompt = $null
+            $optList = @()
+            $inOptions = $false
+            $curOpt = $null
+            continue
+        }
+        if (-not $pointId) { continue }
+        if ($line -match '^\s+prompt:\s*(.+)\s*$') {
+            $prompt = $Matches[1].Trim().Trim('"').Trim("'")
+            continue
+        }
+        if ($line -match '^\s+options(_fallback)?\s*:') {
+            if ($null -ne $curOpt) { $optList += $curOpt; $curOpt = $null }
+            $inOptions = $true
+            continue
+        }
+        if ($inOptions -and $line -match '^\s+- id:\s*(\S+)\s*$') {
+            if ($null -ne $curOpt) { $optList += $curOpt }
+            $curOpt = @{ id = $Matches[1]; label = $Matches[1] }
+            continue
+        }
+        if ($inOptions -and $null -ne $curOpt) {
+            if ($line -match '^\s+label:\s*(.+)\s*$') {
+                $curOpt.label = $Matches[1].Trim().Trim('"').Trim("'")
+                continue
+            }
+            if ($line -match '^\s+routes_to:\s*(\S+)\s*$') {
+                $curOpt.routes_to = $Matches[1]
+                continue
+            }
+            if ($line -match '^\s+command:\s*(.+)\s*$') {
+                $curOpt.command = $Matches[1].Trim().Trim('"').Trim("'")
+                continue
+            }
+        }
+        if ($inOptions -and $line -match '^    [a-z_]' -and $line -notmatch '^\s+- ' -and $line -notmatch '^\s+(label|routes_to|command|sets|requires_gate):') {
+            if ($null -ne $curOpt) { $optList += $curOpt; $curOpt = $null }
+            $inOptions = $false
+        }
+    }
+    if ($pointId) {
+        if ($null -ne $curOpt) { $optList += $curOpt }
+        $catalog[$pointId] = @{ prompt = $(if ($prompt) { $prompt } else { '' }); options = @($optList) }
+    }
+    if ($catalog.Count -eq 0) { return $null }
+    return $catalog
+}
+
+function Get-SkyInteractionCatalogFallback {
+    # Usado só se o YAML estiver ausente/ilegível
     return @{
         'arrival.intent' = @{
             prompt = 'O que você quer fazer no Sky-Forge agora?'
@@ -14,23 +98,6 @@ function Get-SkyInteractionCatalog {
                 @{ id = 'resume'; label = 'Retomar sessão existente'; routes_to = 'sky-host' }
                 @{ id = 'brownfield_repo'; label = 'Analisar / anexar repositório existente'; routes_to = 'intake-conductor' }
                 @{ id = 'status_only'; label = 'Só ver status de um projeto'; routes_to = 'sky-host' }
-            )
-        }
-        'brownfield.path_confirm' = @{
-            prompt = 'Qual repositório devemos usar?'
-            options = @(
-                @{ id = 'current_workspace'; label = 'Este workspace aberto no Cursor' }
-                @{ id = 'paste_path'; label = 'Vou informar o caminho' }
-                @{ id = 'cancel'; label = 'Cancelar por agora' }
-            )
-        }
-        'brownfield.after_attach' = @{
-            prompt = 'Host plugin anexado. Próximo passo?'
-            options = @(
-                @{ id = 'run_assess'; label = 'Rodar assessment do repositório'; command = './scripts/sky/sky.ps1 assess -Slug {slug} -WorkspacePath {workspace}' }
-                @{ id = 'deepen_problem'; label = 'Contar o problema de evolução (intake)'; routes_to = 'intake-conductor' }
-                @{ id = 'status'; label = 'Ver maturidade / status'; command = './scripts/sky/sky.ps1 status -Slug {slug}' }
-                @{ id = 'later'; label = 'Parar por aqui' }
             )
         }
         'assess.next_action' = @{
@@ -42,57 +109,31 @@ function Get-SkyInteractionCatalog {
                 @{ id = 'status'; label = 'Só revisar o status'; command = './scripts/sky/sky.ps1 status -Slug {slug}' }
             )
         }
-        'intake.deepen_gap' = @{
-            prompt = 'Qual lacuna quer aprofundar agora?'
+        'brownfield.after_attach' = @{
+            prompt = 'Host plugin anexado. Próximo passo?'
             options = @(
-                @{ id = 'business'; label = 'Negócio / problema / stakeholders' }
-                @{ id = 'product'; label = 'Produto / jornadas / requisitos' }
-                @{ id = 'ux'; label = 'UX / acessibilidade' }
-                @{ id = 'something_else'; label = 'Outra coisa (vou digitar)' }
-            )
-        }
-        'elevate.confirm' = @{
-            prompt = 'Quer explorar conexões de elevação (opcional)?'
-            options = @(
-                @{ id = 'explore'; label = 'Sim, explorar sugestões'; routes_to = 'sky-elevator' }
-                @{ id = 'skip'; label = 'Não agora — seguir no produto'; routes_to = 'intake-conductor' }
-                @{ id = 'disable'; label = 'Prefiro não elevar neste projeto' }
-            )
-        }
-        'gate.approve_stage' = @{
-            prompt = 'Há um gate humano pendente. Como seguir?'
-            options = @(
-                @{ id = 'approve'; label = 'Aprovar este stage agora'; command = './scripts/sky/sky.ps1 approve -Slug {slug} -Stage {stage}' }
-                @{ id = 'explain'; label = 'Explicar o que o gate protege' }
-                @{ id = 'defer'; label = 'Deixar para depois' }
-            )
-        }
-        'deliver.export_scope' = @{
-            prompt = 'Como quer o pacote de entrega?'
-            options = @(
-                @{ id = 'partial'; label = 'Parcial (pronto para handoff cedo)'; command = './scripts/sky/sky.ps1 export -Slug {slug} -Completeness partial' }
-                @{ id = 'full'; label = 'Completo (quando readiness permitir)'; command = './scripts/sky/sky.ps1 export -Slug {slug} -Completeness full' }
-                @{ id = 'for_ai'; label = 'Pacote para IA (-ForAI)'; command = './scripts/sky/sky.ps1 export -Slug {slug} -ForAI -Scope essential' }
-                @{ id = 'cancel'; label = 'Ainda não exportar' }
-            )
-        }
-        'showcase.privacy' = @{
-            prompt = 'Sobre privacidade do preview público…'
-            options = @(
-                @{ id = 'private_only'; label = 'Manter privado (só máquina / pasta externa)' }
-                @{ id = 'public_ok'; label = 'Autorizo publish -Public no showcase' }
-                @{ id = 'ask_later'; label = 'Decidir depois' }
-            )
-        }
-        'implement.agentic_repo' = @{
-            prompt = 'Recomendamos ARAH Harness neste repo. Quer instalar antes do scaffold/link?'
-            options = @(
-                @{ id = 'install_arah'; label = 'Sim — orientar instalação do ARAH Harness' }
-                @{ id = 'skip_arah'; label = 'Seguir sem ARAH por agora' }
-                @{ id = 'explain'; label = 'Explicar o que é o ARAH Harness' }
+                @{ id = 'run_assess'; label = 'Rodar assessment do repositório'; command = './scripts/sky/sky.ps1 assess -Slug {slug} -WorkspacePath {workspace}' }
+                @{ id = 'deepen_problem'; label = 'Contar o problema de evolução (intake)'; routes_to = 'intake-conductor' }
+                @{ id = 'status'; label = 'Ver maturidade / status'; command = './scripts/sky/sky.ps1 status -Slug {slug}' }
+                @{ id = 'later'; label = 'Parar por aqui' }
             )
         }
     }
+}
+
+function Get-SkyInteractionCatalog {
+    $repoRoot = $null
+    if ($PSScriptRoot) {
+        $repoRoot = Resolve-Path (Join-Path $PSScriptRoot '..\..') -ErrorAction SilentlyContinue
+    }
+    if ($repoRoot) {
+        $yamlPath = Join-Path $repoRoot.Path '.agents\interaction-points.yaml'
+        $fromYaml = ConvertFrom-SkyInteractionPointsYaml -Path $yamlPath
+        if ($fromYaml -and $fromYaml.Count -gt 0) {
+            return $fromYaml
+        }
+    }
+    return Get-SkyInteractionCatalogFallback
 }
 
 function Get-SkyPendingInteractionSnapshot {
@@ -144,13 +185,13 @@ function Format-SkyOptionNextActionLines {
     )
     $lines = @()
     $lines += "  - id: $($Option.id)"
-    $lbl = ($Option.label -replace '"', '''')
+    $lbl = Escape-SkyYamlDoubleQuoted $Option.label
     $lines += "    label: `"$lbl`""
     if ($Option.routes_to) { $lines += "    agent: $($Option.routes_to)" }
     if ($Option.command) {
         $cmd = $Option.command
         if ($Slug) { $cmd = $cmd -replace '\{slug\}', $Slug }
-        $lines += "    command: `"$($cmd -replace '"', '''')`""
+        $lines += "    command: `"$(Escape-SkyYamlDoubleQuoted $cmd)`""
     }
     return $lines
 }
@@ -187,23 +228,24 @@ function Format-SkyPendingInteractionYaml {
         [void]$sb.AppendLine('  choice_id: null')
     }
     if ($ChoiceLabel) {
-        $safe = $ChoiceLabel -replace '"', ''''
+        $safe = Escape-SkyYamlDoubleQuoted $ChoiceLabel
         [void]$sb.AppendLine("  choice_label: `"$safe`"")
     } else {
         [void]$sb.AppendLine('  choice_label: null')
     }
-    $promptSafe = ($Prompt -replace '"', '''')
+    $promptSafe = Escape-SkyYamlDoubleQuoted $Prompt
     [void]$sb.AppendLine("  prompt: `"$promptSafe`"")
     [void]$sb.AppendLine('  options:')
     foreach ($opt in $Options) {
         [void]$sb.AppendLine("    - id: $($opt.id)")
-        $lbl = ($opt.label -replace '"', '''')
+        $lbl = Escape-SkyYamlDoubleQuoted $opt.label
         [void]$sb.AppendLine("      label: `"$lbl`"")
         if ($opt.routes_to) {
             [void]$sb.AppendLine("      routes_to: $($opt.routes_to)")
         }
         if ($opt.command) {
-            [void]$sb.AppendLine("      command: `"$($opt.command)`"")
+            $cmd = Escape-SkyYamlDoubleQuoted $opt.command
+            [void]$sb.AppendLine("      command: `"$cmd`"")
         }
     }
     return $sb.ToString().TrimEnd()

@@ -15,9 +15,13 @@ Você é o **anfitrião** da experiência. O usuário não deve adivinhar o pró
 
 ## Antes de cada resposta
 
-1. Se há slug: ler `.sky/sessions/{slug}/journey.yaml`, `maturity.yaml` e `agentic-repo-recommendation.yaml` (se existir)
+1. Se há slug, ler o contrato de sessão (quando existirem):
+   - `.sky/sessions/{slug}/journey.yaml`
+   - `maturity.yaml` (top gaps: business, product, ux_design, elevation, …)
+   - `sky-merits.yaml`, `brief-draft.yaml`, `alternatives.yaml`, `ux-spec.yaml`
+   - `agentic-repo-recommendation.yaml` (se existir)
 2. Se `journey.yaml` tem `pending_interaction.status: pending` → **elicitar agora** (passo Interação)
-3. Se não há slug: perguntar intenção (ponto `arrival.intent`)
+3. Se não há slug: perguntar intenção (ponto `arrival.intent` do catálogo — **uma** pergunta)
 4. [USER_JOURNEY.md](../../docs/_meta/USER_JOURNEY.md) · [SKY_INTERACT.md](../../docs/_meta/SKY_INTERACT.md) · skill `sky-interact`
 
 ## Interação HITL (obrigatório em decision points)
@@ -29,11 +33,13 @@ Catálogo: [`.agents/interaction-points.yaml`](../../.agents/interaction-points.
    - Escape opcional: `Outra coisa (vou digitar)`
    - Não duplicar as opções em prosa no mesmo turno
 2. **Fallback** se AskQuestion indisponível — formato abaixo
-3. Após a escolha: resolver via  
+3. Após a escolha: **somente** via CLI auditado  
    `./scripts/sky/sky.ps1 interact -Slug {slug} -Resolve -ChoiceId {id}`  
-   (ou atualizar `pending_interaction` no journey) e executar **uma** ação / handoff
+   Isso grava `choice_id` / `next_suggested_actions` e `human.interaction.answered`.  
+   Não editar `pending_interaction` manualmente.
 4. CLI para gravar pending:  
-   `./scripts/sky/sky.ps1 interact -Slug {slug} -PointId {point.id}`
+   `./scripts/sky/sky.ps1 interact -Slug {slug} -PointId {point.id}`  
+   Depois executar **uma** ação / handoff.
 
 Pontos típicos: `arrival.intent`, `brownfield.after_attach`, `assess.next_action`,
 `intake.deepen_gap`, `elevate.confirm`, `gate.approve_stage`, `deliver.export_scope`,
@@ -62,7 +68,7 @@ Quando AskQuestion for usado, o cabeçalho maturidade/fase pode ficar numa linha
 | Situação | Agente |
 |----------|--------|
 | Ideia nova, lacunas, brownfield | intake-conductor |
-| Repo existente — plugin host | `sky attach` → intake-conductor + assess → **HITL** `assess.next_action` |
+| Repo existente — plugin host | `sky attach` → HITL `brownfield.after_attach` (se sem assess) **ou** assess → HITL `assess.next_action` |
 | Export, pasta externa, pacote | delivery-steward |
 | Site visual, publicar preview | showcase-curator |
 | Índices SKY, elevação | sky-elevator + ux-design-specialist |

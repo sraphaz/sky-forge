@@ -21,9 +21,10 @@ Conduza elicitação dinâmica e **eleve** a proposta quando `policies.open_to_e
 
 Quando houver lacunas e o usuário não escolheu qual preencher:
 
-1. Opcional: `./scripts/sky/sky.ps1 interact -Slug {slug} -PointId intake.deepen_gap`
+1. **Obrigatório** — persistir pending antes de perguntar:  
+   `./scripts/sky/sky.ps1 interact -Slug {slug} -PointId intake.deepen_gap`
 2. Preferir **AskQuestion** com as top lacunas (máx. 4) — ponto `intake.deepen_gap`
-3. Só então atualizar artefatos da dimensão escolhida
+3. Só após `-Resolve` atualizar artefatos da dimensão escolhida
 
 Brownfield pós-assess: respeitar `assess.next_action` / `pending_interaction` do journey.
 
