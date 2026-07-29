@@ -16,6 +16,15 @@ function Escape-SkyYamlDoubleQuoted {
     return $t
 }
 
+function Unescape-SkyYamlDoubleQuoted {
+    param([AllowNull()][string]$Text)
+    if ($null -eq $Text) { return '' }
+    $t = $Text -replace '\\n', "`n"
+    $t = $t -replace '\\"', '"'
+    $t = $t -replace '\\\\', '\'
+    return $t
+}
+
 function ConvertFrom-SkyInteractionPointsYaml {
     param([Parameter(Mandatory = $true)][string]$Path)
     if (-not (Test-Path $Path)) { return $null }
@@ -72,6 +81,14 @@ function ConvertFrom-SkyInteractionPointsYaml {
             }
             if ($line -match '^\s+command:\s*(.+)\s*$') {
                 $curOpt.command = $Matches[1].Trim().Trim('"').Trim("'")
+                continue
+            }
+            if ($line -match '^\s+sets:\s*(.+)\s*$') {
+                $curOpt.sets = $Matches[1].Trim().Trim('"').Trim("'")
+                continue
+            }
+            if ($line -match '^\s+requires_gate:\s*(\S+)\s*$') {
+                $curOpt.requires_gate = $Matches[1]
                 continue
             }
         }
@@ -150,6 +167,7 @@ function Get-SkyPendingInteractionSnapshot {
         created_at = $null
         channel    = $null
         option_ids = @()
+        options    = @()
     }
 
     if ($JourneyRaw -notmatch '(?m)^pending_interaction\s*:') { return $snap }
@@ -169,19 +187,172 @@ function Get-SkyPendingInteractionSnapshot {
         $snap.created_at = $Matches[1].Trim().Trim('"')
     }
     if ($pendingChunk -match '(?m)^  prompt:\s*"((?:\\.|[^"])*)"') {
-        $snap.prompt = $Matches[1] -replace "''", "'"
+        $snap.prompt = Unescape-SkyYamlDoubleQuoted $Matches[1]
     } elseif ($pendingChunk -match '(?m)^  prompt:\s*(.+)$') {
         $snap.prompt = $Matches[1].Trim().Trim('"')
     }
-    $ids = [regex]::Matches($pendingChunk, '(?m)^    - id:\s*(\S+)')
-    $snap.option_ids = @($ids | ForEach-Object { $_.Groups[1].Value })
+
+    $optList = @()
+    $cur = $null
+    foreach ($line in ($pendingChunk -split '\r?\n')) {
+        if ($line -match '^    - id:\s*(\S+)') {
+            if ($null -ne $cur) { $optList += $cur }
+            $cur = @{ id = $Matches[1]; label = $Matches[1] }
+            continue
+        }
+        if ($null -eq $cur) { continue }
+        if ($line -match '^      label:\s*"((?:\\.|[^"])*)"') {
+            $cur.label = Unescape-SkyYamlDoubleQuoted $Matches[1]
+            continue
+        }
+        if ($line -match '^      label:\s*(.+)$') {
+            $cur.label = $Matches[1].Trim().Trim('"')
+            continue
+        }
+        if ($line -match '^      routes_to:\s*(\S+)') { $cur.routes_to = $Matches[1]; continue }
+        if ($line -match '^      command:\s*"((?:\\.|[^"])*)"') {
+            $cur.command = Unescape-SkyYamlDoubleQuoted $Matches[1]
+            continue
+        }
+        if ($line -match '^      command:\s*(.+)$') {
+            $cur.command = $Matches[1].Trim().Trim('"')
+            continue
+        }
+        if ($line -match '^      sets:\s*"((?:\\.|[^"])*)"') {
+            $cur.sets = Unescape-SkyYamlDoubleQuoted $Matches[1]
+            continue
+        }
+        if ($line -match '^      sets:\s*(.+)$') {
+            $cur.sets = $Matches[1].Trim().Trim('"')
+            continue
+        }
+    }
+    if ($null -ne $cur) { $optList += $cur }
+    $snap.options = @($optList)
+    $snap.option_ids = @($optList | ForEach-Object { $_.id })
     return $snap
+}
+
+function Expand-SkyCommandPlaceholders {
+    param(
+        [string]$Command,
+        [string]$Slug = '',
+        [string]$Workspace = '',
+        [string]$Stage = ''
+    )
+    if ([string]::IsNullOrWhiteSpace($Command)) { return $Command }
+    $cmd = $Command
+    if ($Slug) { $cmd = $cmd.Replace('{slug}', $Slug) }
+    if ($Workspace) { $cmd = $cmd.Replace('{workspace}', $Workspace) }
+    if ($Stage) { $cmd = $cmd.Replace('{stage}', $Stage) }
+    return $cmd
+}
+
+function Resolve-SkyInteractWorkspacePath {
+    param(
+        [Parameter(Mandatory = $true)][string]$RepoRoot,
+        [Parameter(Mandatory = $true)][string]$Slug,
+        [string]$Explicit = ''
+    )
+    if ($Explicit) { return $Explicit }
+    $gitPath = Join-Path $RepoRoot ".sky\sessions\$Slug\git.yaml"
+    if (Test-Path $gitPath) {
+        $raw = Get-Content $gitPath -Raw
+        if ($raw -match '(?m)^workspace_path:\s*(.+)$') {
+            $p = $Matches[1].Trim().Trim('"').Trim("'")
+            if ($p -and $p -ne 'null') { return $p }
+        }
+    }
+    return ''
+}
+
+function Resolve-SkyInteractStage {
+    param(
+        [string]$SessionDir,
+        [string]$Explicit = ''
+    )
+    if ($Explicit) { return $Explicit }
+    $approvals = Join-Path $SessionDir 'approvals.yaml'
+    if (-not (Test-Path $approvals)) {
+        return 'brief'
+    }
+    $raw = Get-Content $approvals -Raw
+    foreach ($s in @('brief', 'elevation', 'architecture', 'package', 'public_showcase')) {
+        if ($raw -notmatch "(?m)^\s*${s}\s*:") {
+            return $s
+        }
+    }
+    return 'package'
+}
+
+function Get-SkyMaturityTopGapOptions {
+    param([Parameter(Mandatory = $true)][string]$MaturityPath)
+    if (-not (Test-Path $MaturityPath)) { return @() }
+    $raw = Get-Content $MaturityPath -Raw
+    $dimOrder = @('business', 'product', 'ux_design', 'technical', 'sustainability', 'elevation')
+    $labels = @{
+        business = 'Negócio'
+        product = 'Produto'
+        ux_design = 'UX'
+        technical = 'Técnico'
+        sustainability = 'Sustentação'
+        elevation = 'Elevação'
+    }
+    $scored = @()
+    foreach ($dim in $dimOrder) {
+        $score = 1.0
+        if ($raw -match "(?ms)^\s+$dim`:\s*\r?\n(?:.*?\r?\n)*?\s+score:\s*([0-9.]+)") {
+            $score = [double]$Matches[1]
+        }
+        $gap = $null
+        if ($raw -match "(?ms)^\s+$dim`:\s*\r?\n(?:.*?\r?\n)*?\s+gaps:\s*\[([^\]]*)\]") {
+            $inner = $Matches[1]
+            if ($inner -match '"([^"]+)"') { $gap = $Matches[1] }
+            elseif ($inner -match "'([^']+)'") { $gap = $Matches[1] }
+        }
+        if (-not $gap) { continue }
+        $scored += [PSCustomObject]@{ id = $dim; score = $score; gap = $gap; title = $labels[$dim] }
+    }
+    $top = @($scored | Sort-Object score | Select-Object -First 4)
+    $opts = @()
+    foreach ($t in $top) {
+        $opts += @{
+            id = $t.id
+            label = "$($t.title): $($t.gap)"
+        }
+    }
+    return $opts
+}
+
+function Apply-SkyOptionSets {
+    param(
+        [Parameter(Mandatory = $true)][string]$SessionDir,
+        [string]$Sets
+    )
+    if ([string]::IsNullOrWhiteSpace($Sets)) { return }
+    # policies.open_to_elevation=false
+    if ($Sets -match '^policies\.([A-Za-z0-9_]+)=(.+)$') {
+        $key = $Matches[1]
+        $val = $Matches[2].Trim()
+        $merits = Join-Path $SessionDir 'sky-merits.yaml'
+        if (-not (Test-Path $merits)) { return }
+        $raw = Get-Content $merits -Raw
+        if ($raw -match "(?m)^(\s+)$([regex]::Escape($key)):\s*.+$") {
+            $raw = [regex]::Replace($raw, "(?m)^(\s+)$([regex]::Escape($key)):\s*.+$", "`${1}${key}: $val")
+        } elseif ($raw -match '(?m)^policies\s*:') {
+            $raw = [regex]::Replace($raw, '(?m)^(policies\s*:)', "`$1`r`n  ${key}: $val")
+        }
+        Set-Content -Path $merits -Value $raw -Encoding UTF8
+        Write-Host "OK: policies.$key = $val (sky-merits.yaml)" -ForegroundColor DarkCyan
+    }
 }
 
 function Format-SkyOptionNextActionLines {
     param(
         [Parameter(Mandatory = $true)]$Option,
-        [string]$Slug = ''
+        [string]$Slug = '',
+        [string]$Workspace = '',
+        [string]$Stage = ''
     )
     $lines = @()
     $lines += "  - id: $($Option.id)"
@@ -189,8 +360,7 @@ function Format-SkyOptionNextActionLines {
     $lines += "    label: `"$lbl`""
     if ($Option.routes_to) { $lines += "    agent: $($Option.routes_to)" }
     if ($Option.command) {
-        $cmd = $Option.command
-        if ($Slug) { $cmd = $cmd -replace '\{slug\}', $Slug }
+        $cmd = Expand-SkyCommandPlaceholders -Command $Option.command -Slug $Slug -Workspace $Workspace -Stage $Stage
         $lines += "    command: `"$(Escape-SkyYamlDoubleQuoted $cmd)`""
     }
     return $lines
@@ -246,6 +416,10 @@ function Format-SkyPendingInteractionYaml {
         if ($opt.command) {
             $cmd = Escape-SkyYamlDoubleQuoted $opt.command
             [void]$sb.AppendLine("      command: `"$cmd`"")
+        }
+        if ($opt.sets) {
+            $sets = Escape-SkyYamlDoubleQuoted $opt.sets
+            [void]$sb.AppendLine("      sets: `"$sets`"")
         }
     }
     return $sb.ToString().TrimEnd()

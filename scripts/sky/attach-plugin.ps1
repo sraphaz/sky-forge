@@ -83,10 +83,6 @@ if (Test-Path $journeyPath) {
         $jRaw = $jRaw -replace '(?m)^slug:\s*.+$', "`$0`nhost_plugin: true`nprofile: $Profile"
     }
     Set-Content -Path $journeyPath -Value $jRaw -Encoding UTF8
-
-    # Limpar arrival.intent (ou outro pending) herdado de new-session — evita elicitar chegada em fase shape
-    . (Join-Path $PSScriptRoot 'interaction-catalog.ps1')
-    Clear-SkyJourneyPendingInteraction -JourneyPath $journeyPath
 }
 
 $pluginSrc = Join-Path $forgeRoot 'plugins\examples\sky-forge-host'
@@ -168,6 +164,14 @@ if (Test-Path $linkFile) {
 }
 
 $runAssess = $Assess -or -not $NoAssess
+
+# Só limpar pending herdado (arrival.intent) depois do attach/link bem-sucedido,
+# imediatamente antes do HITL pós-ação — evita sessão shape sem pergunta se o attach falhar no meio.
+. (Join-Path $PSScriptRoot 'interaction-catalog.ps1')
+if (Test-Path $journeyPath) {
+    Clear-SkyJourneyPendingInteraction -JourneyPath $journeyPath
+}
+
 if ($runAssess) {
     Write-Host ""
     & (Join-Path $PSScriptRoot 'assess-platform.ps1') -Slug $Slug -WorkspacePath $workspace
@@ -178,7 +182,7 @@ if ($runAssess) {
     }
     Write-Host ""
     Write-Host "=== Proximo passo (interacao HITL) ===" -ForegroundColor Cyan
-    & $interactScript -Slug $Slug -PointId 'brownfield.after_attach'
+    & $interactScript -Slug $Slug -PointId 'brownfield.after_attach' -WorkspacePath $workspace
 }
 
 Write-Host ""

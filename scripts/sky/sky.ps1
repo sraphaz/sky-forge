@@ -47,6 +47,12 @@ param(
     [switch]$Force,
 
     [Parameter()]
+    [switch]$Assess,
+
+    [Parameter()]
+    [switch]$NoAssess,
+
+    [Parameter()]
     [switch]$Public,
 
     [Parameter()]
@@ -359,6 +365,8 @@ switch ($Command) {
         if ($WorkspacePath) { $attachArgs.WorkspacePath = $WorkspacePath }
         if ($SyncMode) { $attachArgs.SyncMode = $SyncMode }
         if ($Force) { $attachArgs.Force = $true }
+        if ($Assess) { $attachArgs.Assess = $true }
+        if ($NoAssess) { $attachArgs.NoAssess = $true }
         & (Join-Path $PSScriptRoot 'attach-plugin.ps1') @attachArgs
         if ($Slug) {
             Invoke-AgentAudit $Slug 'repo-scaffolder' 'workspace.attach_host_plugin' 'side_effect' 'ok'
@@ -382,6 +390,8 @@ switch ($Command) {
     'interact' {
         if (-not $Slug) { throw 'interact requires -Slug' }
         $iArgs = @{ Slug = $Slug }
+        if ($WorkspacePath) { $iArgs.WorkspacePath = $WorkspacePath }
+        if ($Stage) { $iArgs.Stage = $Stage }
         if ($Clear) { $iArgs.Clear = $true }
         elseif ($Resolve) {
             $iArgs.Resolve = $true
