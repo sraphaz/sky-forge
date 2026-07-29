@@ -27,9 +27,9 @@ function Get-SkyInteractionCatalog {
         'brownfield.after_attach' = @{
             prompt = 'Host plugin anexado. Próximo passo?'
             options = @(
-                @{ id = 'run_assess'; label = 'Rodar assessment do repositório' }
+                @{ id = 'run_assess'; label = 'Rodar assessment do repositório'; command = './scripts/sky/sky.ps1 assess -Slug {slug} -WorkspacePath {workspace}' }
                 @{ id = 'deepen_problem'; label = 'Contar o problema de evolução (intake)'; routes_to = 'intake-conductor' }
-                @{ id = 'status'; label = 'Ver maturidade / status' }
+                @{ id = 'status'; label = 'Ver maturidade / status'; command = './scripts/sky/sky.ps1 status -Slug {slug}' }
                 @{ id = 'later'; label = 'Parar por aqui' }
             )
         }
@@ -37,9 +37,9 @@ function Get-SkyInteractionCatalog {
             prompt = 'Assessment pronto. O que prefere agora?'
             options = @(
                 @{ id = 'deepen_top_gap'; label = 'Aprofundar a principal lacuna detectada'; routes_to = 'intake-conductor' }
-                @{ id = 'seed_roadmap'; label = 'Gerar roadmap de evolução (draft)' }
+                @{ id = 'seed_roadmap'; label = 'Gerar roadmap de evolução (draft)'; command = './scripts/sky/sky.ps1 seed-roadmap -Slug {slug}' }
                 @{ id = 'elevate'; label = 'Explorar elevação / índices SKY'; routes_to = 'sky-elevator' }
-                @{ id = 'status'; label = 'Só revisar o status' }
+                @{ id = 'status'; label = 'Só revisar o status'; command = './scripts/sky/sky.ps1 status -Slug {slug}' }
             )
         }
         'intake.deepen_gap' = @{
@@ -62,7 +62,7 @@ function Get-SkyInteractionCatalog {
         'gate.approve_stage' = @{
             prompt = 'Há um gate humano pendente. Como seguir?'
             options = @(
-                @{ id = 'approve'; label = 'Aprovar este stage agora' }
+                @{ id = 'approve'; label = 'Aprovar este stage agora'; command = './scripts/sky/sky.ps1 approve -Slug {slug} -Stage {stage}' }
                 @{ id = 'explain'; label = 'Explicar o que o gate protege' }
                 @{ id = 'defer'; label = 'Deixar para depois' }
             )
@@ -70,9 +70,9 @@ function Get-SkyInteractionCatalog {
         'deliver.export_scope' = @{
             prompt = 'Como quer o pacote de entrega?'
             options = @(
-                @{ id = 'partial'; label = 'Parcial (pronto para handoff cedo)' }
-                @{ id = 'full'; label = 'Completo (quando readiness permitir)' }
-                @{ id = 'for_ai'; label = 'Pacote para IA (-ForAI)' }
+                @{ id = 'partial'; label = 'Parcial (pronto para handoff cedo)'; command = './scripts/sky/sky.ps1 export -Slug {slug} -Completeness partial' }
+                @{ id = 'full'; label = 'Completo (quando readiness permitir)'; command = './scripts/sky/sky.ps1 export -Slug {slug} -Completeness full' }
+                @{ id = 'for_ai'; label = 'Pacote para IA (-ForAI)'; command = './scripts/sky/sky.ps1 export -Slug {slug} -ForAI -Scope essential' }
                 @{ id = 'cancel'; label = 'Ainda não exportar' }
             )
         }
@@ -93,6 +93,66 @@ function Get-SkyInteractionCatalog {
             )
         }
     }
+}
+
+function Get-SkyPendingInteractionSnapshot {
+    <#
+    .SYNOPSIS
+      Lê campos do bloco pending_interaction atual em journey.yaml (texto bruto).
+    #>
+    param([Parameter(Mandatory = $true)][string]$JourneyRaw)
+
+    $snap = @{
+        id         = $null
+        status     = $null
+        prompt     = $null
+        created_at = $null
+        channel    = $null
+        option_ids = @()
+    }
+
+    if ($JourneyRaw -notmatch '(?m)^pending_interaction\s*:') { return $snap }
+
+    $pendingChunk = $null
+    if ($JourneyRaw -match '(?ms)^pending_interaction:\r?\n(.*?)(?=^[a-zA-Z_]|\z)') {
+        $pendingChunk = $Matches[1]
+    }
+    if (-not $pendingChunk) { return $snap }
+
+    if ($pendingChunk -match '(?m)^  id:\s*(\S+)') { $snap.id = $Matches[1].Trim() }
+    if ($pendingChunk -match '(?m)^  status:\s*(\S+)') { $snap.status = $Matches[1].Trim() }
+    if ($pendingChunk -match '(?m)^  channel:\s*(\S+)') { $snap.channel = $Matches[1].Trim() }
+    if ($pendingChunk -match '(?m)^  created_at:\s*"([^"]+)"') {
+        $snap.created_at = $Matches[1]
+    } elseif ($pendingChunk -match '(?m)^  created_at:\s*(\S+)') {
+        $snap.created_at = $Matches[1].Trim().Trim('"')
+    }
+    if ($pendingChunk -match '(?m)^  prompt:\s*"((?:\\.|[^"])*)"') {
+        $snap.prompt = $Matches[1] -replace "''", "'"
+    } elseif ($pendingChunk -match '(?m)^  prompt:\s*(.+)$') {
+        $snap.prompt = $Matches[1].Trim().Trim('"')
+    }
+    $ids = [regex]::Matches($pendingChunk, '(?m)^    - id:\s*(\S+)')
+    $snap.option_ids = @($ids | ForEach-Object { $_.Groups[1].Value })
+    return $snap
+}
+
+function Format-SkyOptionNextActionLines {
+    param(
+        [Parameter(Mandatory = $true)]$Option,
+        [string]$Slug = ''
+    )
+    $lines = @()
+    $lines += "  - id: $($Option.id)"
+    $lbl = ($Option.label -replace '"', '''')
+    $lines += "    label: `"$lbl`""
+    if ($Option.routes_to) { $lines += "    agent: $($Option.routes_to)" }
+    if ($Option.command) {
+        $cmd = $Option.command
+        if ($Slug) { $cmd = $cmd -replace '\{slug\}', $Slug }
+        $lines += "    command: `"$($cmd -replace '"', '''')`""
+    }
+    return $lines
 }
 
 function Format-SkyPendingInteractionYaml {
@@ -153,7 +213,8 @@ function Set-SkyJourneyPendingInteraction {
     param(
         [Parameter(Mandatory = $true)][string]$JourneyPath,
         [Parameter(Mandatory = $true)][string]$PendingYamlBlock,
-        [string[]]$NextActionsYamlLines = @()
+        [string[]]$NextActionsYamlLines = @(),
+        [switch]$ReplaceNextActions
     )
     if (-not (Test-Path $JourneyPath)) {
         throw "journey.yaml nao encontrado: $JourneyPath"
@@ -162,7 +223,6 @@ function Set-SkyJourneyPendingInteraction {
     $lines = @(Get-Content $JourneyPath)
     $out = New-Object System.Collections.Generic.List[string]
     $i = 0
-    $skipBlock = $null
     while ($i -lt $lines.Count) {
         $line = $lines[$i]
         if ($line -match '^pending_interaction\s*:') {
@@ -177,7 +237,7 @@ function Set-SkyJourneyPendingInteraction {
             }
             continue
         }
-        if ($line -match '^next_suggested_actions\s*:' -and $NextActionsYamlLines.Count -gt 0) {
+        if ($line -match '^next_suggested_actions\s*:' -and $ReplaceNextActions -and $NextActionsYamlLines.Count -gt 0) {
             $i++
             while ($i -lt $lines.Count -and ($lines[$i] -match '^\s' -or $lines[$i] -match '^\s*$')) {
                 if ($lines[$i] -match '^\s*$') {
@@ -201,18 +261,20 @@ function Set-SkyJourneyPendingInteraction {
         $i++
     }
 
-    $hasNext = $false
-    foreach ($l in $out) { if ($l -match '^next_suggested_actions:') { $hasNext = $true; break } }
-    if ($NextActionsYamlLines.Count -gt 0 -and -not $hasNext) {
-        $insertAt = $out.Count
-        for ($k = 0; $k -lt $out.Count; $k++) {
-            if ($out[$k] -match '^notes:') { $insertAt = $k; break }
+    if ($ReplaceNextActions -and $NextActionsYamlLines.Count -gt 0) {
+        $hasNext = $false
+        foreach ($l in $out) { if ($l -match '^next_suggested_actions:') { $hasNext = $true; break } }
+        if (-not $hasNext) {
+            $insertAt = $out.Count
+            for ($k = 0; $k -lt $out.Count; $k++) {
+                if ($out[$k] -match '^notes:') { $insertAt = $k; break }
+            }
+            $block = New-Object System.Collections.Generic.List[string]
+            $block.Add('next_suggested_actions:')
+            foreach ($l in $NextActionsYamlLines) { $block.Add($l) }
+            $block.Add('')
+            $out.InsertRange($insertAt, $block)
         }
-        $block = New-Object System.Collections.Generic.List[string]
-        $block.Add('next_suggested_actions:')
-        foreach ($l in $NextActionsYamlLines) { $block.Add($l) }
-        $block.Add('')
-        $out.InsertRange($insertAt, $block)
     }
 
     while ($out.Count -gt 0 -and $out[$out.Count - 1] -match '^\s*$') {

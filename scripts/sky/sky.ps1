@@ -89,6 +89,9 @@ param(
     [string]$ChoiceId,
 
     [Parameter()]
+    [string]$Prompt,
+
+    [Parameter()]
     [switch]$Clear,
 
     [Parameter()]
@@ -389,6 +392,7 @@ switch ($Command) {
         else {
             if (-not $PointId) { throw 'interact requires -PointId (ou -Clear / -Resolve)' }
             $iArgs.PointId = $PointId
+            if ($Prompt) { $iArgs.Prompt = $Prompt }
         }
         & (Join-Path $PSScriptRoot 'prompt-interaction.ps1') @iArgs
     }

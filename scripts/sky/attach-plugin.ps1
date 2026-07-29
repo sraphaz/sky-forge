@@ -83,6 +83,10 @@ if (Test-Path $journeyPath) {
         $jRaw = $jRaw -replace '(?m)^slug:\s*.+$', "`$0`nhost_plugin: true`nprofile: $Profile"
     }
     Set-Content -Path $journeyPath -Value $jRaw -Encoding UTF8
+
+    # Limpar arrival.intent (ou outro pending) herdado de new-session — evita elicitar chegada em fase shape
+    . (Join-Path $PSScriptRoot 'interaction-catalog.ps1')
+    Clear-SkyJourneyPendingInteraction -JourneyPath $journeyPath
 }
 
 $pluginSrc = Join-Path $forgeRoot 'plugins\examples\sky-forge-host'

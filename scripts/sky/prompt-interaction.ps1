@@ -62,28 +62,51 @@ $catalog = Get-SkyInteractionCatalog
 if ($Resolve) {
     if (-not $ChoiceId) { throw 'Resolve requer -ChoiceId' }
     $raw = Get-Content $journeyPath -Raw
-    $existingId = 'unknown'
-    if ($raw -match '(?m)^pending_interaction:\s*\r?\n(?:  .*\r?\n)*?  id:\s*(\S+)') {
-        $existingId = $Matches[1]
+    $snap = Get-SkyPendingInteractionSnapshot -JourneyRaw $raw
+    $pointKey = if ($PointId) { $PointId } elseif ($snap.id) { $snap.id } else { 'unknown' }
+
+    $opts = @()
+    if ($OptionsJson) {
+        $opts = @($OptionsJson | ConvertFrom-Json)
+    } elseif ($catalog.ContainsKey($pointKey)) {
+        $opts = @($catalog[$pointKey].options)
     }
-    $choiceLabel = $ChoiceId
-    $pointKey = if ($PointId) { $PointId } else { $existingId }
-    if ($catalog.ContainsKey($pointKey)) {
-        $match = $catalog[$pointKey].options | Where-Object { $_.id -eq $ChoiceId } | Select-Object -First 1
-        if ($match) { $choiceLabel = $match.label }
-        $Prompt = $catalog[$pointKey].prompt
-        $opts = $catalog[$pointKey].options
-    } elseif ($OptionsJson) {
-        $opts = $OptionsJson | ConvertFrom-Json
-    } else {
-        $opts = @(@{ id = $ChoiceId; label = $ChoiceId })
+
+    $match = $null
+    if ($opts.Count -gt 0) {
+        $match = $opts | Where-Object { $_.id -eq $ChoiceId } | Select-Object -First 1
     }
-    if (-not $Prompt) { $Prompt = 'Decisao registrada.' }
+    if (-not $match) {
+        $known = if ($opts.Count -gt 0) {
+            ($opts | ForEach-Object { $_.id }) -join ', '
+        } elseif ($snap.option_ids.Count -gt 0) {
+            $snap.option_ids -join ', '
+        } else {
+            '(nenhuma)'
+        }
+        throw "ChoiceId invalido: '$ChoiceId' para o ponto '$pointKey'. Opcoes: $known"
+    }
+
+    $choiceLabel = $match.label
+    # Preservar prompt e created_at do pending em disco (ex.: override do assess)
+    $resolvedPrompt = if ($snap.prompt) { $snap.prompt } elseif ($catalog.ContainsKey($pointKey)) { $catalog[$pointKey].prompt } else { 'Decisao registrada.' }
+    $createdAt = if ($snap.created_at) { $snap.created_at } else { (Get-Date).ToUniversalTime().ToString('o') }
+    $resolvedChannel = if ($snap.channel) { $snap.channel } else { $Channel }
     $now = (Get-Date).ToUniversalTime().ToString('o')
-    $block = Format-SkyPendingInteractionYaml -PointId $pointKey -Prompt $Prompt -Options $opts `
-        -Status 'resolved' -Channel $Channel -ChoiceId $ChoiceId -ChoiceLabel $choiceLabel `
-        -CreatedAt $now -ResolvedAt $now
-    Set-SkyJourneyPendingInteraction -JourneyPath $journeyPath -PendingYamlBlock $block
+
+    # Opcoes no bloco resolved: preferir catalogo (com command) se o ponto existir
+    if ($catalog.ContainsKey($pointKey)) {
+        $opts = @($catalog[$pointKey].options)
+    }
+
+    $block = Format-SkyPendingInteractionYaml -PointId $pointKey -Prompt $resolvedPrompt -Options $opts `
+        -Status 'resolved' -Channel $resolvedChannel -ChoiceId $ChoiceId -ChoiceLabel $choiceLabel `
+        -CreatedAt $createdAt -ResolvedAt $now
+
+    $nextLines = Format-SkyOptionNextActionLines -Option $match -Slug $Slug
+    Set-SkyJourneyPendingInteraction -JourneyPath $journeyPath -PendingYamlBlock $block `
+        -NextActionsYamlLines $nextLines -ReplaceNextActions
+
     if (-not $NoAudit -and (Test-Path $rec)) {
         & $rec -Slug $Slug -AgentId 'sky-host' -Action 'human.interaction.answered' -Outcome 'ok' `
             -AutonomyLevel 'route' -Details "point=$pointKey choice=$ChoiceId" -ErrorAction SilentlyContinue | Out-Null
@@ -95,6 +118,10 @@ if ($Resolve) {
         status = 'resolved'
         choice_id = $ChoiceId
         choice_label = $choiceLabel
+        created_at = $createdAt
+        resolved_at = $now
+        routes_to = $(if ($match.routes_to) { $match.routes_to } else { $null })
+        command = $(if ($match.command) { ($match.command -replace '\{slug\}', $Slug) } else { $null })
         agent_instruction = 'Seguir routes_to/comando do option escolhido; uma acao apenas.'
     }
     $payload | ConvertTo-Json -Depth 5
@@ -125,16 +152,8 @@ $now = (Get-Date).ToUniversalTime().ToString('o')
 $block = Format-SkyPendingInteractionYaml -PointId $(if ($PointId) { $PointId } else { 'custom' }) `
     -Prompt $Prompt -Options $opts -Status 'pending' -Channel $Channel -CreatedAt $now
 
-$nextLines = @()
-$i = 0
-foreach ($opt in $opts) {
-    $i++
-    $nextLines += "  - id: $($opt.id)"
-    $nextLines += "    label: `"$($opt.label -replace '"', '''')`""
-    if ($opt.routes_to) { $nextLines += "    agent: $($opt.routes_to)" }
-}
-
-Set-SkyJourneyPendingInteraction -JourneyPath $journeyPath -PendingYamlBlock $block -NextActionsYamlLines $nextLines
+# Nao substituir next_suggested_actions ao abrir pending — preserva hints da sessao
+Set-SkyJourneyPendingInteraction -JourneyPath $journeyPath -PendingYamlBlock $block
 
 if (-not $NoAudit -and (Test-Path $rec)) {
     & $rec -Slug $Slug -AgentId 'sky-host' -Action 'human.interaction.requested' -Outcome 'pending' `
@@ -150,7 +169,10 @@ $askPayload = [ordered]@{
     point_id = $PointId
     prompt = $Prompt
     options = @($opts | ForEach-Object {
-            [ordered]@{ id = $_.id; label = $_.label }
+            $o = [ordered]@{ id = $_.id; label = $_.label }
+            if ($_.routes_to) { $o.routes_to = $_.routes_to }
+            if ($_.command) { $o.command = $_.command }
+            $o
         })
     fallback = [ordered]@{
         format = 'numbered_chat'

@@ -92,6 +92,7 @@ points:
         routes_to: sky-elevator
       - id: status
         label: Só revisar o status
+        command: ./scripts/sky/sky.ps1 status -Slug {slug}
 
   - id: intake.deepen_gap
     phase: shape
@@ -157,6 +158,7 @@ points:
         command: ./scripts/sky/sky.ps1 export -Slug {slug} -Completeness full
       - id: for_ai
         label: Pacote para IA (-ForAI)
+        command: ./scripts/sky/sky.ps1 export -Slug {slug} -ForAI -Scope essential
       - id: cancel
         label: Ainda não exportar
 
