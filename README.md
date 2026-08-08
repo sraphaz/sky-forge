@@ -1,5 +1,9 @@
 # Sky-Forge
 
+<p align="center">
+  <img src="./assets/readme/hero.svg" width="100%" alt="Sky-Forge — elevar propostas; funil intake → elevate → export → showcase; índices SPI HCE GAP CWB UXD">
+</p>
+
 **Elevar o que está sendo proposto** — camada de funil de inteligência entre sua intenção e a produção de software (Cloud Design, Cursor, repos operáveis por agentes).
 
 Sky-Forge transforma uma ideia em linguagem natural num **pacote de maturidade** completo: negócio → produto → **UX digna** → técnico → sustentação → **elevação e prosperidade humana** — com intake conversacional, **Índices SKY abertos e versionados** e export Cloud Design.
@@ -7,6 +11,10 @@ Sky-Forge transforma uma ideia em linguagem natural num **pacote de maturidade**
 A régua é aberta: rubricas, evidências e governança em [SKY_INDICES_METHOD.md](docs/_meta/SKY_INDICES_METHOD.md) (espec CC BY-SA); qualquer terceiro reproduz um score com o harness. O que se comercializa é a execução — agentes completos, export Cloud Design, white-label.
 
 ---
+
+<p align="center">
+  <img src="./assets/readme/section-purpose.svg" width="100%" alt="Propósito Sky — conversa, UX, elevator e pipeline; índices SPI HCE GAP CWB UXD abertos">
+</p>
 
 ## Propósito Sky
 
@@ -19,6 +27,10 @@ Além de especificar aplicativos, o Sky-Forge **conecta a solução da pessoa** 
 | Sky-elevator | Conexões humanidade, sugestões de elevação |
 | Pipeline maduro | Arquitetura, roadmap, prompts, scaffold, `.dc.html` |
 
+<p align="center">
+  <img src="./assets/readme/section-start.svg" width="100%" alt="Início rápido — intake, elevate, export; no Cursor sky-host e intake-conductor">
+</p>
+
 ## Início rápido
 
 ```powershell
@@ -30,6 +42,10 @@ Além de especificar aplicativos, o Sky-Forge **conecta a solução da pessoa** 
 No Cursor: converse com **sky-host** (regra `sky-host.mdc`) ou **intake-conductor** (`sky-intake.mdc`).
 
 Documentação: [AGENTS.md](AGENTS.md) · [SKY_MERIT_INDICES.md](docs/_meta/SKY_MERIT_INDICES.md) · [SKY_INDICES_METHOD.md](docs/_meta/SKY_INDICES_METHOD.md)
+
+<p align="center">
+  <img src="./assets/readme/section-structure.svg" width="100%" alt="Estrutura — .sky, .agents, showcase, docs; extensão sky-cloud-design proprietária, core MIT">
+</p>
 
 ## Estrutura
 
@@ -44,6 +60,10 @@ sky-forge/
 ├── docs/_meta/SKY_MERIT_INDICES.md
 └── extensions/sky-cloud-design/   # proprietário
 ```
+
+<p align="center">
+  <img src="./assets/readme/section-outputs.svg" width="100%" alt="Outputs e showcase — export, publish, showcase; privacidade via SKY_OUTPUTS_DIR e opt-in -Public">
+</p>
 
 ## Outputs fora do repo + showcase visual
 
